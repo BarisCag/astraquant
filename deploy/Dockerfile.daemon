@@ -1,0 +1,16 @@
+FROM rust:1.80 as builder
+
+WORKDIR /usr/src/astra
+COPY . .
+
+RUN cargo build --release -p astra-ops
+
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /usr/src/astra/target/release/astra-ops /usr/local/bin/astra-ops
+
+VOLUME ["/data"]
+ENV RUST_LOG=info
+
+ENTRYPOINT ["astra-ops"]

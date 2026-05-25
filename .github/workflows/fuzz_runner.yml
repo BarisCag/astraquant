@@ -1,0 +1,14 @@
+name: Scheduled tests
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+
+jobs:
+  proptest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test -p astra-core test_event_serialization_fuzz --release

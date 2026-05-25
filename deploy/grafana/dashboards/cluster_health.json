@@ -1,0 +1,15 @@
+{
+  "title": "AstraQuant Ops Telemetry",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "WebSocket Reconnects",
+      "targets": [{ "expr": "astra_websocket_reconnects" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Network Latency (ms)",
+      "targets": [{ "expr": "astra_network_latency_ms" }]
+    }
+  ]
+}

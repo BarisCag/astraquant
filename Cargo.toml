@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+members = ["packages/astra-core", "packages/astra-ops"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/YOUR_ORG/astraquant-os"
+rust-version = "1.70"

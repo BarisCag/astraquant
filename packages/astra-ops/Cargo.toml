@@ -1,0 +1,21 @@
+[package]
+name = "astra-ops"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Non-deterministic ops boundary: metrics and journal tooling"
+readme = "../../README.md"
+
+[[bin]]
+name = "astra-ops"
+path = "src/main.rs"
+
+[dependencies]
+astra-core = { path = "../astra-core" }
+serde = { version = "1.0", features = ["derive"] }
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"

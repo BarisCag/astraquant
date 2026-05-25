@@ -1,0 +1,8 @@
+# Python packaging is not wired to astra-core in this release.
+# See README.md for the supported Rust workspace workflow.
+
+[project]
+name = "astraquant-os"
+version = "0.1.0"
+description = "Deterministic event-sourced trading kernel (Rust workspace — see README)"
+requires-python = ">=3.9"

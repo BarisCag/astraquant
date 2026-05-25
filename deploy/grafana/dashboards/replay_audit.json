@@ -1,0 +1,15 @@
+{
+  "title": "AstraQuant Ops Telemetry (detail)",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "WebSocket Reconnects",
+      "targets": [{ "expr": "astra_websocket_reconnects" }]
+    },
+    {
+      "type": "gauge",
+      "title": "Network Latency (ms)",
+      "targets": [{ "expr": "astra_network_latency_ms" }]
+    }
+  ]
+}

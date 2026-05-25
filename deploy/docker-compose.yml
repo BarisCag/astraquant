@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  node1:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.daemon
+    environment:
+      - ASTRA_NODE_ID=1
+      - ASTRA_JOURNAL_DIR=/data/journal
+      - ASTRA_HTTP_PORT=8081
+      - ASTRA_P2P_PORT=9001
+      - ASTRA_PEERS=node2:9002,node3:9003
+    volumes:
+      - node1_data:/data
+    ports:
+      - "8081:8081"
+    networks:
+      - astra_net
+
+  node2:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.daemon
+    environment:
+      - ASTRA_NODE_ID=2
+      - ASTRA_JOURNAL_DIR=/data/journal
+      - ASTRA_HTTP_PORT=8082
+      - ASTRA_P2P_PORT=9002
+      - ASTRA_PEERS=node1:9001,node3:9003
+    volumes:
+      - node2_data:/data
+    ports:
+      - "8082:8082"
+    networks:
+      - astra_net
+
+  node3:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.daemon
+    environment:
+      - ASTRA_NODE_ID=3
+      - ASTRA_JOURNAL_DIR=/data/journal
+      - ASTRA_HTTP_PORT=8083
+      - ASTRA_P2P_PORT=9003
+      - ASTRA_PEERS=node1:9001,node2:9002
+    volumes:
+      - node3_data:/data
+    ports:
+      - "8083:8083"
+    networks:
+      - astra_net
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - astra_net
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - astra_net
+
+volumes:
+  node1_data:
+  node2_data:
+  node3_data:
+
+networks:
+  astra_net:
+    driver: bridge
