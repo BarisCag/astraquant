@@ -1,8 +1,8 @@
-﻿# AstraQuant OS
+# AstraQuant OS
 
 [![CI](https://github.com/YOUR_ORG/astraquant-os/actions/workflows/deterministic_ci.yml/badge.svg)](https://github.com/YOUR_ORG/astraquant-os/actions/workflows/deterministic_ci.yml)
 
-Deterministic, event-sourced trading kernel in Rust â€” a **research prototype** for replay-safe state machines, not a production exchange stack.
+Deterministic, event-sourced trading kernel in Rust — a **research prototype** for replay-safe state machines, not a production exchange stack.
 
 ## What this repository is
 
@@ -14,7 +14,7 @@ AstraQuant OS explores how far you can push **operational determinism** in a sma
 - replay that fails closed on hash mismatch
 - a wired exchange reducer: matching engine, portfolio, ledger, risk limits
 
-Use it for systems-engineering portfolios, deterministic-systems demos, and Rust infrastructure interviews â€” not for live trading without substantial hardening.
+Use it for systems-engineering portfolios, deterministic-systems demos, and Rust infrastructure interviews — not for live trading without substantial hardening.
 
 ## Architecture (as built)
 
@@ -74,14 +74,14 @@ Optional Docker stack: [deploy/README.md](deploy/README.md).
 
 ## Honest limitations
 
-- **No WASM bytecode VM** â€” sandbox tracks gas and hashes only.
+- **No WASM bytecode VM** — sandbox tracks gas and hashes only.
 - **No live exchange connectivity** in the default binary.
-- **No distributed consensus** â€” cluster tests are in-process only.
-- **No Python bindings** â€” root `pyproject.toml` is not wired to `astra-core`.
-- **Strategy actions are not auto-journaled** â€” strategies update internal state; orders must appear as journal events.
+- **No distributed consensus** — cluster tests are in-process only.
+- **No Python bindings** — root `pyproject.toml` is not wired to `astra-core`.
+- **Strategy actions are not auto-journaled** — strategies update internal state; orders must appear as journal events.
 
 See [RELEASE_NOTES.md](RELEASE_NOTES.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-MIT â€” see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).

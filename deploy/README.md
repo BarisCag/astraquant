@@ -1,11 +1,11 @@
-﻿# Deployment (optional, research prototype)
+# Deployment (optional, research prototype)
 
 Docker Compose runs the `astra-ops` binary plus Prometheus and Grafana. This is for **local observation**, not a production cluster.
 
 ## Prerequisites
 
 - Docker Engine with Compose v2
-- Ports `8081`â€“`8083`, `9090`, `3000` available
+- Ports `8081`–`8083`, `9090`, `3000` available
 
 ## Start
 

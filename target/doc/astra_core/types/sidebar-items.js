@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["MONEY_SCALE","PRICE_SCALE","QUANTITY_SCALE"],"struct":["Money","Price","Quantity"]};

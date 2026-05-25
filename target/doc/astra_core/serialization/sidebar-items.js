@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["SerializationError"],"fn":["deserialize_canonical","deserialize_event","serialize_canonical","serialize_event"]};

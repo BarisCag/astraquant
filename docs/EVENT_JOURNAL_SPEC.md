@@ -1,4 +1,4 @@
-﻿# EVENT_JOURNAL_SPEC.md â€” Constitutional Law of AstraQuant OS
+# EVENT_JOURNAL_SPEC.md — Constitutional Law of AstraQuant OS
 
 > This document is the constitutional foundation of the AstraQuant OS event system.
 > All subsystems, engines, and services MUST comply with these specifications.
@@ -87,8 +87,8 @@ reconstruction checkpoint for a bounded subsystem.
 | **Complete** | Contains entire subsystem state. No external dependencies for reconstruction. |
 | **Replay-Portable** | Can be restored on any compatible system without additional context. |
 | **Hash-Verifiable** | Includes a blake3 state hash that proves integrity. |
-| **Sequenced** | Includes `last_sequence_id` â€” the sequence ID of the last event absorbed. |
-| **Identified** | Includes `subsystem_id` â€” which subsystem produced this snapshot. |
+| **Sequenced** | Includes `last_sequence_id` — the sequence ID of the last event absorbed. |
+| **Identified** | Includes `subsystem_id` — which subsystem produced this snapshot. |
 
 ### Snapshot Verification Invariant
 
@@ -129,7 +129,7 @@ pub struct SnapshotMetadata {
 ### Hash Computation Rules
 
 - All hashing uses **canonical serialized form** (see Â§11 Canonical Serialization).
-- Hash inputs must be deterministic â€” no HashMap iteration, no platform-dependent behavior.
+- Hash inputs must be deterministic — no HashMap iteration, no platform-dependent behavior.
 - `DeterministicState::state_hash()` is the standard interface.
 
 ---
@@ -242,7 +242,7 @@ fixed-point encoding:
 ### Rationale
 
 IEEE 754 floating-point arithmetic is:
-- **Non-associative**: `(a + b) + c â‰  a + (b + c)`
+- **Non-associative**: `(a + b) + c ≠ a + (b + c)`
 - **Platform-dependent**: SIMD, compiler optimizations, and FPU differences
 - **Replay-destroying**: Silent precision drift across replay sessions
 
@@ -261,7 +261,7 @@ All serialization in AstraQuant OS follows these rules:
 | **Integer encoding** | **Fixed-width** encoding. No variable-length integers. |
 | **String encoding** | **UTF-8** only. No normalization transforms during serialization. |
 | **Collections** | **Ordered only**. `Vec`, `BTreeMap`, `BTreeSet`. **HashMap/HashSet FORBIDDEN** in serializable state. |
-| **Optional values** | Explicit `Option<T>` serialization. Missing â‰  None. |
+| **Optional values** | Explicit `Option<T>` serialization. Missing ≠ None. |
 | **Configuration** | `bincode::config::standard().with_little_endian().with_fixed_int_encoding()` |
 
 ### Forbidden Nondeterministic Patterns
@@ -314,7 +314,7 @@ class DeterministicClock:
 
 | Capability | Description |
 |-----------|-------------|
-| Deterministic replay | Same clock inputs â†’ same state outputs |
+| Deterministic replay | Same clock inputs → same state outputs |
 | Backtesting | Historical timestamp injection |
 | Simulation | Arbitrary time progression |
 | Chaos engineering | Time anomaly injection |
@@ -324,4 +324,4 @@ class DeterministicClock:
 
 *This specification is versioned alongside the codebase. Changes require architectural review.*
 
-**AstraQuant OS v0.2.0** | Deterministic â€¢ Auditable â€¢ Replayable
+**AstraQuant OS v0.2.0** | Deterministic • Auditable • Replayable

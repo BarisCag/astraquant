@@ -1,4 +1,4 @@
-﻿# FLOATING_POINT_POLICY.md â€” AstraQuant OS Constitutional Doctrine
+# FLOATING_POINT_POLICY.md — AstraQuant OS Constitutional Doctrine
 
 ## Absolute Prohibition
 
@@ -38,7 +38,7 @@ value_human_readable = value_integer / (10 ^ scale)
 
 ### Why IEEE 754 Floating-Point Destroys Determinism
 
-1. **Non-associativity**: `(a + b) + c â‰  a + (b + c)` in floating-point.
+1. **Non-associativity**: `(a + b) + c ≠ a + (b + c)` in floating-point.
    Order of operations changes results. Replay with different execution order
    produces different state.
 
@@ -59,11 +59,11 @@ value_human_readable = value_integer / (10 ^ scale)
 
 | Capability | Impact of Floats |
 |-----------|-----------------|
-| Deterministic replay | **Destroyed** â€” different float results per platform |
-| State hash verification | **Destroyed** â€” hash mismatch from float drift |
-| Snapshot recovery | **Destroyed** â€” recovered state diverges from original |
-| Cross-system consistency | **Destroyed** â€” different hardware = different state |
-| Audit trail integrity | **Destroyed** â€” cannot prove historical state |
+| Deterministic replay | **Destroyed** — different float results per platform |
+| State hash verification | **Destroyed** — hash mismatch from float drift |
+| Snapshot recovery | **Destroyed** — recovered state diverges from original |
+| Cross-system consistency | **Destroyed** — different hardware = different state |
+| Audit trail integrity | **Destroyed** — cannot prove historical state |
 
 ---
 
@@ -92,9 +92,9 @@ value_human_readable = value_integer / (10 ^ scale)
 
 Floating-point is permitted ONLY in:
 
-1. **Display/formatting** â€” converting fixed-point to human-readable output.
-2. **Logging** â€” non-authoritative diagnostic output.
-3. **External API boundaries** â€” converting from external float-based APIs
+1. **Display/formatting** — converting fixed-point to human-readable output.
+2. **Logging** — non-authoritative diagnostic output.
+3. **External API boundaries** — converting from external float-based APIs
    to internal fixed-point representation (with explicit rounding rules).
 
 Floating-point values MUST NEVER:
@@ -107,4 +107,4 @@ Floating-point values MUST NEVER:
 
 *This policy is permanent. It may not be relaxed without full architectural review.*
 
-**AstraQuant OS v0.2.0** | Deterministic â€¢ Auditable â€¢ Replayable
+**AstraQuant OS v0.2.0** | Deterministic • Auditable • Replayable

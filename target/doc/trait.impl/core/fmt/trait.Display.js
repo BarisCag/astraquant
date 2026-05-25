@@ -1,0 +1,9 @@
+(function() {
+    const implementors = Object.fromEntries([["astra_core",[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.95.0/core/fmt/trait.Display.html\" title=\"trait core::fmt::Display\">Display</a> for <a class=\"enum\" href=\"astra_core/ledger/enum.LedgerError.html\" title=\"enum astra_core::ledger::LedgerError\">LedgerError</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.95.0/core/fmt/trait.Display.html\" title=\"trait core::fmt::Display\">Display</a> for <a class=\"enum\" href=\"astra_core/orderbook/enum.OrderBookError.html\" title=\"enum astra_core::orderbook::OrderBookError\">OrderBookError</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.95.0/core/fmt/trait.Display.html\" title=\"trait core::fmt::Display\">Display</a> for <a class=\"enum\" href=\"astra_core/portfolio/enum.PortfolioError.html\" title=\"enum astra_core::portfolio::PortfolioError\">PortfolioError</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.95.0/core/fmt/trait.Display.html\" title=\"trait core::fmt::Display\">Display</a> for <a class=\"enum\" href=\"astra_core/serialization/enum.SerializationError.html\" title=\"enum astra_core::serialization::SerializationError\">SerializationError</a>",0],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.95.0/core/fmt/trait.Display.html\" title=\"trait core::fmt::Display\">Display</a> for <a class=\"enum\" href=\"astra_core/snapshot/enum.SnapshotError.html\" title=\"enum astra_core::snapshot::SnapshotError\">SnapshotError</a>",0]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":59,"fragment_lengths":[1496]}

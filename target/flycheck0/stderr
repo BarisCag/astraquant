@@ -1,0 +1,202 @@
+   0.245011400s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="astra_core"}: cargo::core::compiler::fingerprint: fingerprint error for astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("astra_core", ["lib"], "C:\\Users\\drake\\Desktop\\ASTRA\\packages\\astra-core\\src\\lib.rs", Edition2021) }
+   0.245100500s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="astra_core"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\drake\Desktop\ASTRA\target\debug\.fingerprint\astra-core-b998777bef0114d4\test-lib-astra_core`
+
+Caused by:
+    Sistem belirtilen dosyayı bulamıyor. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.306543500s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="gateway_tests"}: cargo::core::compiler::fingerprint: stale: missing "C:\\Users\\drake\\Desktop\\ASTRA\\target\\debug\\.fingerprint\\astra-core-f6be67e68fa01014\\dep-test-integration-test-gateway_tests"
+   0.306862100s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="gateway_tests"}: cargo::core::compiler::fingerprint: fingerprint error for astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core)/Check { test: true }/TargetInner { kind: "test", name: "gateway_tests", benched: false, ..: with_path("C:\\Users\\drake\\Desktop\\ASTRA\\packages\\astra-core\\tests\\gateway_tests.rs", Edition2021) }
+   0.306906100s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="gateway_tests"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\drake\Desktop\ASTRA\target\debug\.fingerprint\astra-core-f6be67e68fa01014\test-integration-test-gateway_tests`
+
+Caused by:
+    Sistem belirtilen dosyayı bulamıyor. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.312294000s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="journal_tests"}: cargo::core::compiler::fingerprint: stale: missing "C:\\Users\\drake\\Desktop\\ASTRA\\target\\debug\\.fingerprint\\astra-core-ddae4504a1fef166\\dep-test-integration-test-journal_tests"
+   0.312516900s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="journal_tests"}: cargo::core::compiler::fingerprint: fingerprint error for astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core)/Check { test: true }/TargetInner { kind: "test", name: "journal_tests", benched: false, ..: with_path("C:\\Users\\drake\\Desktop\\ASTRA\\packages\\astra-core\\tests\\journal_tests.rs", Edition2021) }
+   0.312560100s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="journal_tests"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\drake\Desktop\ASTRA\target\debug\.fingerprint\astra-core-ddae4504a1fef166\test-integration-test-journal_tests`
+
+Caused by:
+    Sistem belirtilen dosyayı bulamıyor. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.318108200s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="proptest_tests"}: cargo::core::compiler::fingerprint: fingerprint error for astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core)/Check { test: true }/TargetInner { kind: "test", name: "proptest_tests", benched: false, ..: with_path("C:\\Users\\drake\\Desktop\\ASTRA\\packages\\astra-core\\tests\\proptest_tests.rs", Edition2021) }
+   0.318163500s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="proptest_tests"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\drake\Desktop\ASTRA\target\debug\.fingerprint\astra-core-8ce791f4913d510b\test-integration-test-proptest_tests`
+
+Caused by:
+    Sistem belirtilen dosyayı bulamıyor. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.348794000s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="simulation_tests"}: cargo::core::compiler::fingerprint: stale: missing "C:\\Users\\drake\\Desktop\\ASTRA\\target\\debug\\.fingerprint\\astra-core-3dbe450df377f77f\\dep-test-integration-test-simulation_tests"
+   0.348913300s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="simulation_tests"}: cargo::core::compiler::fingerprint: fingerprint error for astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core)/Check { test: true }/TargetInner { kind: "test", name: "simulation_tests", benched: false, ..: with_path("C:\\Users\\drake\\Desktop\\ASTRA\\packages\\astra-core\\tests\\simulation_tests.rs", Edition2021) }
+   0.348954200s  INFO prepare_target{force=false package_id=astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core) target="simulation_tests"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\drake\Desktop\ASTRA\target\debug\.fingerprint\astra-core-3dbe450df377f77f\test-integration-test-simulation_tests`
+
+Caused by:
+    Sistem belirtilen dosyayı bulamıyor. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.355446500s  INFO prepare_target{force=false package_id=astra-ops v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-ops) target="astra-ops"}: cargo::core::compiler::fingerprint: fingerprint error for astra-ops v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-ops)/Check { test: false }/TargetInner { name: "astra-ops", doc: true, ..: with_path("C:\\Users\\drake\\Desktop\\ASTRA\\packages\\astra-ops\\src\\main.rs", Edition2021) }
+   0.355498800s  INFO prepare_target{force=false package_id=astra-ops v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-ops) target="astra-ops"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\drake\Desktop\ASTRA\target\debug\.fingerprint\astra-ops-e19ef5338d4c0f1b\bin-astra-ops`
+
+Caused by:
+    Sistem belirtilen dosyayı bulamıyor. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.356601200s  INFO prepare_target{force=false package_id=astra-ops v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-ops) target="astra-ops"}: cargo::core::compiler::fingerprint: fingerprint error for astra-ops v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-ops)/Check { test: true }/TargetInner { name: "astra-ops", doc: true, ..: with_path("C:\\Users\\drake\\Desktop\\ASTRA\\packages\\astra-ops\\src\\main.rs", Edition2021) }
+   0.356639500s  INFO prepare_target{force=false package_id=astra-ops v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-ops) target="astra-ops"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\Users\drake\Desktop\ASTRA\target\debug\.fingerprint\astra-ops-f132122b53020aa0\test-bin-astra-ops`
+
+Caused by:
+    Sistem belirtilen dosyayı bulamıyor. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+    Checking astra-ops v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-ops)
+    Checking astra-core v0.1.0 (C:\Users\drake\Desktop\ASTRA\packages\astra-core)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.31s
