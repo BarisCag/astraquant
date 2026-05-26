@@ -14,7 +14,13 @@ AstraQuant OS is a deterministic quantitative systems research platform. The arc
 
 ```mermaid
 flowchart TD
-  subgraph astra-ops [astra-ops (Quarantine Layer)]
+  subgraph astra-stream [astra-stream (Ingestion Quarantine)]
+    WSS[Binance WSS] --> Ingest[Multi-Symbol Ingest]
+    Ingest --> StreamJournal[(Rotating EventJournals)]
+    Ingest -.-> StreamMetrics[Stream Metrics]
+  end
+
+  subgraph astra-ops [astra-ops (Ops Quarantine)]
     Network[External Network / Sockets]
     Telemetry[Prometheus Metrics]
     Daemon[AstraDaemon]
@@ -34,6 +40,7 @@ flowchart TD
     end
   end
 
+  StreamJournal -->|Replays| Journal
   Network -->|Untrusted Bytes| Daemon
   Daemon -->|Sanitized Commands| Gateway
   Gateway -->|Appends| Journal
@@ -43,6 +50,9 @@ flowchart TD
   ER --> ME
   ER --> Portfolio
 ```
+
+### `astra-stream` (Ingestion Quarantine)
+The boundary layer for live market data. It handles all async WebSocket connections, string-based decimal parsing, and time-bucketed journal rotation. It converts non-deterministic network events into deterministic fixed-point structures (`NormalizedMarketEvent`) and writes them directly to `astra-core`'s `EventJournal`.
 
 ### `astra-ops` (Quarantine Layer)
 The boundary layer. It interfaces with non-deterministic elements (OS threads, file I/O, WebSockets, system time). It intercepts all external inputs, sanitizes them, and feeds them into the `ExecutionGateway`. 

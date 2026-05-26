@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["packages/astra-core", "packages/astra-ops"]
+members = ["packages/astra-core", "packages/astra-ops", "packages/astra-stream", "packages/astra-lob"]
 
 [workspace.package]
 version = "0.1.0"

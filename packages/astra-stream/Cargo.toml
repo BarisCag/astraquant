@@ -1,0 +1,30 @@
+[package]
+name = "astra-stream"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Deterministic market data ingestion, normalization, and replay"
+readme = "../../README.md"
+keywords = ["market-data", "ingestion", "replay", "deterministic"]
+
+[[bin]]
+name = "astra-stream"
+path = "src/main.rs"
+
+[dependencies]
+astra-core = { path = "../astra-core" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["full"] }
+tokio-tungstenite = { version = "0.24", features = ["native-tls"] }
+futures-util = "0.3"
+clap = { version = "4", features = ["derive"] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"
