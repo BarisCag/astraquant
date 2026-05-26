@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["EventType","PayloadEncoding"],"struct":["AstraEvent","PayloadMetadata","SnapshotMetadata"]};

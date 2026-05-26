@@ -1,6 +1,6 @@
 # AstraQuant OS
 
-[![CI](https://github.com/YOUR_ORG/astraquant-os/actions/workflows/deterministic_ci.yml/badge.svg)](https://github.com/YOUR_ORG/astraquant-os/actions/workflows/deterministic_ci.yml)
+[![CI](https://github.com/AstraQuantResearch/astraquant-os/actions/workflows/deterministic_ci.yml/badge.svg)](https://github.com/AstraQuantResearch/astraquant-os/actions/workflows/deterministic_ci.yml)
 
 Deterministic, event-sourced trading kernel in Rust — a **research prototype** for replay-safe state machines, not a production exchange stack.
 
@@ -74,11 +74,11 @@ Optional Docker stack: [deploy/README.md](deploy/README.md).
 
 ## Honest limitations
 
-- **No WASM bytecode VM** — sandbox tracks gas and hashes only.
+- **No WASM bytecode VM** — sandbox tracks gas and hashes only. It is currently an experimental placeholder.
 - **No live exchange connectivity** in the default binary.
 - **No distributed consensus** — cluster tests are in-process only.
-- **No Python bindings** — root `pyproject.toml` is not wired to `astra-core`.
-- **Strategy actions are not auto-journaled** — strategies update internal state; orders must appear as journal events.
+- **No Python bindings** — root `pyproject.toml` is not wired to `astra-core`. Python integration is planned but currently inactive.
+- **Strategy actions are not auto-journaled** — strategies update internal state; orders must appear as journal events. The strategy system is explicitly a deterministic research prototype.
 
 See [RELEASE_NOTES.md](RELEASE_NOTES.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
 

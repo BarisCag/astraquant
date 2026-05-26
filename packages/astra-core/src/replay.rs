@@ -54,13 +54,10 @@ impl<'a, R: EventReducer + DeterministicState> ReplayEngine<'a, R> {
         let verified = res.final_state_hash == expected_hash;
         res.verified = Some(verified);
         if !verified {
-            return Err(std::io::Error::new(
-                std::io::ErrorKind::InvalidData,
-                format!(
-                    "Replay verification failed: expected {:?}, got {:?}",
-                    expected_hash, res.final_state_hash
-                ),
-            ));
+            return Err(std::io::Error::other(format!(
+                "Replay verification failed: expected {:?}, got {:?}",
+                expected_hash, res.final_state_hash
+            )));
         }
         Ok(res)
     }
@@ -87,13 +84,10 @@ impl<'a, R: EventReducer + DeterministicState> ReplayEngine<'a, R> {
         let verified = res.final_state_hash == expected_hash;
         res.verified = Some(verified);
         if !verified {
-            return Err(std::io::Error::new(
-                std::io::ErrorKind::InvalidData,
-                format!(
-                    "Replay verification failed: expected {:?}, got {:?}",
-                    expected_hash, res.final_state_hash
-                ),
-            ));
+            return Err(std::io::Error::other(format!(
+                "Replay verification failed: expected {:?}, got {:?}",
+                expected_hash, res.final_state_hash
+            )));
         }
         Ok(res)
     }

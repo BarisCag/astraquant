@@ -90,13 +90,10 @@ impl EventJournal {
     /// The event's sequence_id MUST match the journal's expected next_sequence_id.
     pub fn append(&mut self, event: &AstraEvent) -> io::Result<u64> {
         if event.sequence_id != self.sequence_id {
-            return Err(io::Error::new(
-                io::ErrorKind::InvalidInput,
-                format!(
-                    "Sequence violation: expected {}, got {}",
-                    self.sequence_id, event.sequence_id
-                ),
-            ));
+            return Err(io::Error::other(format!(
+                "Sequence violation: expected {}, got {}",
+                self.sequence_id, event.sequence_id
+            )));
         }
         self.write_event(event)?;
         let seq = self.sequence_id;
@@ -116,8 +113,7 @@ impl EventJournal {
 
     /// Write a serialized event to the journal file.
     fn write_event(&mut self, event: &AstraEvent) -> io::Result<()> {
-        let bytes = serialize_canonical(event)
-            .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, format!("{:?}", e)))?;
+        let bytes = serialize_canonical(event).map_err(|e| io::Error::other(format!("{:?}", e)))?;
         let len = bytes.len() as u32;
         self.file.write_all(&len.to_le_bytes())?;
         self.file.write_all(&bytes)?;
@@ -203,10 +199,7 @@ impl Iterator for JournalIterator {
 
         match deserialize_canonical(&buf) {
             Ok(event) => Some(Ok(event)),
-            Err(e) => Some(Err(io::Error::new(
-                io::ErrorKind::InvalidData,
-                format!("{:?}", e),
-            ))),
+            Err(e) => Some(Err(io::Error::other(format!("{:?}", e)))),
         }
     }
 }

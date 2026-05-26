@@ -6,5 +6,5 @@ members = ["packages/astra-core", "packages/astra-ops"]
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/YOUR_ORG/astraquant-os"
+repository = "https://github.com/AstraQuantResearch/astraquant-os"
 rust-version = "1.70"

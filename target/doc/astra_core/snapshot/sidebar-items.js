@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["SnapshotError"],"struct":["Snapshot","SnapshotManager"]};

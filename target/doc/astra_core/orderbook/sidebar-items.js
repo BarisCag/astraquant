@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["OrderBookError","OrderSide"],"struct":["LimitOrderCancelledPayload","LimitOrderMatchedPayload","LimitOrderPlacedPayload","OrderBook","OrderNode"]};

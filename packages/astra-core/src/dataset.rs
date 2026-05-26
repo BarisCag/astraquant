@@ -48,10 +48,7 @@ impl Dataset {
 
         let actual_checksum = hash_bytes(&data_bytes);
         if !verify_hash_equality(&header.checksum, &actual_checksum) {
-            return Err(std::io::Error::new(
-                std::io::ErrorKind::InvalidData,
-                "Checksum mismatch",
-            ));
+            return Err(std::io::Error::other("Checksum mismatch"));
         }
 
         let ticks: Vec<MarketTick> = deserialize_canonical(&data_bytes).unwrap();
