@@ -310,6 +310,7 @@ pub fn collect_journal_files(dir: &Path) -> io::Result<Vec<PathBuf>> {
             }
         }
     }
+    files.sort();
     Ok(files)
 }
 
