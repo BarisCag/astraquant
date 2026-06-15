@@ -32,13 +32,15 @@ impl RLSandbox {
             self.current_state = Some(crate::state_space::event_to_tensor(event, self.position));
         }
     }
-    
+
     pub fn step(&mut self, action: i64, pnl: i64) -> (StateVector, f64, bool) {
         self.position += action;
         let reward = crate::reward::RewardFunction::Pnl.evaluate(pnl, 0);
         self.current_reward += reward;
-        
-        let state = self.current_state.clone().unwrap_or_else(|| StateVector { features: vec![0.0; 4] });
+
+        let state = self.current_state.clone().unwrap_or_else(|| StateVector {
+            features: vec![0.0; 4],
+        });
         (state, reward, false)
     }
 }

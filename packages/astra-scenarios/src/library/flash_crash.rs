@@ -1,7 +1,7 @@
+use crate::lcg::DeterministicLcg;
 use crate::scenario::{ScenarioDefinition, ScenarioSeverity};
 use astra_core::events::{AstraEvent, EventType, PayloadEncoding, PayloadMetadata};
 use astra_core::serialization::serialize_canonical;
-use crate::lcg::DeterministicLcg;
 
 pub struct FlashCrashScenario {
     pub seed: u64,
@@ -26,11 +26,16 @@ impl ScenarioDefinition for FlashCrashScenario {
         self.activation_windows.clone()
     }
 
-    fn evaluate_sequence(&self, current_sequence: u64, lcg: &mut DeterministicLcg) -> Vec<AstraEvent> {
+    fn evaluate_sequence(
+        &self,
+        current_sequence: u64,
+        lcg: &mut DeterministicLcg,
+    ) -> Vec<AstraEvent> {
         let mut events = Vec::new();
         for (start, end) in &self.activation_windows {
             if current_sequence >= *start && current_sequence <= *end {
-                if lcg.next_bool_ppm(100_000) { // 10% chance per sequence in window
+                if lcg.next_bool_ppm(100_000) {
+                    // 10% chance per sequence in window
                     // Inject MarketStressInjected
                     events.push(AstraEvent {
                         timestamp_ns: 0,

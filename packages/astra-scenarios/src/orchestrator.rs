@@ -1,9 +1,9 @@
-use astra_exchange::runtime::ExchangeRuntime;
-use astra_core::events::AstraEvent;
-use crate::scenario::{ScenarioDefinition, ScenarioRuntime};
-use crate::lcg::DeterministicLcg;
-use crate::injector::ScenarioEventInjector;
 use crate::checkpoint::ScenarioCheckpoint;
+use crate::injector::ScenarioEventInjector;
+use crate::lcg::DeterministicLcg;
+use crate::scenario::{ScenarioDefinition, ScenarioRuntime};
+use astra_core::events::AstraEvent;
+use astra_exchange::runtime::ExchangeRuntime;
 
 pub struct ScenarioOrchestrator {
     pub exchange: ExchangeRuntime,
@@ -20,7 +20,11 @@ impl ScenarioOrchestrator {
         }
     }
 
-    pub fn step(&mut self, base_event: AstraEvent, active_scenario: Option<&dyn ScenarioDefinition>) -> Vec<AstraEvent> {
+    pub fn step(
+        &mut self,
+        base_event: AstraEvent,
+        active_scenario: Option<&dyn ScenarioDefinition>,
+    ) -> Vec<AstraEvent> {
         self.scenario_runtime.advance();
         let current_sequence = self.scenario_runtime.current_sequence;
 
@@ -34,7 +38,8 @@ impl ScenarioOrchestrator {
         // 2. Inject Scenario Stress Events
         if let Some(scenario) = active_scenario {
             let injected_events = scenario.evaluate_sequence(current_sequence, &mut self.lcg);
-            let sequenced_events = ScenarioEventInjector::inject_events(injected_events, current_sequence);
+            let sequenced_events =
+                ScenarioEventInjector::inject_events(injected_events, current_sequence);
 
             for injected in sequenced_events {
                 // We apply injected events to the exchange.

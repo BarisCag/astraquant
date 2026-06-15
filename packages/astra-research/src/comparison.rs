@@ -82,8 +82,16 @@ impl ExperimentComparison {
             // For now, if final hashes match, we assume sequence divergence didn't happen
             // In reality, this requires sequence-by-sequence checkpoint diffing, which requires
             // the full checkpoint lineage from astra-ops. We will stub for now.
-            sequence_divergence: if base_run.final_state_hash == target_run.final_state_hash { 0 } else { 1 },
-            event_divergence_count: if base_run.final_state_hash == target_run.final_state_hash { 0 } else { 1 },
+            sequence_divergence: if base_run.final_state_hash == target_run.final_state_hash {
+                0
+            } else {
+                1
+            },
+            event_divergence_count: if base_run.final_state_hash == target_run.final_state_hash {
+                0
+            } else {
+                1
+            },
             final_hash_match: base_run.final_state_hash == target_run.final_state_hash,
         }
     }

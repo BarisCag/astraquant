@@ -1,6 +1,6 @@
+use astra_core::events::AstraEvent;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
-use astra_core::events::AstraEvent;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TraderMarginProfile {
@@ -70,19 +70,27 @@ impl MarginEngine {
 
     pub fn update_collateral(&mut self, trader_id: u64, equity: i64, utilized_margin: u64) {
         if let Some(account) = self.accounts.get_mut(&trader_id) {
-            let haircut = self.profiles.get(&trader_id).map(|p| p.collateral_haircut_ppm).unwrap_or(1_000_000);
+            let haircut = self
+                .profiles
+                .get(&trader_id)
+                .map(|p| p.collateral_haircut_ppm)
+                .unwrap_or(1_000_000);
             account.total_collateral = (equity * haircut as i64) / 1_000_000;
             account.utilized_margin = utilized_margin;
 
             if utilized_margin > 0 {
-                account.margin_health_ppm = (account.total_collateral * 1_000_000) / utilized_margin as i64;
+                account.margin_health_ppm =
+                    (account.total_collateral * 1_000_000) / utilized_margin as i64;
             } else {
                 account.margin_health_ppm = 1_000_000; // Safe
             }
         }
     }
 
-    pub fn check_margin_health(&mut self, current_sequence: u64) -> Vec<LiquidationExecutionContext> {
+    pub fn check_margin_health(
+        &mut self,
+        current_sequence: u64,
+    ) -> Vec<LiquidationExecutionContext> {
         let mut liquidations = Vec::new();
 
         for (trader_id, account) in self.accounts.iter_mut() {
@@ -92,8 +100,10 @@ impl MarginEngine {
                     if account.active_margin_call.is_none() {
                         account.active_margin_call = Some(MarginCall {
                             call_sequence: current_sequence,
-                            required_deposit: profile.initial_margin_ppm as i64 - account.total_collateral, // Just indicative
-                            deadline_sequence: current_sequence + profile.liquidation_grace_sequences,
+                            required_deposit: profile.initial_margin_ppm as i64
+                                - account.total_collateral, // Just indicative
+                            deadline_sequence: current_sequence
+                                + profile.liquidation_grace_sequences,
                         });
                     }
                 } else {

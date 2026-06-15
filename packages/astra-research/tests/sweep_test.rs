@@ -1,11 +1,19 @@
-use astra_scenarios::scenario::ExperimentParameterSet;
 use astra_research::sweep::{ParameterSweep, SweepDimension};
+use astra_scenarios::scenario::ExperimentParameterSet;
 
 #[test]
 fn test_sweep_generation() {
     let dimensions = vec![
-        SweepDimension::LiquidityCollapseSeverity { start_ppm: 0, end_ppm: 500_000, steps: 3 },
-        SweepDimension::MarginMultiplier { start_ppm: 1_000_000, end_ppm: 2_000_000, steps: 2 },
+        SweepDimension::LiquidityCollapseSeverity {
+            start_ppm: 0,
+            end_ppm: 500_000,
+            steps: 3,
+        },
+        SweepDimension::MarginMultiplier {
+            start_ppm: 1_000_000,
+            end_ppm: 2_000_000,
+            steps: 2,
+        },
     ];
 
     let sweep = ParameterSweep::new(dimensions);

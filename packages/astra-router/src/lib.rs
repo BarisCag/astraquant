@@ -1,5 +1,5 @@
-pub mod venue;
+pub mod failure;
 pub mod liquidity;
 pub mod router;
-pub mod failure;
 pub mod stress;
+pub mod venue;

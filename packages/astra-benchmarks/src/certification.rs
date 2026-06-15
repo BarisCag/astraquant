@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use astra_core::hashing::hash_bytes;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct LineageCheckpoint {

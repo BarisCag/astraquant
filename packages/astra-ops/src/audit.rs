@@ -33,7 +33,9 @@ pub struct CheckpointLineage {
 
 impl CheckpointLineage {
     pub fn new() -> Self {
-        Self { checkpoints: Vec::new() }
+        Self {
+            checkpoints: Vec::new(),
+        }
     }
 
     pub fn record(&mut self, hash: [u8; 32], sequence: u64) {

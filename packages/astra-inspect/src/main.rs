@@ -1,7 +1,8 @@
 use astra_exchange::runtime::ExchangeRuntime;
 use astra_inspect::inspector::ReplayInspector;
 use astra_inspect::visualization::{
-    export_ascii_lob, export_csv, export_json, export_mermaid_sequence, export_mermaid_strategy_trace, export_strategy_analytics_json, export_multi_venue_ascii_lob
+    export_ascii_lob, export_csv, export_json, export_mermaid_sequence,
+    export_mermaid_strategy_trace, export_multi_venue_ascii_lob, export_strategy_analytics_json,
 };
 use astra_risk::engine::RiskEngine;
 use clap::{Parser, Subcommand};
@@ -518,7 +519,8 @@ fn main() {
             println!("\n======================================");
             println!("         FINAL ORDERBOOK ({})         ", symbol);
             println!("======================================");
-            export_multi_venue_ascii_lob(&mut stdout, &inspector.runtime.router.venues, &symbol).unwrap();
+            export_multi_venue_ascii_lob(&mut stdout, &inspector.runtime.router.venues, &symbol)
+                .unwrap();
         }
         Commands::PnlReport { journal_dir } => {
             let risk_engine = RiskEngine::new();
@@ -588,7 +590,8 @@ fn main() {
         Commands::OperationalTimeline { scenario } => {
             println!("Generating operational timeline for {}", scenario);
             let mut stdout = std::io::stdout();
-            astra_inspect::visualization::export_operational_intervention_timeline(&mut stdout).unwrap();
+            astra_inspect::visualization::export_operational_intervention_timeline(&mut stdout)
+                .unwrap();
         }
         Commands::RecoveryAnalysis { scenario } => {
             println!("Generating recovery analysis for {}", scenario);
@@ -607,7 +610,10 @@ fn main() {
             println!("Comparing experiments {} and {}", left, right);
         }
         Commands::BenchmarkReport { suite } => {
-            println!("Generating institutional benchmark report for suite {}", suite);
+            println!(
+                "Generating institutional benchmark report for suite {}",
+                suite
+            );
         }
         Commands::ReplayCertify { manifest } => {
             println!("Certifying replay against manifest {}", manifest);
@@ -618,8 +624,14 @@ fn main() {
         Commands::SystemicComparison { suite } => {
             println!("Generating systemic comparison for suite {}", suite);
         }
-        Commands::ReplayDiff { left_run_id, right_run_id } => {
-            println!("Generating replay diff between {} and {}", left_run_id, right_run_id);
+        Commands::ReplayDiff {
+            left_run_id,
+            right_run_id,
+        } => {
+            println!(
+                "Generating replay diff between {} and {}",
+                left_run_id, right_run_id
+            );
         }
         Commands::PolicyReport { scenario } => {
             println!("Generating policy report for scenario {}", scenario);
@@ -657,7 +669,8 @@ fn main() {
         Commands::CertificationAudit { manifest } => {
             println!("Auditing certification chain for manifest {}", manifest);
             let mut stdout = std::io::stdout();
-            astra_inspect::visualization::export_certification_ancestry_diagram(&mut stdout).unwrap();
+            astra_inspect::visualization::export_certification_ancestry_diagram(&mut stdout)
+                .unwrap();
         }
         Commands::EcologyReport { journal_dir } => {
             println!("Generating ecology report for {}", journal_dir);
@@ -686,7 +699,10 @@ fn main() {
         Commands::PolicyEvaluate { policy_file } => {
             println!("Evaluating policy from {}", policy_file);
         }
-        Commands::PolicyCompare { left_policy, right_policy } => {
+        Commands::PolicyCompare {
+            left_policy,
+            right_policy,
+        } => {
             println!("Comparing policies {} and {}", left_policy, right_policy);
             let mut stdout = std::io::stdout();
             astra_inspect::visualization::export_policy_divergence_map(&mut stdout).unwrap();
@@ -704,7 +720,8 @@ fn main() {
         Commands::AdaptiveStudy { policy_file } => {
             println!("Running adaptive containment study for {}", policy_file);
             let mut stdout = std::io::stdout();
-            astra_inspect::visualization::export_adaptive_containment_topology(&mut stdout).unwrap();
+            astra_inspect::visualization::export_adaptive_containment_topology(&mut stdout)
+                .unwrap();
         }
         Commands::DistributedReplay { cluster_id } => {
             println!("Distributed replay cluster status for {}", cluster_id);
@@ -717,7 +734,8 @@ fn main() {
         Commands::ReplayClusterReport { report_id } => {
             println!("Generating replay cluster report for {}", report_id);
             let mut stdout = std::io::stdout();
-            astra_inspect::visualization::export_certification_aggregation_tree(&mut stdout).unwrap();
+            astra_inspect::visualization::export_certification_aggregation_tree(&mut stdout)
+                .unwrap();
         }
         Commands::DistributedBenchmark { benchmark_id } => {
             println!("Running distributed benchmark fanout for {}", benchmark_id);
@@ -750,7 +768,8 @@ fn main() {
         Commands::LineageProof { journal_dir } => {
             println!("Generating lineage proof for {}", journal_dir);
             let mut stdout = std::io::stdout();
-            astra_inspect::visualization::export_lineage_certification_topology(&mut stdout).unwrap();
+            astra_inspect::visualization::export_lineage_certification_topology(&mut stdout)
+                .unwrap();
         }
         Commands::AggregationVerify { aggregation_file } => {
             println!("Verifying aggregation proof for {}", aggregation_file);
@@ -760,7 +779,8 @@ fn main() {
         Commands::DistributedEquivalenceCheck { proof_file } => {
             println!("Checking distributed equivalence for {}", proof_file);
             let mut stdout = std::io::stdout();
-            astra_inspect::visualization::export_distributed_equivalence_graph(&mut stdout).unwrap();
+            astra_inspect::visualization::export_distributed_equivalence_graph(&mut stdout)
+                .unwrap();
         }
         Commands::FederationReport { federation_id } => {
             println!("Generating federation report for {}", federation_id);
@@ -768,9 +788,13 @@ fn main() {
         Commands::TreatyVerify { treaty_file } => {
             println!("Verifying treaty {}", treaty_file);
             let mut stdout = std::io::stdout();
-            astra_inspect::visualization::export_replay_treaty_dependency_graph(&mut stdout).unwrap();
+            astra_inspect::visualization::export_replay_treaty_dependency_graph(&mut stdout)
+                .unwrap();
         }
-        Commands::CrossClusterCheck { cluster_a, cluster_b } => {
+        Commands::CrossClusterCheck {
+            cluster_a,
+            cluster_b,
+        } => {
             println!("Cross cluster check {} vs {}", cluster_a, cluster_b);
             let mut stdout = std::io::stdout();
             astra_inspect::visualization::export_cross_cluster_lineage_bridge(&mut stdout).unwrap();
@@ -866,7 +890,8 @@ fn main() {
         Commands::VenueReconstruction { venue_id } => {
             println!("Tracing venue sequence reconstruction for {}", venue_id);
             let mut stdout = std::io::stdout();
-            astra_inspect::visualization::export_venue_fragmentation_evolution(&mut stdout).unwrap();
+            astra_inspect::visualization::export_venue_fragmentation_evolution(&mut stdout)
+                .unwrap();
         }
         Commands::MicrostructureAnalysis { session_id } => {
             println!("Analyzing liquidity regime segments for {}", session_id);
@@ -879,10 +904,16 @@ fn main() {
             astra_inspect::visualization::export_exposure_topology(&mut stdout).unwrap();
         }
         Commands::MarginAnalysis { portfolio_id } => {
-            println!("Replaying margin and collateral limits for {}", portfolio_id);
+            println!(
+                "Replaying margin and collateral limits for {}",
+                portfolio_id
+            );
         }
         Commands::LiquidationReplay { window_id } => {
-            println!("Executing deterministic liquidation cascade for {}", window_id);
+            println!(
+                "Executing deterministic liquidation cascade for {}",
+                window_id
+            );
             let mut stdout = std::io::stdout();
             astra_inspect::visualization::export_liquidation_cascade_graph(&mut stdout).unwrap();
             astra_inspect::visualization::export_collateral_exhaustion_tree(&mut stdout).unwrap();
@@ -890,15 +921,20 @@ fn main() {
         Commands::StressSimulation { scenario_id } => {
             println!("Running systemic stress propagation for {}", scenario_id);
             let mut stdout = std::io::stdout();
-            astra_inspect::visualization::export_systemic_stress_propagation_graph(&mut stdout).unwrap();
+            astra_inspect::visualization::export_systemic_stress_propagation_graph(&mut stdout)
+                .unwrap();
         }
         Commands::ExposureMap { portfolio_id } => {
             println!("Viewing inventory concentration map for {}", portfolio_id);
         }
         Commands::ConstraintAudit { portfolio_id } => {
-            println!("Auditing deterministic risk constraints for {}", portfolio_id);
+            println!(
+                "Auditing deterministic risk constraints for {}",
+                portfolio_id
+            );
             let mut stdout = std::io::stdout();
-            astra_inspect::visualization::export_risk_constraint_dependency_map(&mut stdout).unwrap();
+            astra_inspect::visualization::export_risk_constraint_dependency_map(&mut stdout)
+                .unwrap();
         }
         Commands::ReplayProfile { trace_id } => {
             println!("Deterministic profiling of replay batch for {}", trace_id);

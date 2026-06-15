@@ -1,23 +1,23 @@
-pub mod experiment;
-pub mod sweep;
+pub mod calibration;
+pub mod certification_generator;
 pub mod comparison;
-pub mod report;
+pub mod counterfactual;
+pub mod covid_2020_dataset;
 pub mod dataset_format;
+pub mod experiment;
 pub mod flash_crash_dataset;
 pub mod lehman_2008_dataset;
-pub mod covid_2020_dataset;
 pub mod phantom_runner;
-pub mod counterfactual;
+pub mod report;
 pub mod report_generator;
-pub mod certification_generator;
-pub mod calibration;
+pub mod sweep;
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use astra_core::hashing::hash_to_hex;
-    use std::fs;
     use std::collections::BTreeMap;
+    use std::fs;
 
     #[test]
     fn test_ci_golden_hashes_match() {
@@ -25,21 +25,31 @@ mod tests {
         let golden_json = match fs::read_to_string("results/golden_hashes.json") {
             Ok(s) => s,
             Err(_) => {
-                println!("No golden hashes found, skipping CI validation (run astra-research first)");
+                println!(
+                    "No golden hashes found, skipping CI validation (run astra-research first)"
+                );
                 return;
             }
         };
         let golden_hashes: BTreeMap<String, String> = serde_json::from_str(&golden_json).unwrap();
 
         let datasets = vec![
-            ("flash_crash_2010", flash_crash_dataset::build_flash_crash_events()),
-            ("lehman_2008", lehman_2008_dataset::build_lehman_collapse_events()),
+            (
+                "flash_crash_2010",
+                flash_crash_dataset::build_flash_crash_events(),
+            ),
+            (
+                "lehman_2008",
+                lehman_2008_dataset::build_lehman_collapse_events(),
+            ),
             ("covid_2020", covid_2020_dataset::build_covid_crash_events()),
         ];
 
         for (id, events) in datasets {
-            let expected_hash = golden_hashes.get(id).expect("Golden hash missing for dataset");
-            
+            let expected_hash = golden_hashes
+                .get(id)
+                .expect("Golden hash missing for dataset");
+
             let dataset = dataset_format::CrisisDataset {
                 header: dataset_format::DatasetHeader {
                     format_version: 1,
@@ -64,5 +74,3 @@ mod tests {
         }
     }
 }
-
-

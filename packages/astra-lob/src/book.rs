@@ -45,7 +45,8 @@ impl LimitOrderBook {
             match side {
                 OrderSide::Bid => self.bids.get(price),
                 OrderSide::Ask => self.asks.get(price),
-            }.and_then(|level| level.orders.iter().find(|o| o.order_id == order_id))
+            }
+            .and_then(|level| level.orders.iter().find(|o| o.order_id == order_id))
         })
     }
 
@@ -350,12 +351,14 @@ impl LimitOrderBook {
                 match incoming.side {
                     OrderSide::Bid => {
                         let level = self.bids.entry(incoming.price).or_default();
-                        incoming.queue_position = level.queue_state.push_back(incoming.remaining_quantity.0);
+                        incoming.queue_position =
+                            level.queue_state.push_back(incoming.remaining_quantity.0);
                         level.orders.push_back(incoming.clone());
                     }
                     OrderSide::Ask => {
                         let level = self.asks.entry(incoming.price).or_default();
-                        incoming.queue_position = level.queue_state.push_back(incoming.remaining_quantity.0);
+                        incoming.queue_position =
+                            level.queue_state.push_back(incoming.remaining_quantity.0);
                         level.orders.push_back(incoming.clone());
                     }
                 }

@@ -1,4 +1,6 @@
 use crate::analytics::{BenchmarkReport, OrderFlowAnalytics};
+use crate::execution_quality::ExecutionQualityMetrics;
+use crate::strategy_analytics::StrategyAnalyticsCollector;
 use crate::timeline::ReplayTimeline;
 use astra_core::events::{AstraEvent, EventType};
 use astra_core::journal::EventJournal;
@@ -8,8 +10,6 @@ use astra_exchange::runtime::ExchangeRuntime;
 use astra_lob::book::LimitOrderBook;
 use astra_lob::types::OrderEvent;
 use astra_stream::replay::collect_journal_files;
-use crate::execution_quality::ExecutionQualityMetrics;
-use crate::strategy_analytics::StrategyAnalyticsCollector;
 use std::path::Path;
 
 pub struct ReplayInspector {
@@ -58,7 +58,8 @@ impl ReplayInspector {
             }
             // Capture metrics
             for (&trader_id, ctx) in &self.runtime.strategy_runtime.contexts {
-                self.strategy_analytics.record_context(self.runtime.sequence_clock, trader_id, ctx);
+                self.strategy_analytics
+                    .record_context(self.runtime.sequence_clock, trader_id, ctx);
             }
         }
 
@@ -94,7 +95,10 @@ impl ReplayInspector {
         let mut venue_analytics = std::collections::BTreeMap::new();
         // Since we aren't tracking actual routing efficiency right now, we just populate the map
         for venue in self.runtime.router.venues.values() {
-            venue_analytics.insert(venue.venue_id.0, crate::analytics::VenueAnalytics::default());
+            venue_analytics.insert(
+                venue.venue_id.0,
+                crate::analytics::VenueAnalytics::default(),
+            );
         }
 
         Ok(BenchmarkReport {
@@ -289,7 +293,8 @@ impl ReplayInspector {
                             );
 
                             let snapshot = book.snapshot();
-                            let scaled_midpoint = snapshot.best_bid.unwrap_or(exec.match_price).0 + snapshot.best_ask.unwrap_or(exec.match_price).0;
+                            let scaled_midpoint = snapshot.best_bid.unwrap_or(exec.match_price).0
+                                + snapshot.best_ask.unwrap_or(exec.match_price).0;
 
                             self.execution_quality.record_fill(
                                 false,
@@ -309,7 +314,8 @@ impl ReplayInspector {
                             );
 
                             let initial_ahead = exec.queue_position.initial_ahead_quantity;
-                            self.execution_quality.record_queue_advancement(initial_ahead, exec.matched_quantity.0);
+                            self.execution_quality
+                                .record_queue_advancement(initial_ahead, exec.matched_quantity.0);
                         }
                     }
                     OrderEvent::Cancelled {
@@ -323,8 +329,12 @@ impl ReplayInspector {
 
                         self.analytics.cancel_count += 1;
                         let cancel_trace_id = self.timeline.next_trace_id();
-                        self.timeline
-                            .record_cancel(cancel_trace_id, event.sequence_id, payload.trader_id, symbol);
+                        self.timeline.record_cancel(
+                            cancel_trace_id,
+                            event.sequence_id,
+                            payload.trader_id,
+                            symbol,
+                        );
                     }
                     _ => {}
                 }

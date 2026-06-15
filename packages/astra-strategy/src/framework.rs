@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize, Default)]
 pub struct StrategyId {
@@ -81,5 +81,3 @@ impl ExecutionTrace {
         Default::default()
     }
 }
-
-

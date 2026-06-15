@@ -1,7 +1,7 @@
+use crate::lcg::DeterministicLcg;
 use crate::scenario::{ScenarioDefinition, ScenarioSeverity};
 use astra_core::events::{AstraEvent, EventType, PayloadEncoding, PayloadMetadata};
 use astra_core::serialization::serialize_canonical;
-use crate::lcg::DeterministicLcg;
 
 pub struct FundingCollapseChainScenario {
     pub seed: u64,
@@ -26,7 +26,11 @@ impl ScenarioDefinition for FundingCollapseChainScenario {
         self.activation_windows.clone()
     }
 
-    fn evaluate_sequence(&self, current_sequence: u64, _lcg: &mut DeterministicLcg) -> Vec<AstraEvent> {
+    fn evaluate_sequence(
+        &self,
+        current_sequence: u64,
+        _lcg: &mut DeterministicLcg,
+    ) -> Vec<AstraEvent> {
         let mut events = Vec::new();
         for (start, end) in &self.activation_windows {
             if current_sequence == *start {

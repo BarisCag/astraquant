@@ -4,7 +4,9 @@ use astra_audit::invariant::InvariantRegistry;
 fn test_sequence_monotonicity_pass() {
     let registry = InvariantRegistry::new();
     let sequences = vec![1, 2, 3, 4, 5];
-    assert!(registry.evaluate_sequence_monotonicity(&sequences).is_none());
+    assert!(registry
+        .evaluate_sequence_monotonicity(&sequences)
+        .is_none());
 }
 
 #[test]

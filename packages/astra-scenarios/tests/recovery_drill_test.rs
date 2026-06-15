@@ -1,9 +1,9 @@
+use astra_core::events::{AstraEvent, EventType, PayloadEncoding, PayloadMetadata};
 use astra_exchange::runtime::ExchangeRuntime;
 use astra_risk::engine::RiskEngine;
-use astra_scenarios::orchestrator::ScenarioOrchestrator;
 use astra_scenarios::library::recovery_drill::RecoveryDrillScenario;
+use astra_scenarios::orchestrator::ScenarioOrchestrator;
 use astra_scenarios::scenario::ScenarioDefinition;
-use astra_core::events::{AstraEvent, EventType, PayloadMetadata, PayloadEncoding};
 
 #[test]
 fn test_recovery_drill_execution() {
@@ -14,7 +14,11 @@ fn test_recovery_drill_execution() {
         target_venue: 1,
     };
 
-    let mut orch = ScenarioOrchestrator::new(ExchangeRuntime::new(RiskEngine::new()), "recovery_drill".to_string(), 42);
+    let mut orch = ScenarioOrchestrator::new(
+        ExchangeRuntime::new(RiskEngine::new()),
+        "recovery_drill".to_string(),
+        42,
+    );
 
     for i in 1..=20 {
         let base = AstraEvent {
@@ -28,6 +32,11 @@ fn test_recovery_drill_execution() {
     }
 
     // Verify venue 1 is Active (resumed at sequence 15)
-    let venue = orch.exchange.router.venues.get(&astra_router::venue::VenueId(1)).unwrap();
+    let venue = orch
+        .exchange
+        .router
+        .venues
+        .get(&astra_router::venue::VenueId(1))
+        .unwrap();
     assert_eq!(venue.status, astra_router::venue::VenueStatus::Active);
 }

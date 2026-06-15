@@ -29,11 +29,11 @@ pub fn build_flash_crash_events() -> Vec<AstraEvent> {
     // 1145.00 → 11_450_000
     let phase_prices: &[(u64, u64, i64, i64)] = &[
         //  (seq_start, seq_end, start_price_raw, end_price_raw)
-        (0,   199, 11_450_000, 11_420_000),  // Normal: slight drift down
-        (200, 399, 11_420_000, 11_250_000),  // Withdrawal: accelerating decline
-        (400, 599, 11_250_000, 10_560_000),  // Cascade: -7.7% nadir
-        (600, 799, 10_560_000, 11_300_000),  // Recovery: sharp rebound
-        (800, 999, 11_300_000, 11_300_000),  // Stabilisation
+        (0, 199, 11_450_000, 11_420_000), // Normal: slight drift down
+        (200, 399, 11_420_000, 11_250_000), // Withdrawal: accelerating decline
+        (400, 599, 11_250_000, 10_560_000), // Cascade: -7.7% nadir
+        (600, 799, 10_560_000, 11_300_000), // Recovery: sharp rebound
+        (800, 999, 11_300_000, 11_300_000), // Stabilisation
     ];
 
     for &(seq_start, seq_end, start_price, end_price) in phase_prices {
@@ -73,8 +73,8 @@ pub fn build_flash_crash_events() -> Vec<AstraEvent> {
             let payload = serialize_canonical(&tick).expect("tick serialization failed");
 
             events.push(AstraEvent::new(
-                seq,                                                   // timestamp_ns = logical seq
-                seq,                                                   // sequence_id
+                seq, // timestamp_ns = logical seq
+                seq, // sequence_id
                 event_type,
                 payload,
                 PayloadMetadata::new(PayloadEncoding::Bincode, 1),
@@ -90,10 +90,14 @@ fn classify_event(i: u64, phase_start: u64, phase_end: u64) -> EventType {
     let pos = i - phase_start;
 
     match phase_start {
-        0 => EventType::MarketTick,    // Normal: all market ticks
+        0 => EventType::MarketTick, // Normal: all market ticks
         200 => {
             // Withdrawal: mostly ticks, but inject limit order cancellations every 20
-            if pos % 20 == 0 { EventType::LimitOrderCancelled } else { EventType::MarketTick }
+            if pos % 20 == 0 {
+                EventType::LimitOrderCancelled
+            } else {
+                EventType::MarketTick
+            }
         }
         400 => {
             // Cascade: margin calls and risk triggers mixed with ticks
@@ -115,6 +119,6 @@ fn classify_event(i: u64, phase_start: u64, phase_end: u64) -> EventType {
                 EventType::MarketTick
             }
         }
-        _ => EventType::MarketTick,   // Stabilisation
+        _ => EventType::MarketTick, // Stabilisation
     }
 }

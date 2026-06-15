@@ -35,13 +35,23 @@ impl QueueState {
     }
 
     pub fn current_ahead_quantity(&self, position: &QueuePosition) -> u64 {
-        position.initial_ahead_quantity.saturating_sub(self.cumulative_depleted_quantity)
+        position
+            .initial_ahead_quantity
+            .saturating_sub(self.cumulative_depleted_quantity)
     }
 
-    pub fn current_behind_quantity(&self, position: &QueuePosition, remaining_order_quantity: u64) -> u64 {
+    pub fn current_behind_quantity(
+        &self,
+        position: &QueuePosition,
+        remaining_order_quantity: u64,
+    ) -> u64 {
         // Total currently resting is: cumulative_added - cumulative_depleted
-        let total_resting = self.cumulative_added_quantity.saturating_sub(self.cumulative_depleted_quantity);
+        let total_resting = self
+            .cumulative_added_quantity
+            .saturating_sub(self.cumulative_depleted_quantity);
         let ahead = self.current_ahead_quantity(position);
-        total_resting.saturating_sub(ahead).saturating_sub(remaining_order_quantity)
+        total_resting
+            .saturating_sub(ahead)
+            .saturating_sub(remaining_order_quantity)
     }
 }

@@ -7,7 +7,7 @@ pub struct ExecutionQualityMetrics {
     pub total_cancelled_quantity: u64,
 
     pub total_queue_survived_quantity: u64, // Quantity that reached front of queue and executed
-    pub total_queue_advancement: u64, // Cumulative positions advanced
+    pub total_queue_advancement: u64,       // Cumulative positions advanced
 
     // Spread Tracking (Midpoint scaled by 2 to avoid floats)
     pub total_effective_spread_x2: u64,

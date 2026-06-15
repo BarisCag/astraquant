@@ -95,7 +95,7 @@ impl PhantomRunner {
                 price_raw,
                 volume_raw,
             });
-            
+
             if !current_hashes.is_empty() {
                 let tree = MerkleTree::build(&current_hashes);
                 if let Some(root) = tree.root_hash() {

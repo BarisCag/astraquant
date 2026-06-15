@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
-use crate::observation::ObservationVector;
 use crate::action::DiscreteAction;
+use crate::observation::ObservationVector;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TrajectoryWindow {

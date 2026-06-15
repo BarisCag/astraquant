@@ -26,11 +26,17 @@ impl StrategyAgent for CancellationAgent {
     fn on_market_event(&mut self, event: &MarketEvent, _ctx: &AgentContext) -> Vec<StrategyAction> {
         let mut actions = Vec::new();
 
-        if let MarketEvent::BookUpdate { best_bid, best_ask, .. } = event {
+        if let MarketEvent::BookUpdate {
+            best_bid, best_ask, ..
+        } = event
+        {
             // Cancel oldest if we have too many
             while self.active_orders.len() >= self.max_active_orders {
                 if let Some(id) = self.active_orders.pop_front() {
-                    actions.push(StrategyAction::CancelOrder { symbol: self.symbol.clone(), order_id: id });
+                    actions.push(StrategyAction::CancelOrder {
+                        symbol: self.symbol.clone(),
+                        order_id: id,
+                    });
                 }
             }
 
@@ -46,7 +52,7 @@ impl StrategyAgent for CancellationAgent {
             let id = self.next_order_id;
             self.next_order_id += 1;
             self.active_orders.push_back(id);
-            
+
             actions.push(StrategyAction::SubmitOrder {
                 symbol: self.symbol.clone(),
                 side: OrderSide::Bid,
@@ -54,11 +60,17 @@ impl StrategyAgent for CancellationAgent {
                 quantity: Quantity::new(1),
             });
         }
-        
+
         actions
     }
 
-    fn on_fill(&mut self, _order_id: u64, _quantity: Quantity, _price: i64, _ctx: &AgentContext) -> Vec<StrategyAction> {
+    fn on_fill(
+        &mut self,
+        _order_id: u64,
+        _quantity: Quantity,
+        _price: i64,
+        _ctx: &AgentContext,
+    ) -> Vec<StrategyAction> {
         Vec::new()
     }
 
@@ -96,7 +108,7 @@ impl StrategyAgent for SweeperAgent {
             actions.push(StrategyAction::SubmitOrder {
                 symbol: self.symbol.clone(),
                 side: OrderSide::Bid,
-                price: Price::new(i64::MAX), // market order sweep
+                price: Price::new(i64::MAX),  // market order sweep
                 quantity: Quantity::new(100), // large quantity
             });
             self.last_sweep_sequence = ctx.engine_sequence_id;
@@ -104,7 +116,13 @@ impl StrategyAgent for SweeperAgent {
         actions
     }
 
-    fn on_fill(&mut self, _order_id: u64, _quantity: Quantity, _price: i64, _ctx: &AgentContext) -> Vec<StrategyAction> {
+    fn on_fill(
+        &mut self,
+        _order_id: u64,
+        _quantity: Quantity,
+        _price: i64,
+        _ctx: &AgentContext,
+    ) -> Vec<StrategyAction> {
         Vec::new()
     }
 

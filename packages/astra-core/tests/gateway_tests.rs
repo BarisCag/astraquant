@@ -40,7 +40,7 @@ fn test_gateway_journals_and_replays_kernel_state() {
             vec![7, 8, 9],
         )
         .unwrap();
-    
+
     let event = gateway.next_event().unwrap();
     kernel.apply(&event).unwrap();
 

@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum VerificationStatus {
@@ -80,7 +80,11 @@ impl SequenceIntegrityVerifier {
 pub struct DatasetParityVerifier;
 
 impl DatasetParityVerifier {
-    pub fn verify_dataset_hash(&self, expected: &[u8; 32], actual: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_dataset_hash(
+        &self,
+        expected: &[u8; 32],
+        actual: &[u8; 32],
+    ) -> VerificationStatus {
         if expected == actual {
             VerificationStatus::Passed
         } else {
@@ -93,7 +97,11 @@ impl DatasetParityVerifier {
 pub struct ObservationConsistencyVerifier;
 
 impl ObservationConsistencyVerifier {
-    pub fn verify_observations(&self, expected_hash: &[u8; 32], actual_hash: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_observations(
+        &self,
+        expected_hash: &[u8; 32],
+        actual_hash: &[u8; 32],
+    ) -> VerificationStatus {
         if expected_hash == actual_hash {
             VerificationStatus::Passed
         } else {
@@ -106,7 +114,11 @@ impl ObservationConsistencyVerifier {
 pub struct PolicyReplayParityVerifier;
 
 impl PolicyReplayParityVerifier {
-    pub fn verify_policy_actions(&self, expected_hash: &[u8; 32], actual_hash: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_policy_actions(
+        &self,
+        expected_hash: &[u8; 32],
+        actual_hash: &[u8; 32],
+    ) -> VerificationStatus {
         if expected_hash == actual_hash {
             VerificationStatus::Passed
         } else {
@@ -139,7 +151,11 @@ impl DistributedParityVerifier {
 pub struct ReplayShardVerifier;
 
 impl ReplayShardVerifier {
-    pub fn verify_shard_lineage(&self, expected_terminal: &[u8; 32], actual_terminal: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_shard_lineage(
+        &self,
+        expected_terminal: &[u8; 32],
+        actual_terminal: &[u8; 32],
+    ) -> VerificationStatus {
         if expected_terminal == actual_terminal {
             VerificationStatus::Passed
         } else {
@@ -152,7 +168,11 @@ impl ReplayShardVerifier {
 pub struct AggregatedLineageVerifier;
 
 impl AggregatedLineageVerifier {
-    pub fn verify_aggregation_chain(&self, shard_terminals: &[[u8; 32]], aggregated_hash: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_aggregation_chain(
+        &self,
+        shard_terminals: &[[u8; 32]],
+        aggregated_hash: &[u8; 32],
+    ) -> VerificationStatus {
         let mut combined = Vec::new();
         for hash in shard_terminals {
             combined.extend_from_slice(hash);
@@ -170,7 +190,11 @@ impl AggregatedLineageVerifier {
 pub struct DistributedCertificationVerifier;
 
 impl DistributedCertificationVerifier {
-    pub fn verify_cluster_certificate(&self, global_expected: &[u8; 32], global_actual: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_cluster_certificate(
+        &self,
+        global_expected: &[u8; 32],
+        global_actual: &[u8; 32],
+    ) -> VerificationStatus {
         if global_expected == global_actual {
             VerificationStatus::Passed
         } else {
@@ -185,7 +209,11 @@ impl DistributedCertificationVerifier {
 pub struct FormalReplayVerifier;
 
 impl FormalReplayVerifier {
-    pub fn verify_formal_proof(&self, expected: &[u8; 32], actual: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_formal_proof(
+        &self,
+        expected: &[u8; 32],
+        actual: &[u8; 32],
+    ) -> VerificationStatus {
         if expected == actual {
             VerificationStatus::Passed
         } else {
@@ -198,7 +226,11 @@ impl FormalReplayVerifier {
 pub struct DeterminismProofVerifier;
 
 impl DeterminismProofVerifier {
-    pub fn verify_determinism(&self, proof_hash: &[u8; 32], canonical_hash: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_determinism(
+        &self,
+        proof_hash: &[u8; 32],
+        canonical_hash: &[u8; 32],
+    ) -> VerificationStatus {
         if proof_hash == canonical_hash {
             VerificationStatus::Passed
         } else {
@@ -211,7 +243,11 @@ impl DeterminismProofVerifier {
 pub struct FormalAggregationVerifier;
 
 impl FormalAggregationVerifier {
-    pub fn verify_aggregation(&self, tree_hash: &[u8; 32], aggregated_hash: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_aggregation(
+        &self,
+        tree_hash: &[u8; 32],
+        aggregated_hash: &[u8; 32],
+    ) -> VerificationStatus {
         if tree_hash == aggregated_hash {
             VerificationStatus::Passed
         } else {
@@ -224,7 +260,11 @@ impl FormalAggregationVerifier {
 pub struct DistributedReplayProofVerifier;
 
 impl DistributedReplayProofVerifier {
-    pub fn verify_distributed_proof(&self, distributed_hash: &[u8; 32], monolithic_hash: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_distributed_proof(
+        &self,
+        distributed_hash: &[u8; 32],
+        monolithic_hash: &[u8; 32],
+    ) -> VerificationStatus {
         if distributed_hash == monolithic_hash {
             VerificationStatus::Passed
         } else {
@@ -252,7 +292,11 @@ impl CertificationInvariantVerifier {
 pub struct FederationReplayVerifier;
 
 impl FederationReplayVerifier {
-    pub fn verify_federation_parity(&self, expected: &[u8; 32], actual: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_federation_parity(
+        &self,
+        expected: &[u8; 32],
+        actual: &[u8; 32],
+    ) -> VerificationStatus {
         if expected == actual {
             VerificationStatus::Passed
         } else {
@@ -265,7 +309,11 @@ impl FederationReplayVerifier {
 pub struct CrossClusterParityVerifier;
 
 impl CrossClusterParityVerifier {
-    pub fn verify_cross_cluster_parity(&self, cluster_a: &[u8; 32], cluster_b: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_cross_cluster_parity(
+        &self,
+        cluster_a: &[u8; 32],
+        cluster_b: &[u8; 32],
+    ) -> VerificationStatus {
         if cluster_a == cluster_b {
             VerificationStatus::Passed
         } else {
@@ -291,7 +339,11 @@ impl TreatyIntegrityVerifier {
 pub struct FederatedCertificationVerifier;
 
 impl FederatedCertificationVerifier {
-    pub fn verify_certification(&self, expected_hash: &[u8; 32], actual_hash: &[u8; 32]) -> VerificationStatus {
+    pub fn verify_certification(
+        &self,
+        expected_hash: &[u8; 32],
+        actual_hash: &[u8; 32],
+    ) -> VerificationStatus {
         if expected_hash == actual_hash {
             VerificationStatus::Passed
         } else {

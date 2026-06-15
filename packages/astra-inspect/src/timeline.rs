@@ -108,7 +108,13 @@ impl ReplayTimeline {
         });
     }
 
-    pub fn record_update(&mut self, execution_trace_id: u64, sequence: u64, symbol: String, queue_depth: usize) {
+    pub fn record_update(
+        &mut self,
+        execution_trace_id: u64,
+        sequence: u64,
+        symbol: String,
+        queue_depth: usize,
+    ) {
         self.events.push(TimelineEvent::Update {
             execution_trace_id,
             sequence,
@@ -117,7 +123,13 @@ impl ReplayTimeline {
         });
     }
 
-    pub fn record_reject(&mut self, execution_trace_id: u64, sequence: u64, trader_id: u64, reason: String) {
+    pub fn record_reject(
+        &mut self,
+        execution_trace_id: u64,
+        sequence: u64,
+        trader_id: u64,
+        reason: String,
+    ) {
         self.events.push(TimelineEvent::Reject {
             execution_trace_id,
             sequence,
@@ -126,7 +138,13 @@ impl ReplayTimeline {
         });
     }
 
-    pub fn record_cancel(&mut self, execution_trace_id: u64, sequence: u64, trader_id: u64, symbol: String) {
+    pub fn record_cancel(
+        &mut self,
+        execution_trace_id: u64,
+        sequence: u64,
+        trader_id: u64,
+        symbol: String,
+    ) {
         self.events.push(TimelineEvent::Cancel {
             execution_trace_id,
             sequence,
@@ -138,23 +156,80 @@ impl ReplayTimeline {
     pub fn export_ascii_timeline(&self, out: &mut impl std::io::Write) -> std::io::Result<()> {
         for ev in &self.events {
             match ev {
-                TimelineEvent::Accepted { execution_trace_id, sequence, trader_id, symbol, side, quantity, price } => {
-                    writeln!(out, "TRACE {:<5} | SEQ {} | ACCEPT | trader={} | {} | {} {} @ {}", execution_trace_id, sequence, trader_id, symbol, side, quantity, price)?;
+                TimelineEvent::Accepted {
+                    execution_trace_id,
+                    sequence,
+                    trader_id,
+                    symbol,
+                    side,
+                    quantity,
+                    price,
+                } => {
+                    writeln!(
+                        out,
+                        "TRACE {:<5} | SEQ {} | ACCEPT | trader={} | {} | {} {} @ {}",
+                        execution_trace_id, sequence, trader_id, symbol, side, quantity, price
+                    )?;
                 }
-                TimelineEvent::Fill { execution_trace_id, sequence, maker_trader_id, taker_trader_id, symbol: _, quantity, price, liquidity_side } => {
+                TimelineEvent::Fill {
+                    execution_trace_id,
+                    sequence,
+                    maker_trader_id,
+                    taker_trader_id,
+                    symbol: _,
+                    quantity,
+                    price,
+                    liquidity_side,
+                } => {
                     if *liquidity_side == LiquiditySide::Taker {
                         // Avoid printing twice if we want a clean timeline
-                        writeln!(out, "TRACE {:<5} | SEQ {} | FILL   | maker={} taker={} qty={} px={}", execution_trace_id, sequence, maker_trader_id, taker_trader_id, quantity, price)?;
+                        writeln!(
+                            out,
+                            "TRACE {:<5} | SEQ {} | FILL   | maker={} taker={} qty={} px={}",
+                            execution_trace_id,
+                            sequence,
+                            maker_trader_id,
+                            taker_trader_id,
+                            quantity,
+                            price
+                        )?;
                     }
                 }
-                TimelineEvent::Update { execution_trace_id, sequence, symbol: _, queue_depth } => {
-                    writeln!(out, "TRACE {:<5} | SEQ {} | UPDATE | queue_depth={}", execution_trace_id, sequence, queue_depth)?;
+                TimelineEvent::Update {
+                    execution_trace_id,
+                    sequence,
+                    symbol: _,
+                    queue_depth,
+                } => {
+                    writeln!(
+                        out,
+                        "TRACE {:<5} | SEQ {} | UPDATE | queue_depth={}",
+                        execution_trace_id, sequence, queue_depth
+                    )?;
                 }
-                TimelineEvent::Reject { execution_trace_id, sequence, trader_id: _, reason } => {
-                    writeln!(out, "TRACE {:<5} | SEQ {} | REJECT | {}", execution_trace_id, sequence, reason)?;
+                TimelineEvent::Reject {
+                    execution_trace_id,
+                    sequence,
+                    trader_id: _,
+                    reason,
+                } => {
+                    writeln!(
+                        out,
+                        "TRACE {:<5} | SEQ {} | REJECT | {}",
+                        execution_trace_id, sequence, reason
+                    )?;
                 }
-                TimelineEvent::Cancel { execution_trace_id, sequence, trader_id, symbol } => {
-                    writeln!(out, "TRACE {:<5} | SEQ {} | CANCEL | trader={} | {}", execution_trace_id, sequence, trader_id, symbol)?;
+                TimelineEvent::Cancel {
+                    execution_trace_id,
+                    sequence,
+                    trader_id,
+                    symbol,
+                } => {
+                    writeln!(
+                        out,
+                        "TRACE {:<5} | SEQ {} | CANCEL | trader={} | {}",
+                        execution_trace_id, sequence, trader_id, symbol
+                    )?;
                 }
             }
         }

@@ -26,17 +26,27 @@ pub struct MarketImpactWindow {
 }
 
 impl LiquidityDepthModel {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 impl DeterministicSlippageEngine {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 impl QueuePressureTracker {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 impl SpreadEvolutionModel {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 impl MarketImpactWindow {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }

@@ -19,20 +19,32 @@ pub struct RiskLineageHash {}
 pub struct RiskStateProof {}
 
 impl RiskReplayCertification {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl ExposureParityProof {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl MarginEquivalenceProof {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl StressIntegrityCertificate {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl RiskLineageHash {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl RiskStateProof {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }

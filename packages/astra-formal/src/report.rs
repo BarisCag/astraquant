@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::invariant::InvariantProof;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct FormalVerificationReport {

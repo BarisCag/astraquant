@@ -147,7 +147,13 @@ pub struct BehavioralSeed {
 }
 
 impl BehavioralSeed {
-    pub fn new(herding: f64, loss_aversion: f64, anchoring: f64, salience: f64, seed_id: u64) -> Self {
+    pub fn new(
+        herding: f64,
+        loss_aversion: f64,
+        anchoring: f64,
+        salience: f64,
+        seed_id: u64,
+    ) -> Self {
         Self {
             herding_factor: herding,
             loss_aversion,

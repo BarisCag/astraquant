@@ -1,6 +1,12 @@
-use crate::intervention::{LiquidityInjectionFacility, EmergencyFundingWindow, CollateralReliefProgram, SettlementGuaranteeFacility, CentralBankRepoWindow};
-use crate::regulation::{CircuitBreakerRule, ShortSaleRestriction, VolatilityInterruption, VenueParticipationRule, SettlementFreezePolicy, CollateralEscalationRule};
+use crate::intervention::{
+    CentralBankRepoWindow, CollateralReliefProgram, EmergencyFundingWindow,
+    LiquidityInjectionFacility, SettlementGuaranteeFacility,
+};
 use crate::policy::PolicyAction;
+use crate::regulation::{
+    CircuitBreakerRule, CollateralEscalationRule, SettlementFreezePolicy, ShortSaleRestriction,
+    VenueParticipationRule, VolatilityInterruption,
+};
 use astra_core::events::AstraEvent;
 
 #[derive(Clone, Debug, Default)]
@@ -33,7 +39,11 @@ impl PolicyEngine {
         Self::default()
     }
 
-    pub fn evaluate_sequence(&mut self, current_sequence: u64, _metrics: &crate::systemic::SystemicPropagationMetrics) -> Vec<PolicyAction> {
+    pub fn evaluate_sequence(
+        &mut self,
+        current_sequence: u64,
+        _metrics: &crate::systemic::SystemicPropagationMetrics,
+    ) -> Vec<PolicyAction> {
         // Here we would evaluate endogenous thresholds based on metrics.
         // For now we just return an empty set.
         let actions = Vec::new();

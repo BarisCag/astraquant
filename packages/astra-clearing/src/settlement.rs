@@ -52,8 +52,17 @@ impl SettlementEngine {
         self.holiday_sequences_remaining = sequences;
     }
 
-    pub fn queue_trade(&mut self, trader_id: u64, symbol: String, quantity: u64, price: u64, is_buy: bool, current_sequence: u64) {
-        let target_sequence = current_sequence + self.default_delay_sequences + self.holiday_sequences_remaining;
+    pub fn queue_trade(
+        &mut self,
+        trader_id: u64,
+        symbol: String,
+        quantity: u64,
+        price: u64,
+        is_buy: bool,
+        current_sequence: u64,
+    ) {
+        let target_sequence =
+            current_sequence + self.default_delay_sequences + self.holiday_sequences_remaining;
         let instruction = SettlementInstruction {
             instruction_id: self.next_instruction_id,
             trader_id,
@@ -65,7 +74,10 @@ impl SettlementEngine {
             status: SettlementStatus::Pending,
         };
         self.next_instruction_id += 1;
-        self.queues.entry(target_sequence).or_default().push(instruction);
+        self.queues
+            .entry(target_sequence)
+            .or_default()
+            .push(instruction);
     }
 
     pub fn mature_obligations(&mut self, current_sequence: u64) -> Vec<NetSettlementBucket> {
@@ -73,7 +85,12 @@ impl SettlementEngine {
 
         // Extract instructions up to current_sequence
         let mut mature = Vec::new();
-        let sequences: Vec<u64> = self.queues.keys().copied().filter(|&seq| seq <= current_sequence).collect();
+        let sequences: Vec<u64> = self
+            .queues
+            .keys()
+            .copied()
+            .filter(|&seq| seq <= current_sequence)
+            .collect();
         for seq in sequences {
             if let Some(mut insts) = self.queues.remove(&seq) {
                 mature.append(&mut insts);

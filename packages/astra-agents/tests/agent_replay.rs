@@ -1,4 +1,4 @@
-use astra_agents::agent::{AgentId, AgentClass, AgentState};
+use astra_agents::agent::{AgentClass, AgentId, AgentState};
 use std::collections::BTreeMap;
 
 #[test]

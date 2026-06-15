@@ -37,14 +37,18 @@ impl SmartOrderRouter {
         if event.event_type == astra_core::events::EventType::LimitOrderCancelled {
             for venue in self.venues.values() {
                 if venue.status != crate::venue::VenueStatus::Offline {
-                    let target_sequence = self.sequence_clock + venue.latency_profile.ingress_delay_sequences;
+                    let target_sequence =
+                        self.sequence_clock + venue.latency_profile.ingress_delay_sequences;
                     let scheduled = ScheduledOrder {
                         target_sequence,
                         venue_id: venue.venue_id,
                         order_payload: event.clone(),
                         parent_order_id,
                     };
-                    self.inflight_queue.entry(target_sequence).or_default().push(scheduled);
+                    self.inflight_queue
+                        .entry(target_sequence)
+                        .or_default()
+                        .push(scheduled);
                 }
             }
             return;
@@ -53,7 +57,10 @@ impl SmartOrderRouter {
         // For new orders, find the best venue: Active, then evaluate economics.
         let mut best_venue = None;
         for venue in self.venues.values() {
-            if venue.status == crate::venue::VenueStatus::Offline || venue.status == crate::venue::VenueStatus::Paused || venue.status == crate::venue::VenueStatus::RejectOnly {
+            if venue.status == crate::venue::VenueStatus::Offline
+                || venue.status == crate::venue::VenueStatus::Paused
+                || venue.status == crate::venue::VenueStatus::RejectOnly
+            {
                 continue;
             }
             // Deterministic Failover Rule:
@@ -80,14 +87,18 @@ impl SmartOrderRouter {
 
         if let Some((_, best_id)) = best_venue {
             let venue = self.venues.get(&best_id).unwrap();
-            let target_sequence = self.sequence_clock + venue.latency_profile.ingress_delay_sequences;
+            let target_sequence =
+                self.sequence_clock + venue.latency_profile.ingress_delay_sequences;
             let scheduled = ScheduledOrder {
                 target_sequence,
                 venue_id: venue.venue_id,
                 order_payload: event,
                 parent_order_id,
             };
-            self.inflight_queue.entry(target_sequence).or_default().push(scheduled);
+            self.inflight_queue
+                .entry(target_sequence)
+                .or_default()
+                .push(scheduled);
         }
     }
 

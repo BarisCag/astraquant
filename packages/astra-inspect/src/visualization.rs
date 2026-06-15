@@ -40,7 +40,13 @@ pub fn export_csv<W: Write>(out: &mut W, timeline: &ReplayTimeline) -> std::io::
                     writeln!(
                         out,
                         "{},{},FILL,{},{},TAKER,{},{},MAKER={}",
-                        execution_trace_id, sequence, taker_trader_id, symbol, quantity, price, maker_trader_id
+                        execution_trace_id,
+                        sequence,
+                        taker_trader_id,
+                        symbol,
+                        quantity,
+                        price,
+                        maker_trader_id
                     )?;
                 }
             }
@@ -50,7 +56,11 @@ pub fn export_csv<W: Write>(out: &mut W, timeline: &ReplayTimeline) -> std::io::
                 symbol,
                 queue_depth,
             } => {
-                writeln!(out, "{},{},UPDATE,,{},,{},,", execution_trace_id, sequence, symbol, queue_depth)?;
+                writeln!(
+                    out,
+                    "{},{},UPDATE,,{},,{},,",
+                    execution_trace_id, sequence, symbol, queue_depth
+                )?;
             }
             crate::timeline::TimelineEvent::Reject {
                 execution_trace_id,
@@ -58,7 +68,11 @@ pub fn export_csv<W: Write>(out: &mut W, timeline: &ReplayTimeline) -> std::io::
                 trader_id,
                 reason,
             } => {
-                writeln!(out, "{},{},REJECT,{},,,,,{}", execution_trace_id, sequence, trader_id, reason)?;
+                writeln!(
+                    out,
+                    "{},{},REJECT,{},,,,,{}",
+                    execution_trace_id, sequence, trader_id, reason
+                )?;
             }
             crate::timeline::TimelineEvent::Cancel {
                 execution_trace_id,
@@ -66,7 +80,11 @@ pub fn export_csv<W: Write>(out: &mut W, timeline: &ReplayTimeline) -> std::io::
                 trader_id,
                 symbol,
             } => {
-                writeln!(out, "{},{},CANCEL,{},{},,,,", execution_trace_id, sequence, trader_id, symbol)?;
+                writeln!(
+                    out,
+                    "{},{},CANCEL,{},{},,,,",
+                    execution_trace_id, sequence, trader_id, symbol
+                )?;
             }
         }
     }
@@ -142,7 +160,7 @@ pub fn export_mermaid_routing_trace<W: Write>(
     writeln!(out, "    participant Venue1")?;
     writeln!(out, "    participant Venue2")?;
     writeln!(out, "    participant Venue3")?;
-    
+
     for ev in &timeline.events {
         if let crate::timeline::TimelineEvent::Reject { reason, .. } = ev {
             if reason.starts_with("Venue Offline") {
@@ -165,10 +183,17 @@ pub fn export_ascii_lob<W: Write>(out: &mut W, book: &LimitOrderBook) -> std::io
             .sum::<u64>();
         let mut queue_str = String::new();
         for order in &level.orders {
-            queue_str.push_str(&format!("[T{}:{}] ", order.trader_id, order.remaining_quantity.0));
+            queue_str.push_str(&format!(
+                "[T{}:{}] ",
+                order.trader_id, order.remaining_quantity.0
+            ));
         }
         let hashes = "#".repeat(std::cmp::min(total_quantity, 10) as usize);
-        writeln!(out, "{} | {}({}) | Q: {}", price.0, hashes, total_quantity, queue_str)?;
+        writeln!(
+            out,
+            "{} | {}({}) | Q: {}",
+            price.0, hashes, total_quantity, queue_str
+        )?;
     }
 
     let best_ask = book.asks.keys().next();
@@ -190,20 +215,34 @@ pub fn export_ascii_lob<W: Write>(out: &mut W, book: &LimitOrderBook) -> std::io
             .sum::<u64>();
         let mut queue_str = String::new();
         for order in &level.orders {
-            queue_str.push_str(&format!("[T{}:{}] ", order.trader_id, order.remaining_quantity.0));
+            queue_str.push_str(&format!(
+                "[T{}:{}] ",
+                order.trader_id, order.remaining_quantity.0
+            ));
         }
         let hashes = "#".repeat(std::cmp::min(total_quantity, 10) as usize);
-        writeln!(out, "{} | {}({}) | Q: {}", price.0, hashes, total_quantity, queue_str)?;
+        writeln!(
+            out,
+            "{} | {}({}) | Q: {}",
+            price.0, hashes, total_quantity, queue_str
+        )?;
     }
     writeln!(out, "BIDS")?;
     Ok(())
 }
 
-pub fn export_multi_venue_ascii_lob<W: Write>(out: &mut W, venues: &std::collections::BTreeMap<astra_router::venue::VenueId, astra_router::venue::VenueState>, symbol: &str) -> std::io::Result<()> {
+pub fn export_multi_venue_ascii_lob<W: Write>(
+    out: &mut W,
+    venues: &std::collections::BTreeMap<
+        astra_router::venue::VenueId,
+        astra_router::venue::VenueState,
+    >,
+    symbol: &str,
+) -> std::io::Result<()> {
     writeln!(out, "==============================================")?;
     writeln!(out, "   MULTI-VENUE LIQUIDITY HEATMAP: {}", symbol)?;
     writeln!(out, "==============================================")?;
-    
+
     for venue in venues.values() {
         writeln!(out, "\nVENUE ID: {}", venue.venue_id.0)?;
         if let Some(book) = venue.books.get(symbol) {
@@ -222,18 +261,50 @@ pub fn export_mermaid_queue_evolution<W: Write>(
     writeln!(out, "sequenceDiagram")?;
     writeln!(out, "    participant Market")?;
     writeln!(out, "    participant Queue")?;
-    
+
     for ev in &timeline.events {
         match ev {
-            crate::timeline::TimelineEvent::Accepted { execution_trace_id, quantity, price, side, .. } => {
-                writeln!(out, "    Market->>Queue: T{} {} {} @ {}", execution_trace_id, side, quantity, price)?;
+            crate::timeline::TimelineEvent::Accepted {
+                execution_trace_id,
+                quantity,
+                price,
+                side,
+                ..
+            } => {
+                writeln!(
+                    out,
+                    "    Market->>Queue: T{} {} {} @ {}",
+                    execution_trace_id, side, quantity, price
+                )?;
             }
-            crate::timeline::TimelineEvent::Fill { execution_trace_id, quantity, price, liquidity_side, .. } => {
-                let liq = if *liquidity_side == astra_lob::types::LiquiditySide::Maker { "Maker" } else { "Taker" };
-                writeln!(out, "    Queue->>Market: T{} Filled {} @ {} ({})", execution_trace_id, quantity, price, liq)?;
+            crate::timeline::TimelineEvent::Fill {
+                execution_trace_id,
+                quantity,
+                price,
+                liquidity_side,
+                ..
+            } => {
+                let liq = if *liquidity_side == astra_lob::types::LiquiditySide::Maker {
+                    "Maker"
+                } else {
+                    "Taker"
+                };
+                writeln!(
+                    out,
+                    "    Queue->>Market: T{} Filled {} @ {} ({})",
+                    execution_trace_id, quantity, price, liq
+                )?;
             }
-            crate::timeline::TimelineEvent::Cancel { execution_trace_id, symbol, .. } => {
-                writeln!(out, "    Queue->>Market: T{} Cancelled ({})", execution_trace_id, symbol)?;
+            crate::timeline::TimelineEvent::Cancel {
+                execution_trace_id,
+                symbol,
+                ..
+            } => {
+                writeln!(
+                    out,
+                    "    Queue->>Market: T{} Cancelled ({})",
+                    execution_trace_id, symbol
+                )?;
             }
             _ => {}
         }
@@ -277,7 +348,10 @@ pub fn export_strategy_analytics_json<W: Write>(
 }
 
 pub fn export_liquidation_cascade_timeline<W: Write>(out: &mut W) -> std::io::Result<()> {
-    writeln!(out, "graph TD\n    A[Margin Breach] --> B[Forced Liquidation]")
+    writeln!(
+        out,
+        "graph TD\n    A[Margin Breach] --> B[Forced Liquidation]"
+    )
 }
 
 pub fn export_venue_failure_topology_map<W: Write>(out: &mut W) -> std::io::Result<()> {
@@ -293,11 +367,17 @@ pub fn export_funding_imbalance_diagram<W: Write>(out: &mut W) -> std::io::Resul
 }
 
 pub fn export_operational_intervention_timeline<W: Write>(out: &mut W) -> std::io::Result<()> {
-    writeln!(out, "graph TD\n    A[Intervention Start] --> B[Venue Paused]")
+    writeln!(
+        out,
+        "graph TD\n    A[Intervention Start] --> B[Venue Paused]"
+    )
 }
 
 pub fn export_replay_divergence_map<W: Write>(out: &mut W) -> std::io::Result<()> {
-    writeln!(out, "graph TD\n    A[Checkpoint Match] --> B[Divergence Detected]")
+    writeln!(
+        out,
+        "graph TD\n    A[Checkpoint Match] --> B[Divergence Detected]"
+    )
 }
 
 pub fn export_recovery_topology_graph<W: Write>(out: &mut W) -> std::io::Result<()> {
@@ -349,16 +429,28 @@ pub fn export_replay_lineage_tree<W: Write>(out: &mut W) -> std::io::Result<()> 
 
 pub fn export_invariant_violation_map<W: Write>(out: &mut W) -> std::io::Result<()> {
     writeln!(out, "graph LR")?;
-    writeln!(out, "    SEQ_MON[\"Sequence Monotonicity\"] -->|PASS| OK1((✓))")?;
-    writeln!(out, "    JOURNAL[\"Journal Continuity\"] -->|PASS| OK2((✓))")?;
+    writeln!(
+        out,
+        "    SEQ_MON[\"Sequence Monotonicity\"] -->|PASS| OK1((✓))"
+    )?;
+    writeln!(
+        out,
+        "    JOURNAL[\"Journal Continuity\"] -->|PASS| OK2((✓))"
+    )?;
     writeln!(out, "    REPLAY[\"Replay Parity\"] -->|PASS| OK3((✓))")?;
-    writeln!(out, "    LIQUIDITY[\"Liquidity Conservation\"] -->|FAIL| FAIL1((✗))")?;
+    writeln!(
+        out,
+        "    LIQUIDITY[\"Liquidity Conservation\"] -->|FAIL| FAIL1((✗))"
+    )?;
     writeln!(out, "    style FAIL1 fill:#c53030,color:#fff")
 }
 
 pub fn export_replay_divergence_topology<W: Write>(out: &mut W) -> std::io::Result<()> {
     writeln!(out, "graph TD")?;
-    writeln!(out, "    COMMON[\"Common Ancestor\"] --> LEFT[\"Left Branch\"]")?;
+    writeln!(
+        out,
+        "    COMMON[\"Common Ancestor\"] --> LEFT[\"Left Branch\"]"
+    )?;
     writeln!(out, "    COMMON --> RIGHT[\"Right Branch\"]")?;
     writeln!(out, "    LEFT --> L_TERM[\"Left Terminal\"]")?;
     writeln!(out, "    RIGHT --> R_TERM[\"Right Terminal\"]")?;
@@ -367,7 +459,10 @@ pub fn export_replay_divergence_topology<W: Write>(out: &mut W) -> std::io::Resu
 
 pub fn export_certification_ancestry_diagram<W: Write>(out: &mut W) -> std::io::Result<()> {
     writeln!(out, "graph BT")?;
-    writeln!(out, "    CERT[\"Terminal Certificate\"] --> PROOF[\"Parity Proof\"]")?;
+    writeln!(
+        out,
+        "    CERT[\"Terminal Certificate\"] --> PROOF[\"Parity Proof\"]"
+    )?;
     writeln!(out, "    PROOF --> LINEAGE[\"Lineage Tree\"]")?;
     writeln!(out, "    LINEAGE --> MANIFEST[\"Benchmark Manifest\"]")?;
     writeln!(out, "    style CERT fill:#2f855a,color:#e2e8f0")
@@ -375,7 +470,10 @@ pub fn export_certification_ancestry_diagram<W: Write>(out: &mut W) -> std::io::
 
 pub fn export_benchmark_trust_graph<W: Write>(out: &mut W) -> std::io::Result<()> {
     writeln!(out, "graph LR")?;
-    writeln!(out, "    REPLAY[\"Replay Integrity\"] --> TRUST[\"Overall Trust\"]")?;
+    writeln!(
+        out,
+        "    REPLAY[\"Replay Integrity\"] --> TRUST[\"Overall Trust\"]"
+    )?;
     writeln!(out, "    LINEAGE[\"Lineage Consistency\"] --> TRUST")?;
     writeln!(out, "    INVARIANT[\"Invariant Compliance\"] --> TRUST")?;
     writeln!(out, "    BENCHMARK[\"Benchmark Integrity\"] --> TRUST")?;
@@ -386,7 +484,10 @@ pub fn export_benchmark_trust_graph<W: Write>(out: &mut W) -> std::io::Result<()
 
 pub fn export_agent_topology_graph<W: Write>(out: &mut W) -> std::io::Result<()> {
     writeln!(out, "graph TD")?;
-    writeln!(out, "    MM[Market Maker] -->|Provides| VENUE[Exchange Venue]")?;
+    writeln!(
+        out,
+        "    MM[Market Maker] -->|Provides| VENUE[Exchange Venue]"
+    )?;
     writeln!(out, "    ARB[Arbitrageur] -->|Balances| VENUE")?;
     writeln!(out, "    LIQ[Panic Liquidator] -->|Drains| VENUE")?;
     writeln!(out, "    style VENUE fill:#2b6cb0,color:#fff")
@@ -519,13 +620,19 @@ pub fn export_distributed_equivalence_graph<W: Write>(out: &mut W) -> std::io::R
 
 pub fn export_federation_topology_graph<W: Write>(out: &mut W) -> std::io::Result<()> {
     writeln!(out, "graph TD")?;
-    writeln!(out, "    F1[Federation Cluster 1] <--> F2[Federation Cluster 2]")?;
+    writeln!(
+        out,
+        "    F1[Federation Cluster 1] <--> F2[Federation Cluster 2]"
+    )?;
     writeln!(out, "    style F1 fill:#2c5282,color:#fff")
 }
 
 pub fn export_cross_cluster_lineage_bridge<W: Write>(out: &mut W) -> std::io::Result<()> {
     writeln!(out, "graph LR")?;
-    writeln!(out, "    C1[Cluster 1 Lineage] -->|Bridge| C2[Cluster 2 Lineage]")?;
+    writeln!(
+        out,
+        "    C1[Cluster 1 Lineage] -->|Bridge| C2[Cluster 2 Lineage]"
+    )?;
     writeln!(out, "    style C2 fill:#276749,color:#fff")
 }
 

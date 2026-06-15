@@ -215,7 +215,7 @@ fn test_three_run_parity() {
     use astra_core::types::{Money, Quantity};
 
     let limits = create_default_risk_engine(Money::new(10_000_000), Quantity::new(1_000));
-    
+
     let mut kernel1 = AstraKernel::new(StrategyRuntime::new(ExchangeRuntime::new(limits.clone())));
     let mut kernel2 = AstraKernel::new(StrategyRuntime::new(ExchangeRuntime::new(limits.clone())));
     let mut kernel3 = AstraKernel::new(StrategyRuntime::new(ExchangeRuntime::new(limits)));

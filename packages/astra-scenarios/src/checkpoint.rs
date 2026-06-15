@@ -1,7 +1,7 @@
-use serde::{Deserialize, Serialize};
-use astra_exchange::state::ExchangeStateHash;
 use crate::scenario::ScenarioRuntime;
+use astra_exchange::state::ExchangeStateHash;
 use bincode::Options;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ScenarioCheckpoint {

@@ -38,7 +38,7 @@ impl EventReducer for AstraKernel {
     type Error = String;
     fn apply(&mut self, event: &AstraEvent) -> Result<(), Self::Error> {
         let pre_state = self.state_hash();
-        
+
         self.sequence_id = event.sequence_id;
         let result = self.strategy_runtime.apply(event);
         if result.is_err() {
@@ -49,10 +49,10 @@ impl EventReducer for AstraKernel {
                 self.yield_to_rl = true;
             }
         }
-        
+
         let post_state = self.state_hash();
         self.last_proof = Some(StateTransitionProof::generate(pre_state, event, post_state));
-        
+
         result
     }
     fn last_applied_sequence_id(&self) -> Option<u64> {
@@ -69,5 +69,3 @@ impl DeterministicState for AstraKernel {
         hash_bytes(&bytes)
     }
 }
-
-

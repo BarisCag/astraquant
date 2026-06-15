@@ -22,23 +22,37 @@ pub struct InventoryRiskSurface {}
 pub struct ExposureLineageTrace {}
 
 impl ExposureWindow {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl PortfolioExposureProfile {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl VenueExposureBoundary {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl AssetConcentrationMap {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl CounterpartyExposureTrace {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl InventoryRiskSurface {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl ExposureLineageTrace {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }

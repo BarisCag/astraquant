@@ -21,14 +21,22 @@ pub struct ReplayMemoryProfile {
 }
 
 impl ReplayThroughputReport {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 impl QueuePressureBenchmark {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 impl DeterministicPerfWindow {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 impl ReplayMemoryProfile {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }

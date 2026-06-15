@@ -199,8 +199,11 @@ impl BehavioralCounterfactualEngine {
         intervention_seq: u64,
         seed: astra_core::events::BehavioralSeed,
     ) -> CounterfactualDelta {
-        use astra_agents::behavioral::{BehavioralAgentEnvironment, evaluate_herding, evaluate_prospect, evaluate_anchor, evaluate_salience, evaluate_liquidity_withdrawal};
-        
+        use astra_agents::behavioral::{
+            evaluate_anchor, evaluate_herding, evaluate_liquidity_withdrawal, evaluate_prospect,
+            evaluate_salience, BehavioralAgentEnvironment,
+        };
+
         let mut int_kernel = make_kernel();
         let mut int_nadir: i64 = i64::MAX;
         let mut cascade_prevented: u64 = 0;
@@ -216,8 +219,12 @@ impl BehavioralCounterfactualEngine {
         let initial_price = if let Some(first) = dataset.events.first() {
             if let Ok(tick) = deserialize_canonical::<MarketTick>(&first.payload) {
                 tick.bid_price.0
-            } else { 10000_0000 }
-        } else { 10000_0000 };
+            } else {
+                10000_0000
+            }
+        } else {
+            10000_0000
+        };
 
         let mut env = BehavioralAgentEnvironment::new(seed, initial_price);
 
@@ -265,7 +272,7 @@ impl BehavioralCounterfactualEngine {
 
             if !skip_event {
                 let _ = int_kernel.apply(event);
-                
+
                 // --- Behavioral Ecology Impact ---
                 env.update_market(current_price);
                 let i1 = evaluate_herding(&mut env);
@@ -274,7 +281,8 @@ impl BehavioralCounterfactualEngine {
                 let i4 = evaluate_salience(&mut env);
                 let i5 = evaluate_liquidity_withdrawal(&mut env);
 
-                let total_sell_intent = [i1, i2, i3, i4, i5].iter()
+                let total_sell_intent = [i1, i2, i3, i4, i5]
+                    .iter()
                     .flat_map(|d| d.intents.iter())
                     .filter(|i| i.intent_type == "SELL")
                     .map(|i| i.size)

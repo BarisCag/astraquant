@@ -66,7 +66,7 @@ pub struct BenchmarkReport {
     pub recovery_efficiency_score_ppm: u64,
     pub replay_integrity_score_ppm: u64,
     pub operational_stability_score_ppm: u64,
-    
+
     // Experiment Level Metrics
     pub experiment_replay_integrity_ppm: u64,
     pub systemic_variance_score_ppm: u64,

@@ -22,7 +22,7 @@ pub fn build_lehman_collapse_events() -> Vec<AstraEvent> {
     // Price control points (in raw Price units: dollar * 10_000)
     let phase_prices: &[(u64, u64, i64, i64)] = &[
         //  (seq_start, seq_end, start_price_raw, end_price_raw)
-        (0,   299, 12_500_000, 12_200_000),  // Credit freeze
+        (0, 299, 12_500_000, 12_200_000),    // Credit freeze
         (300, 599, 12_200_000, 11_500_000),  // Bank contagion
         (600, 899, 11_500_000, 10_500_000),  // Liquidity collapse
         (900, 1199, 10_500_000, 11_000_000), // Fed intervention
@@ -80,18 +80,31 @@ fn classify_event(i: u64, phase_start: u64, _phase_end: u64) -> EventType {
     match phase_start {
         0 => EventType::MarketTick,
         300 => {
-            if pos % 50 == 0 { EventType::InvariantViolationDetected } // Re-using as Contagion
-            else { EventType::MarketTick }
+            if pos % 50 == 0 {
+                EventType::InvariantViolationDetected
+            }
+            // Re-using as Contagion
+            else {
+                EventType::MarketTick
+            }
         }
         600 => {
-            if pos % 40 == 0 { EventType::LiquidationExecuted }
-            else if pos % 20 == 0 { EventType::SettlementFailed }
-            else { EventType::MarketTick }
+            if pos % 40 == 0 {
+                EventType::LiquidationExecuted
+            } else if pos % 20 == 0 {
+                EventType::SettlementFailed
+            } else {
+                EventType::MarketTick
+            }
         }
         900 => {
-            if pos == 0 { EventType::LiquidityFacilityActivated }
-            else if pos % 50 == 0 { EventType::PolicyAction }
-            else { EventType::MarketTick }
+            if pos == 0 {
+                EventType::LiquidityFacilityActivated
+            } else if pos % 50 == 0 {
+                EventType::PolicyAction
+            } else {
+                EventType::MarketTick
+            }
         }
         _ => EventType::MarketTick,
     }

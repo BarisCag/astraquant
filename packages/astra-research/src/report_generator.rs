@@ -18,8 +18,16 @@ pub fn generate_crisis_report(
     replay_verified: bool,
     dataset_integrity: bool,
 ) -> String {
-    let dataset_status = if dataset_integrity { "✅ VERIFIED (Blake3)" } else { "❌ FAILED" };
-    let replay_status = if replay_verified { "✅ VERIFIED (3× identical hashes)" } else { "❌ DIVERGED" };
+    let dataset_status = if dataset_integrity {
+        "✅ VERIFIED (Blake3)"
+    } else {
+        "❌ FAILED"
+    };
+    let replay_status = if replay_verified {
+        "✅ VERIFIED (3× identical hashes)"
+    } else {
+        "❌ DIVERGED"
+    };
 
     let baseline_nadir = raw_to_price(deltas[0].baseline_price_nadir_raw);
     let baseline_hash = &deltas[0].baseline_hash;
@@ -45,7 +53,7 @@ pub fn generate_crisis_report(
     for delta in deltas {
         let int_nadir = raw_to_price(delta.intervention_price_nadir_raw);
         let avoided = (int_nadir - baseline_nadir).max(0.0);
-        
+
         report.push_str(&format!(
             "## Counterfactual: {}\n\
              \n\

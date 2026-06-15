@@ -12,7 +12,10 @@ pub struct ExecutionGateway {
 
 impl ExecutionGateway {
     pub fn new(journal: EventJournal) -> Self {
-        Self { journal, queue: VecDeque::new() }
+        Self {
+            journal,
+            queue: VecDeque::new(),
+        }
     }
 
     /// Ingests an external payload, stamping it with the current wall-clock time.
@@ -102,4 +105,3 @@ mod tests {
         let _ = std::fs::remove_dir_all(&dir);
     }
 }
-

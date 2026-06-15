@@ -20,7 +20,7 @@ fn test_experiment_comparison_identical() {
     };
 
     let run_b = run_a.clone();
-    
+
     let diff = ExperimentComparison::compare(&run_a, &run_b);
     assert_eq!(diff.event_divergence_count, 0);
     assert_eq!(diff.sequence_divergence, 0);
@@ -46,7 +46,7 @@ fn test_experiment_comparison_divergent() {
 
     let mut run_b = run_a.clone();
     run_b.final_state_hash = "hash_42_diff".to_string();
-    
+
     let diff = ExperimentComparison::compare(&run_a, &run_b);
     assert_eq!(diff.event_divergence_count, 1);
     assert_eq!(diff.sequence_divergence, 1);

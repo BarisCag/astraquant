@@ -1,9 +1,5 @@
-use axum::{
-    routing::get,
-    Router,
-    response::Json,
-};
-use serde_json::{Value, json};
+use axum::{response::Json, routing::get, Router};
+use serde_json::{json, Value};
 use std::fs;
 use std::net::SocketAddr;
 
@@ -18,7 +14,7 @@ async fn main() {
     let port = std::env::var("ASTRA_HTTP_PORT").unwrap_or_else(|_| "8080".to_string());
     let addr: SocketAddr = format!("0.0.0.0:{}", port).parse().unwrap();
     println!("Astra Research API listening on {}", addr);
-    
+
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }

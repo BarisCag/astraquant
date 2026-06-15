@@ -544,7 +544,7 @@ fn test_mid_write_crash_recovery() {
     let jl_path = temp_path("ph2_mid_write_crash.astra_jl");
     cleanup(&jl_path);
     let mut journal = EventJournal::create(&jl_path, 0).unwrap();
-    
+
     // Step 1: Write 50 events
     for i in 1..=50u64 {
         let event = AstraEvent::new_raw(
@@ -555,7 +555,7 @@ fn test_mid_write_crash_recovery() {
         );
         journal.append(&event).unwrap();
     }
-    
+
     // Calculate expected state for 49 events
     let mut clean_49_reducer = CounterReducer::new();
     let mut count = 0;
@@ -563,7 +563,9 @@ fn test_mid_write_crash_recovery() {
         if let Ok(e) = event_res {
             clean_49_reducer.apply(&e).unwrap();
             count += 1;
-            if count == 49 { break; }
+            if count == 49 {
+                break;
+            }
         } else {
             break;
         }
@@ -579,13 +581,19 @@ fn test_mid_write_crash_recovery() {
     // Step 3: Replay
     let mut reducer = CounterReducer::new();
     let result = ReplayEngine::replay_journal(&EventJournal::open(&jl_path).unwrap(), &mut reducer);
-    
+
     // Step 4 & 5
-    assert!(result.is_ok() || result.is_err(), "Should either recover cleanly by ignoring corrupt record or return an Error without panic");
-    
+    assert!(
+        result.is_ok() || result.is_err(),
+        "Should either recover cleanly by ignoring corrupt record or return an Error without panic"
+    );
+
     let crash_hash = reducer.state_hash();
-    
-    assert_eq!(crash_hash, clean_49_hash, "Replay did not correctly reconstruct 49 events");
+
+    assert_eq!(
+        crash_hash, clean_49_hash,
+        "Replay did not correctly reconstruct 49 events"
+    );
 
     cleanup(&jl_path);
 }

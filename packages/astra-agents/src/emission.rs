@@ -1,5 +1,5 @@
 use crate::agent::AgentIntent;
-use astra_core::events::{AstraEvent, EventType, PayloadMetadata, PayloadEncoding};
+use astra_core::events::{AstraEvent, EventType, PayloadEncoding, PayloadMetadata};
 
 pub struct IntentEmitter;
 
@@ -10,9 +10,9 @@ impl IntentEmitter {
             payload: bincode::serialize(intent).unwrap_or_default(),
             timestamp_ns: 0,
             sequence_id,
-            payload_metadata: PayloadMetadata { 
-                encoding: PayloadEncoding::Bincode, 
-                schema_version: 1 
+            payload_metadata: PayloadMetadata {
+                encoding: PayloadEncoding::Bincode,
+                schema_version: 1,
             },
         }
     }

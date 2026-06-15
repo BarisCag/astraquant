@@ -59,7 +59,7 @@ impl VenueState {
         hasher.update(&self.latency_profile.ingress_delay_sequences.to_le_bytes());
         hasher.update(&self.venue_sequence_id.to_le_bytes());
         hasher.update(&[self.status as u8]);
-        
+
         for (symbol, book) in &self.books {
             hasher.update(symbol.as_bytes());
             let book_bytes = bincode::options()
@@ -71,7 +71,7 @@ impl VenueState {
             h.update(&book_bytes);
             hasher.update(h.finalize().as_bytes());
         }
-        
+
         *hasher.finalize().as_bytes()
     }
 }

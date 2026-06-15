@@ -21,14 +21,22 @@ pub struct DeterministicLatencyInjector {
 }
 
 impl LatencyEnvelope {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 impl VenueLatencyProfile {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 impl ExecutionDelayWindow {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }
 impl DeterministicLatencyInjector {
-    pub fn new() -> Self { Default::default() }
+    pub fn new() -> Self {
+        Default::default()
+    }
 }

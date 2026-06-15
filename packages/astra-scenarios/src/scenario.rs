@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use astra_core::events::AstraEvent;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub struct ExperimentParameterSet {
@@ -38,13 +38,17 @@ pub trait ScenarioDefinition {
     fn get_seed(&self) -> u64;
     fn get_severity(&self) -> ScenarioSeverity;
     fn get_activation_windows(&self) -> Vec<(u64, u64)>; // start_seq, end_seq
-    
+
     fn apply_parameters(&mut self, params: &ExperimentParameterSet) {
         let _ = params;
     }
 
     /// Given the current sequence and LCG state, potentially generate injected events
-    fn evaluate_sequence(&self, current_sequence: u64, lcg: &mut crate::lcg::DeterministicLcg) -> Vec<AstraEvent>;
+    fn evaluate_sequence(
+        &self,
+        current_sequence: u64,
+        lcg: &mut crate::lcg::DeterministicLcg,
+    ) -> Vec<AstraEvent>;
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

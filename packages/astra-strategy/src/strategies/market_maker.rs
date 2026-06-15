@@ -17,7 +17,13 @@ pub struct PassiveMarketMaker {
 }
 
 impl PassiveMarketMaker {
-    pub fn new(symbol: String, half_spread_ticks: i64, order_qty: u64, max_inventory: i64, skew_ticks_per_lot: i64) -> Self {
+    pub fn new(
+        symbol: String,
+        half_spread_ticks: i64,
+        order_qty: u64,
+        max_inventory: i64,
+        skew_ticks_per_lot: i64,
+    ) -> Self {
         Self {
             symbol,
             half_spread_ticks,
@@ -37,13 +43,16 @@ impl StrategyAgent for PassiveMarketMaker {
     fn on_market_event(&mut self, event: &MarketEvent, ctx: &AgentContext) -> Vec<StrategyAction> {
         let mut actions = Vec::new();
 
-        if let MarketEvent::BookUpdate { best_bid, best_ask, .. } = event {
+        if let MarketEvent::BookUpdate {
+            best_bid, best_ask, ..
+        } = event
+        {
             if let (Some(bid), Some(ask)) = (best_bid, best_ask) {
                 let scaled_midpoint = bid.0 + ask.0;
                 let mid = scaled_midpoint / 2;
-                
+
                 let skew = ctx.inventory * self.skew_ticks_per_lot;
-                
+
                 let target_bid = mid - self.half_spread_ticks - skew;
                 let target_ask = mid + self.half_spread_ticks - skew;
 
@@ -59,7 +68,10 @@ impl StrategyAgent for PassiveMarketMaker {
 
                 if need_requote_bid {
                     if let Some(id) = self.bid_order_id {
-                        actions.push(StrategyAction::CancelOrder { symbol: self.symbol.clone(), order_id: id });
+                        actions.push(StrategyAction::CancelOrder {
+                            symbol: self.symbol.clone(),
+                            order_id: id,
+                        });
                         self.bid_order_id = None;
                         self.current_bid_price = None;
                     }
@@ -79,7 +91,10 @@ impl StrategyAgent for PassiveMarketMaker {
 
                 if need_requote_ask {
                     if let Some(id) = self.ask_order_id {
-                        actions.push(StrategyAction::CancelOrder { symbol: self.symbol.clone(), order_id: id });
+                        actions.push(StrategyAction::CancelOrder {
+                            symbol: self.symbol.clone(),
+                            order_id: id,
+                        });
                         self.ask_order_id = None;
                         self.current_ask_price = None;
                     }
@@ -101,7 +116,13 @@ impl StrategyAgent for PassiveMarketMaker {
         actions
     }
 
-    fn on_fill(&mut self, _order_id: u64, _quantity: Quantity, _price: i64, _ctx: &AgentContext) -> Vec<StrategyAction> {
+    fn on_fill(
+        &mut self,
+        _order_id: u64,
+        _quantity: Quantity,
+        _price: i64,
+        _ctx: &AgentContext,
+    ) -> Vec<StrategyAction> {
         // We will just requote on next book update
         Vec::new()
     }

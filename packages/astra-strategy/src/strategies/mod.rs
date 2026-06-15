@@ -1,3 +1,3 @@
-pub mod market_maker;
-pub mod execution;
 pub mod adversarial;
+pub mod execution;
+pub mod market_maker;

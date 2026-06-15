@@ -22,23 +22,37 @@ pub struct VenueFailurePropagation {}
 pub struct StressReplayVerifier {}
 
 impl StressScenario {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl SystemicStressPropagation {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl LiquidityShockBoundary {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl VolatilityStressWindow {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl CascadingLiquidationTrace {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl VenueFailurePropagation {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl StressReplayVerifier {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }

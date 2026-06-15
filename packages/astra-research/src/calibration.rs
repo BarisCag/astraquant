@@ -2,14 +2,14 @@
 //!
 //! Sweeps behavioral parameters to best fit historical cascade depth.
 
-use astra_core::events::BehavioralSeed;
-use astra_agents::behavioral::{
-    BehavioralAgentEnvironment, evaluate_anchor, evaluate_herding,
-    evaluate_liquidity_withdrawal, evaluate_prospect, evaluate_salience,
-};
 use crate::dataset_format::CrisisDataset;
-use astra_core::serialization::deserialize_canonical;
+use astra_agents::behavioral::{
+    evaluate_anchor, evaluate_herding, evaluate_liquidity_withdrawal, evaluate_prospect,
+    evaluate_salience, BehavioralAgentEnvironment,
+};
+use astra_core::events::BehavioralSeed;
 use astra_core::marketdata::MarketTick;
+use astra_core::serialization::deserialize_canonical;
 use serde::Serialize;
 use std::fs;
 
@@ -53,16 +53,17 @@ impl CalibrationEngine {
                     if let Ok(tick) = deserialize_canonical::<MarketTick>(&event.payload) {
                         current_price = tick.bid_price.0;
                     }
-                    
+
                     env.update_market(current_price);
-                    
+
                     let i1 = evaluate_herding(&mut env);
                     let i2 = evaluate_prospect(&mut env);
                     let i3 = evaluate_anchor(&mut env);
                     let i4 = evaluate_salience(&mut env);
                     let i5 = evaluate_liquidity_withdrawal(&mut env);
 
-                    let total_sell_intent = [i1, i2, i3, i4, i5].iter()
+                    let total_sell_intent = [i1, i2, i3, i4, i5]
+                        .iter()
                         .flat_map(|d| d.intents.iter())
                         .filter(|i| i.intent_type == "SELL")
                         .map(|i| i.size)
@@ -79,7 +80,7 @@ impl CalibrationEngine {
 
                 let depth_error = (sim_nadir - historical_nadir).abs() as f64;
                 let depth_error_pct = depth_error / (initial_price as f64) * 100.0;
-                
+
                 if depth_error < best_result.fit_score {
                     best_result.fit_score = depth_error;
                     best_result.best_herding_factor = herding;

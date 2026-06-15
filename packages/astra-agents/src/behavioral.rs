@@ -2,9 +2,9 @@
 //!
 //! Defines the 5 behavioral agents that execute inside the WasmSandbox.
 
-use astra_core::sandbox::WasmSandbox;
+use crate::agent::{AgentDecision, AgentId, AgentIntent};
 use astra_core::events::BehavioralSeed;
-use crate::agent::{AgentDecision, AgentIntent, AgentId};
+use astra_core::sandbox::WasmSandbox;
 
 pub struct BehavioralAgentEnvironment {
     pub sandbox: WasmSandbox,
@@ -36,7 +36,7 @@ impl BehavioralAgentEnvironment {
         if self.price_history.len() > 10 {
             self.price_history.remove(0);
         }
-        
+
         let diff = (self.current_price - self.prev_price).abs() as f64;
         self.volatility_index = (self.volatility_index * 0.9) + (diff * 0.1);
     }
@@ -46,13 +46,14 @@ impl BehavioralAgentEnvironment {
 pub fn evaluate_herding(env: &mut BehavioralAgentEnvironment) -> AgentDecision {
     let _ = env.sandbox.gas_meter.consume(500); // Enforce WASM gas
     let mut intents = Vec::new();
-    
+
     if env.price_history.len() >= 3 {
         let recent_drop = env.prev_price - env.current_price;
         if recent_drop > 0 {
             // Price dropping, herd sells
             let strength = (recent_drop as f64 * env.seed.herding_factor).max(0.0);
-            if strength > 5000.0 { // Threshold
+            if strength > 5000.0 {
+                // Threshold
                 intents.push(AgentIntent {
                     agent_id: AgentId("Herding1".to_string()),
                     target_venue: 0,
@@ -64,14 +65,17 @@ pub fn evaluate_herding(env: &mut BehavioralAgentEnvironment) -> AgentDecision {
             }
         }
     }
-    AgentDecision { intents, transition_reason: None }
+    AgentDecision {
+        intents,
+        transition_reason: None,
+    }
 }
 
 // 2. ProspectAgent (Loss Aversion)
 pub fn evaluate_prospect(env: &mut BehavioralAgentEnvironment) -> AgentDecision {
     let _ = env.sandbox.gas_meter.consume(600); // Enforce WASM gas
     let mut intents = Vec::new();
-    
+
     let change = env.current_price - env.anchor_price;
     if change < 0 {
         // Losses hurt more (λ loss_aversion)
@@ -87,19 +91,26 @@ pub fn evaluate_prospect(env: &mut BehavioralAgentEnvironment) -> AgentDecision 
             });
         }
     }
-    AgentDecision { intents, transition_reason: None }
+    AgentDecision {
+        intents,
+        transition_reason: None,
+    }
 }
 
 // 3. AnchorAgent
 pub fn evaluate_anchor(env: &mut BehavioralAgentEnvironment) -> AgentDecision {
     let _ = env.sandbox.gas_meter.consume(400); // Enforce WASM gas
     let mut intents = Vec::new();
-    
+
     let dist = (env.current_price - env.anchor_price).abs() as f64;
     if dist > 5000.0 {
         // Revert to anchor
         let pull = dist * env.seed.anchoring_bias;
-        let side = if env.current_price > env.anchor_price { "SELL" } else { "BUY" };
+        let side = if env.current_price > env.anchor_price {
+            "SELL"
+        } else {
+            "BUY"
+        };
         intents.push(AgentIntent {
             agent_id: AgentId("Anchor1".to_string()),
             target_venue: 0,
@@ -109,14 +120,17 @@ pub fn evaluate_anchor(env: &mut BehavioralAgentEnvironment) -> AgentDecision {
             price: env.current_price as u64,
         });
     }
-    AgentDecision { intents, transition_reason: None }
+    AgentDecision {
+        intents,
+        transition_reason: None,
+    }
 }
 
 // 4. SalienceAgent
 pub fn evaluate_salience(env: &mut BehavioralAgentEnvironment) -> AgentDecision {
     let _ = env.sandbox.gas_meter.consume(550); // Enforce WASM gas
     let mut intents = Vec::new();
-    
+
     if env.volatility_index > 2000.0 {
         // Overreact to high volatility
         let reaction = env.volatility_index * env.seed.attention_salience;
@@ -129,14 +143,17 @@ pub fn evaluate_salience(env: &mut BehavioralAgentEnvironment) -> AgentDecision 
             price: env.current_price as u64,
         });
     }
-    AgentDecision { intents, transition_reason: None }
+    AgentDecision {
+        intents,
+        transition_reason: None,
+    }
 }
 
 // 5. LiquidityWithdrawalAgent
 pub fn evaluate_liquidity_withdrawal(env: &mut BehavioralAgentEnvironment) -> AgentDecision {
     let _ = env.sandbox.gas_meter.consume(700); // Enforce WASM gas
     let mut intents = Vec::new();
-    
+
     if env.volatility_index > 3000.0 {
         // Withdraw liquidity during stress
         intents.push(AgentIntent {
@@ -148,5 +165,8 @@ pub fn evaluate_liquidity_withdrawal(env: &mut BehavioralAgentEnvironment) -> Ag
             price: 0,
         });
     }
-    AgentDecision { intents, transition_reason: None }
+    AgentDecision {
+        intents,
+        transition_reason: None,
+    }
 }

@@ -16,12 +16,12 @@
 //! - Multi-symbol ingestion uses bounded `tokio::sync::mpsc` channels (capacity 1024)
 //! - No unbounded queues anywhere in the ingestion or replay paths
 
+pub mod certification;
+pub mod fidelity;
 pub mod ingestion;
 pub mod metrics;
+pub mod normalization;
 pub mod normalized;
+pub mod reconstruction;
 pub mod replay;
 pub mod rotation;
-pub mod reconstruction;
-pub mod fidelity;
-pub mod normalization;
-pub mod certification;

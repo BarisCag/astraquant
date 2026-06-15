@@ -12,10 +12,10 @@ use astra_ops::telemetry::OperationalTelemetry;
 use std::env;
 use std::net::SocketAddr;
 use std::sync::Arc;
+use std::time::Duration;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 use tokio::sync::Mutex;
-use std::time::Duration;
 
 struct DaemonConfig {
     node_id: String,
@@ -99,7 +99,8 @@ async fn main() {
         .expect("Failed to open or create journal");
 
     // 2. AstraKernel::new()
-    let limits = create_default_risk_engine(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
+    let limits =
+        create_default_risk_engine(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
     let mut kernel = AstraKernel::new(StrategyRuntime::new(ExchangeRuntime::new(limits)));
 
     // 3. ExecutionGateway::new(journal)
@@ -108,10 +109,10 @@ async fn main() {
     // 4. Wrap telemetry in Arc<OperationalTelemetry>
     let tel_a = Arc::clone(&telemetry);
     let tel_b = Arc::clone(&telemetry);
-    
+
     let gw_a = Arc::clone(&gateway);
     let gw_b = Arc::clone(&gateway);
-    
+
     let node_id_clone = config.node_id.clone();
 
     // Task A: Kernel event loop
@@ -121,7 +122,7 @@ async fn main() {
                 let mut gw = gw_a.lock().await;
                 gw.next_event()
             };
-            
+
             if let Some(event) = event_opt {
                 let _ = kernel.apply(&event);
                 tel_a.increment_events();
@@ -142,7 +143,10 @@ async fn main() {
             .await
             .unwrap_or_else(|e| panic!("Failed to bind HTTP server on {addr}: {e}"));
 
-        println!("AstraDaemon node={} listening on http://{}", config.node_id, addr);
+        println!(
+            "AstraDaemon node={} listening on http://{}",
+            config.node_id, addr
+        );
         println!("  GET /health  → node health JSON");
         println!("  GET /metrics → Prometheus text exposition");
         println!("  POST /ingest → Inject market tick event");

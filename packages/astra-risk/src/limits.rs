@@ -22,23 +22,37 @@ pub struct RiskViolationWindow {}
 pub struct ConstraintParityVerifier {}
 
 impl RiskLimit {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl PositionLimitBoundary {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl ExposureConstraint {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl DrawdownConstraint {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl LeverageConstraint {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl RiskViolationWindow {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl ConstraintParityVerifier {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }

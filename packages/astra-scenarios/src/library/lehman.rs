@@ -1,6 +1,8 @@
+use crate::scenario::{ExperimentParameterSet, ScenarioDefinition, ScenarioSeverity};
 use astra_core::events::{AstraEvent, EventType};
-use crate::scenario::{ScenarioDefinition, ScenarioSeverity, ExperimentParameterSet};
-use astra_policy::policy::{PolicyAction, PolicyDirective, PolicySeverityTier, PolicyExecutionWindow};
+use astra_policy::policy::{
+    PolicyAction, PolicyDirective, PolicyExecutionWindow, PolicySeverityTier,
+};
 use bincode::Options;
 
 pub struct LehmanLiquiditySupportScenario {
@@ -42,18 +44,27 @@ impl ScenarioDefinition for LehmanLiquiditySupportScenario {
         }
     }
 
-    fn evaluate_sequence(&self, current_sequence: u64, _lcg: &mut crate::lcg::DeterministicLcg) -> Vec<AstraEvent> {
+    fn evaluate_sequence(
+        &self,
+        current_sequence: u64,
+        _lcg: &mut crate::lcg::DeterministicLcg,
+    ) -> Vec<AstraEvent> {
         let mut events = Vec::new();
 
         if current_sequence == self.shock_sequence {
             // Emit a market stress event
-            let payload = bincode::options().with_little_endian().with_fixint_encoding()
-                .serialize(&astra_router::failure::VenueFailureEvent::LiquidityCollapse {
-                    venue_id: astra_router::venue::VenueId(1),
-                    sequence_id: current_sequence,
-                    symbol: "AAPL".to_string(),
-                    fraction_to_remove: 90,
-                }).unwrap();
+            let payload = bincode::options()
+                .with_little_endian()
+                .with_fixint_encoding()
+                .serialize(
+                    &astra_router::failure::VenueFailureEvent::LiquidityCollapse {
+                        venue_id: astra_router::venue::VenueId(1),
+                        sequence_id: current_sequence,
+                        symbol: "AAPL".to_string(),
+                        fraction_to_remove: 90,
+                    },
+                )
+                .unwrap();
 
             events.push(AstraEvent::new_raw(
                 current_sequence * 1_000_000,
@@ -65,7 +76,9 @@ impl ScenarioDefinition for LehmanLiquiditySupportScenario {
 
         if current_sequence == self.intervention_sequence {
             // Central Bank steps in
-            let action = PolicyAction::LiquidityInjection { amount: self.support_amount };
+            let action = PolicyAction::LiquidityInjection {
+                amount: self.support_amount,
+            };
             let directive = PolicyDirective {
                 directive_id: 1,
                 action,
@@ -76,8 +89,11 @@ impl ScenarioDefinition for LehmanLiquiditySupportScenario {
                 },
             };
 
-            let payload = bincode::options().with_little_endian().with_fixint_encoding()
-                .serialize(&directive).unwrap();
+            let payload = bincode::options()
+                .with_little_endian()
+                .with_fixint_encoding()
+                .serialize(&directive)
+                .unwrap();
 
             events.push(AstraEvent::new_raw(
                 current_sequence * 1_000_000,

@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::partition::ReplayShardCertification;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ShardParityReport {
@@ -29,7 +29,9 @@ pub struct AggregatedReplayCertificate {
 pub struct ReplayLineageMerge;
 
 impl ReplayLineageMerge {
-    pub fn merge_certifications(_certs: &[ReplayShardCertification]) -> AggregatedReplayCertificate {
+    pub fn merge_certifications(
+        _certs: &[ReplayShardCertification],
+    ) -> AggregatedReplayCertificate {
         AggregatedReplayCertificate {
             manifest_id: String::new(),
             global_terminal_hash: [0; 32],

@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
-use astra_scenarios::scenario::ScenarioDefinition;
 use crate::certification::BenchmarkTerminalCertificate;
+use astra_scenarios::scenario::ScenarioDefinition;
+use serde::{Deserialize, Serialize};
 
 pub trait BenchmarkDefinition {
     fn benchmark_id(&self) -> &'static str;

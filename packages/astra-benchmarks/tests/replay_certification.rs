@@ -1,4 +1,6 @@
-use astra_benchmarks::certification::{BenchmarkTerminalCertificate, ReplayCertificationManifest, ReplayParityProof, ReplayLineageTree};
+use astra_benchmarks::certification::{
+    BenchmarkTerminalCertificate, ReplayCertificationManifest, ReplayLineageTree, ReplayParityProof,
+};
 
 #[test]
 fn test_replay_certification_manifest_generation() {
@@ -14,11 +16,11 @@ fn test_replay_certification_manifest_generation() {
                 lineage_tree: ReplayLineageTree {
                     root_hash: [255; 32],
                     windows: vec![],
-                }
-            }
-        }
+                },
+            },
+        },
     };
-    
+
     assert_eq!(manifest.base_seed, 12345);
     assert_eq!(manifest.certificate.final_sequence, 1_000_000);
 }

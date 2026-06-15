@@ -161,10 +161,22 @@ fn test_rejected_order_isolation() {
     assert_eq!(replay.runtime.diagnostics.total_accepted_orders, 0);
     // LOB should be completely empty
     assert!(
-        !replay.runtime.router.venues.values().next().unwrap().books.contains_key("BTC/USD")
+        !replay
+            .runtime
+            .router
+            .venues
+            .values()
+            .next()
+            .unwrap()
+            .books
+            .contains_key("BTC/USD")
             || replay
                 .runtime
-                .router.venues.values().next().unwrap()
+                .router
+                .venues
+                .values()
+                .next()
+                .unwrap()
                 .books
                 .get("BTC/USD")
                 .unwrap()
@@ -203,24 +215,28 @@ fn test_offline_arrival_rejection() {
         price: Price::new(100),
         quantity: Quantity::new(1),
     };
-    journal.commit(
-        1,
-        EventType::LimitOrderPlaced,
-        serialize_canonical(&payload).unwrap(),
-        PayloadMetadata::new(PayloadEncoding::Bincode, 1),
-    ).unwrap();
+    journal
+        .commit(
+            1,
+            EventType::LimitOrderPlaced,
+            serialize_canonical(&payload).unwrap(),
+            PayloadMetadata::new(PayloadEncoding::Bincode, 1),
+        )
+        .unwrap();
 
     // 2. Set Venue Offline
     let failure_event = astra_router::failure::VenueFailureEvent::VenueOffline {
         venue_id: astra_router::venue::VenueId(1),
         sequence_id: 2,
     };
-    journal.commit(
-        2,
-        EventType::VenueStatusChanged,
-        serialize_canonical(&failure_event).unwrap(),
-        PayloadMetadata::new(PayloadEncoding::Bincode, 1),
-    ).unwrap();
+    journal
+        .commit(
+            2,
+            EventType::VenueStatusChanged,
+            serialize_canonical(&failure_event).unwrap(),
+            PayloadMetadata::new(PayloadEncoding::Bincode, 1),
+        )
+        .unwrap();
 
     let mut replay = FullReplayEngine::new(ExchangeRuntime::new(risk_engine));
     // The runtime defaults to adding Venue 1 in ExchangeRuntime::new, let's just make sure.
@@ -230,5 +246,8 @@ fn test_offline_arrival_rejection() {
 
     // At seq=2, the venue goes offline. The order from seq=1 has ingress delay, so it arrives at seq = 1 + delay (probably > 2).
     // It should be rejected as VenueOffline.
-    assert_eq!(replay.runtime.diagnostics.lob_diagnostics.total_rejections, 1);
+    assert_eq!(
+        replay.runtime.diagnostics.lob_diagnostics.total_rejections,
+        1
+    );
 }

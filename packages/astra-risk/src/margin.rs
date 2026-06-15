@@ -22,23 +22,37 @@ pub struct MarginStressProfile {}
 pub struct MarginParityVerifier {}
 
 impl MarginRequirement {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl MaintenanceMarginBoundary {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl LiquidationThreshold {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl CollateralCoverageWindow {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl DeterministicLiquidationModel {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl MarginStressProfile {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }
 impl MarginParityVerifier {
-    pub fn dummy_method(&self) -> Self { Default::default() }
+    pub fn dummy_method(&self) -> Self {
+        Default::default()
+    }
 }

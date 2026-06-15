@@ -21,10 +21,10 @@ pub fn build_covid_crash_events() -> Vec<AstraEvent> {
 
     // Price control points (in raw Price units: dollar * 10_000)
     let phase_prices: &[(u64, u64, i64, i64)] = &[
-        (0,   199, 27_500_000, 21_900_000),  // Crash
-        (200, 399, 21_900_000, 21_900_000),  // Halt
-        (400, 599, 21_900_000, 22_500_000),  // Resume
-        (600, 799, 22_500_000, 24_000_000),  // Volatility
+        (0, 199, 27_500_000, 21_900_000),   // Crash
+        (200, 399, 21_900_000, 21_900_000), // Halt
+        (400, 599, 21_900_000, 22_500_000), // Resume
+        (600, 799, 22_500_000, 24_000_000), // Volatility
     ];
 
     for &(seq_start, seq_end, start_price, end_price) in phase_prices {
@@ -33,14 +33,18 @@ pub fn build_covid_crash_events() -> Vec<AstraEvent> {
 
         for i in seq_start..=seq_end {
             let seq = i + 1;
-            
+
             // Inject some volatility
             let volatility = if i >= 600 {
-                if i % 2 == 0 { 200_000 } else { -150_000 }
+                if i % 2 == 0 {
+                    200_000
+                } else {
+                    -150_000
+                }
             } else {
                 0
             };
-            
+
             let price_raw = start_price + price_step * (i - seq_start) as i64 + volatility;
 
             let event_type = classify_event(i, seq_start, seq_end);
@@ -86,13 +90,21 @@ fn classify_event(i: u64, phase_start: u64, _phase_end: u64) -> EventType {
 
     match phase_start {
         0 => {
-            if pos == 199 { EventType::CircuitBreakerTriggered }
-            else { EventType::MarketTick }
+            if pos == 199 {
+                EventType::CircuitBreakerTriggered
+            } else {
+                EventType::MarketTick
+            }
         }
         200 => EventType::MarketTick, // Halted market ticks
         400 => {
-            if pos == 0 { EventType::SystemRecovery } // Resume
-            else { EventType::MarketTick }
+            if pos == 0 {
+                EventType::SystemRecovery
+            }
+            // Resume
+            else {
+                EventType::MarketTick
+            }
         }
         _ => EventType::MarketTick,
     }

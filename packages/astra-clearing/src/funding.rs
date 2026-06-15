@@ -57,15 +57,23 @@ impl FundingLedger {
     }
 
     pub fn ensure_account(&mut self, trader_id: u64) {
-        self.accounts.entry(trader_id).or_insert_with(|| FundingAccount::new(trader_id, 0));
+        self.accounts
+            .entry(trader_id)
+            .or_insert_with(|| FundingAccount::new(trader_id, 0));
     }
 
     pub fn get_balance(&self, trader_id: u64) -> i64 {
-        self.accounts.get(&trader_id).map(|a| a.balance).unwrap_or(0)
+        self.accounts
+            .get(&trader_id)
+            .map(|a| a.balance)
+            .unwrap_or(0)
     }
 
     pub fn apply_cash_movement(&mut self, trader_id: u64, amount: i64) {
-        let account = self.accounts.entry(trader_id).or_insert_with(|| FundingAccount::new(trader_id, 0));
+        let account = self
+            .accounts
+            .entry(trader_id)
+            .or_insert_with(|| FundingAccount::new(trader_id, 0));
         account.apply_funding(amount);
     }
 }

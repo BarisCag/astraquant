@@ -10,22 +10,28 @@ pub struct ImpactMetrics {
     pub adverse_price_distance: i64,
 }
 
-pub fn calculate_impact(executions: &[TradeExecution], aggressive_order_id: u64, arrival_best_price: i64) -> ImpactMetrics {
+pub fn calculate_impact(
+    executions: &[TradeExecution],
+    aggressive_order_id: u64,
+    arrival_best_price: i64,
+) -> ImpactMetrics {
     let mut total_qty = 0;
     let mut total_cost = 0;
     let mut levels = BTreeMap::new();
     let mut worst_price = arrival_best_price;
 
     for exec in executions {
-        if exec.aggressive_order_id == aggressive_order_id && exec.liquidity_side == LiquiditySide::Taker {
+        if exec.aggressive_order_id == aggressive_order_id
+            && exec.liquidity_side == LiquiditySide::Taker
+        {
             let qty = exec.matched_quantity.0;
             let price = exec.match_price.0;
-            
+
             total_qty += qty;
             total_cost += qty as i64 * (price - arrival_best_price).abs(); // absolute diff represents cost
-            
+
             *levels.entry(price).or_insert(0) += qty;
-            
+
             if (price - arrival_best_price).abs() > (worst_price - arrival_best_price).abs() {
                 worst_price = price;
             }

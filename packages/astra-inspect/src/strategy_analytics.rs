@@ -26,7 +26,11 @@ impl StrategyAnalyticsCollector {
     pub fn record_context(&mut self, timestamp_ns: u64, trader_id: u64, ctx: &AgentContext) {
         let metrics = self.metrics_by_trader.entry(trader_id).or_default();
         metrics.inventory_series.insert(timestamp_ns, ctx.inventory);
-        metrics.realized_pnl_series.insert(timestamp_ns, ctx.realized_pnl);
-        metrics.unrealized_pnl_series.insert(timestamp_ns, ctx.unrealized_pnl);
+        metrics
+            .realized_pnl_series
+            .insert(timestamp_ns, ctx.realized_pnl);
+        metrics
+            .unrealized_pnl_series
+            .insert(timestamp_ns, ctx.unrealized_pnl);
     }
 }

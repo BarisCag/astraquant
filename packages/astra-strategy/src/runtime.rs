@@ -23,27 +23,40 @@ impl StrategyRuntime {
 
     pub fn dispatch_market_event(&mut self, event: &MarketEvent) -> Vec<(u64, StrategyAction)> {
         let mut all_actions = Vec::new();
-        
+
         for (trader_id, agent) in self.agents.iter_mut() {
             if let Some(ctx) = self.contexts.get_mut(trader_id) {
                 match event {
-                    MarketEvent::BookUpdate { engine_sequence_id, .. } => ctx.engine_sequence_id = *engine_sequence_id,
-                    MarketEvent::TradeExecution { engine_sequence_id, .. } => ctx.engine_sequence_id = *engine_sequence_id,
+                    MarketEvent::BookUpdate {
+                        engine_sequence_id, ..
+                    } => ctx.engine_sequence_id = *engine_sequence_id,
+                    MarketEvent::TradeExecution {
+                        engine_sequence_id, ..
+                    } => ctx.engine_sequence_id = *engine_sequence_id,
                 }
-                
+
                 let actions = agent.on_market_event(event, ctx);
                 for act in actions {
                     all_actions.push((*trader_id, act));
                 }
             }
         }
-        
+
         all_actions
     }
 
-    pub fn dispatch_fill(&mut self, trader_id: u64, order_id: u64, quantity: Quantity, price: i64) -> Vec<(u64, StrategyAction)> {
+    pub fn dispatch_fill(
+        &mut self,
+        trader_id: u64,
+        order_id: u64,
+        quantity: Quantity,
+        price: i64,
+    ) -> Vec<(u64, StrategyAction)> {
         let mut all_actions = Vec::new();
-        if let (Some(agent), Some(ctx)) = (self.agents.get_mut(&trader_id), self.contexts.get_mut(&trader_id)) {
+        if let (Some(agent), Some(ctx)) = (
+            self.agents.get_mut(&trader_id),
+            self.contexts.get_mut(&trader_id),
+        ) {
             let actions = agent.on_fill(order_id, quantity, price, ctx);
             for act in actions {
                 all_actions.push((trader_id, act));
@@ -52,9 +65,16 @@ impl StrategyRuntime {
         all_actions
     }
 
-    pub fn dispatch_risk_violation(&mut self, trader_id: u64, reason: &str) -> Vec<(u64, StrategyAction)> {
+    pub fn dispatch_risk_violation(
+        &mut self,
+        trader_id: u64,
+        reason: &str,
+    ) -> Vec<(u64, StrategyAction)> {
         let mut all_actions = Vec::new();
-        if let (Some(agent), Some(ctx)) = (self.agents.get_mut(&trader_id), self.contexts.get_mut(&trader_id)) {
+        if let (Some(agent), Some(ctx)) = (
+            self.agents.get_mut(&trader_id),
+            self.contexts.get_mut(&trader_id),
+        ) {
             let actions = agent.on_risk_violation(reason, ctx);
             for act in actions {
                 all_actions.push((trader_id, act));

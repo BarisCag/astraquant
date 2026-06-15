@@ -1,1 +1,4 @@
-#[test] fn test_dummy() { assert!(true); }
+#[test]
+fn test_dummy() {
+    assert!(true);
+}

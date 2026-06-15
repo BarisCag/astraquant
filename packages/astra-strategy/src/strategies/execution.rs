@@ -15,7 +15,13 @@ pub struct TwapExecutor {
 }
 
 impl TwapExecutor {
-    pub fn new(symbol: String, side: OrderSide, target_quantity: u64, slice_quantity: u64, interval_sequences: u64) -> Self {
+    pub fn new(
+        symbol: String,
+        side: OrderSide,
+        target_quantity: u64,
+        slice_quantity: u64,
+        interval_sequences: u64,
+    ) -> Self {
         Self {
             symbol,
             side,
@@ -36,15 +42,19 @@ impl StrategyAgent for TwapExecutor {
         }
 
         let mut actions = Vec::new();
-        
-        let should_execute = ctx.engine_sequence_id >= self.last_execution_sequence + self.interval_sequences;
+
+        let should_execute =
+            ctx.engine_sequence_id >= self.last_execution_sequence + self.interval_sequences;
 
         if should_execute {
-            if let MarketEvent::BookUpdate { best_bid, best_ask, .. } = event {
+            if let MarketEvent::BookUpdate {
+                best_bid, best_ask, ..
+            } = event
+            {
                 // Cross the spread to execute immediately
                 let price = match self.side {
                     OrderSide::Bid => best_ask.map(|p| p.0).unwrap_or(i64::MAX), // Pay whatever ask is
-                    OrderSide::Ask => best_bid.map(|p| p.0).unwrap_or(0),        // Sell to whatever bid is
+                    OrderSide::Ask => best_bid.map(|p| p.0).unwrap_or(0), // Sell to whatever bid is
                 };
 
                 let remaining = self.target_quantity - self.completed_quantity;
@@ -56,7 +66,7 @@ impl StrategyAgent for TwapExecutor {
                     price: Price::new(price),
                     quantity: Quantity::new(exec_qty),
                 });
-                
+
                 self.last_execution_sequence = ctx.engine_sequence_id;
                 self.next_order_id += 1;
             }
@@ -65,7 +75,13 @@ impl StrategyAgent for TwapExecutor {
         actions
     }
 
-    fn on_fill(&mut self, _order_id: u64, quantity: Quantity, _price: i64, _ctx: &AgentContext) -> Vec<StrategyAction> {
+    fn on_fill(
+        &mut self,
+        _order_id: u64,
+        quantity: Quantity,
+        _price: i64,
+        _ctx: &AgentContext,
+    ) -> Vec<StrategyAction> {
         self.completed_quantity += quantity.0;
         Vec::new()
     }

@@ -64,14 +64,14 @@ impl DatasetWriter {
             event_count: events.len() as u64,
         };
 
-        let header_bytes = serialize_canonical(&header)
-            .map_err(|e| io::Error::other(e.to_string()))?;
+        let header_bytes =
+            serialize_canonical(&header).map_err(|e| io::Error::other(e.to_string()))?;
 
         // Serialize all events into the body buffer
         let mut body_buf: Vec<u8> = Vec::new();
         for event in events {
-            let event_bytes = serialize_canonical(event)
-                .map_err(|e| io::Error::other(e.to_string()))?;
+            let event_bytes =
+                serialize_canonical(event).map_err(|e| io::Error::other(e.to_string()))?;
             let len = event_bytes.len() as u64;
             body_buf.extend_from_slice(&len.to_le_bytes());
             body_buf.extend_from_slice(&event_bytes);
@@ -156,9 +156,9 @@ impl DatasetReader {
             if body_cursor + 8 > body_bytes.len() {
                 return Err(io::Error::other("Body truncated mid-event length prefix"));
             }
-            let evt_len = u64::from_le_bytes(
-                body_bytes[body_cursor..body_cursor + 8].try_into().unwrap(),
-            ) as usize;
+            let evt_len =
+                u64::from_le_bytes(body_bytes[body_cursor..body_cursor + 8].try_into().unwrap())
+                    as usize;
             body_cursor += 8;
 
             if body_cursor + evt_len > body_bytes.len() {

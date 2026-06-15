@@ -1,6 +1,6 @@
+use astra_core::types::Price;
 use astra_lob::book::LimitOrderBook;
 use astra_lob::types::OrderEvent;
-use astra_core::types::Price;
 
 pub struct LiquidityCollapseModel;
 
@@ -8,7 +8,7 @@ impl LiquidityCollapseModel {
     pub fn apply(book: &mut LimitOrderBook, max_orders_to_cancel: usize) -> Vec<OrderEvent> {
         let mut events = Vec::new();
         let mut to_cancel = Vec::new();
-        
+
         // Cancel deepest liquidity first (lowest priority)
         // Bids: deep = lowest price
         for (_price, level) in book.bids.iter() {
@@ -58,7 +58,12 @@ impl SpreadExpansionModel {
         for (price, level) in book.bids.iter() {
             let new_price = Price::new(price.0 - tick_expansion);
             for order in level.orders.iter() {
-                order_modifications.push((order.order_id, new_price, order.remaining_quantity, order.side));
+                order_modifications.push((
+                    order.order_id,
+                    new_price,
+                    order.remaining_quantity,
+                    order.side,
+                ));
             }
         }
 
@@ -66,7 +71,12 @@ impl SpreadExpansionModel {
         for (price, level) in book.asks.iter() {
             let new_price = Price::new(price.0 + tick_expansion);
             for order in level.orders.iter() {
-                order_modifications.push((order.order_id, new_price, order.remaining_quantity, order.side));
+                order_modifications.push((
+                    order.order_id,
+                    new_price,
+                    order.remaining_quantity,
+                    order.side,
+                ));
             }
         }
 
@@ -75,7 +85,7 @@ impl SpreadExpansionModel {
         // we must cancel and submit a new order. But we only have `book.submit` which requires a full Order struct.
         // Let's gather the full orders to resubmit first.
         let mut to_resubmit = Vec::new();
-        
+
         for (id, new_price, _qty, _side) in order_modifications {
             // Find the original order to clone
             let orig = book.get_order(id).cloned();

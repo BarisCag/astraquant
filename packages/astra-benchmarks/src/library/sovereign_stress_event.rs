@@ -1,6 +1,6 @@
-use astra_scenarios::scenario::{ScenarioDefinition, ScenarioSeverity, ExperimentParameterSet};
 use astra_core::events::AstraEvent;
 use astra_scenarios::lcg::DeterministicLcg;
+use astra_scenarios::scenario::{ExperimentParameterSet, ScenarioDefinition, ScenarioSeverity};
 
 pub struct SovereignStressEvent {
     pub seed: u64,
@@ -29,10 +29,13 @@ impl ScenarioDefinition for SovereignStressEvent {
         vec![(1_000_000, 5_000_000)]
     }
 
-    fn apply_parameters(&mut self, _params: &ExperimentParameterSet) {
-    }
+    fn apply_parameters(&mut self, _params: &ExperimentParameterSet) {}
 
-    fn evaluate_sequence(&self, _current_sequence: u64, _lcg: &mut DeterministicLcg) -> Vec<AstraEvent> {
+    fn evaluate_sequence(
+        &self,
+        _current_sequence: u64,
+        _lcg: &mut DeterministicLcg,
+    ) -> Vec<AstraEvent> {
         Vec::new()
     }
 }
