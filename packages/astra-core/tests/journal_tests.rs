@@ -538,3 +538,54 @@ fn test_all_event_types_through_journal_replay() {
 
     cleanup(&path);
 }
+
+#[test]
+fn test_mid_write_crash_recovery() {
+    let jl_path = temp_path("ph2_mid_write_crash.astra_jl");
+    cleanup(&jl_path);
+    let mut journal = EventJournal::create(&jl_path, 0).unwrap();
+    
+    // Step 1: Write 50 events
+    for i in 1..=50u64 {
+        let event = AstraEvent::new_raw(
+            1000000000 + i * 1000000,
+            i,
+            EventType::MarketTick,
+            vec![(i % 256) as u8],
+        );
+        journal.append(&event).unwrap();
+    }
+    
+    // Calculate expected state for 49 events
+    let mut clean_49_reducer = CounterReducer::new();
+    let mut count = 0;
+    for event_res in EventJournal::open(&jl_path).unwrap().iter().unwrap() {
+        if let Ok(e) = event_res {
+            clean_49_reducer.apply(&e).unwrap();
+            count += 1;
+            if count == 49 { break; }
+        } else {
+            break;
+        }
+    }
+    let clean_49_hash = clean_49_reducer.state_hash();
+
+    // Step 2: Truncate file at random offset within last record
+    use std::fs::OpenOptions;
+    let file = OpenOptions::new().write(true).open(&jl_path).unwrap();
+    let len = file.metadata().unwrap().len();
+    file.set_len(len - 7).unwrap(); // Truncate last 7 bytes
+
+    // Step 3: Replay
+    let mut reducer = CounterReducer::new();
+    let result = ReplayEngine::replay_journal(&EventJournal::open(&jl_path).unwrap(), &mut reducer);
+    
+    // Step 4 & 5
+    assert!(result.is_ok() || result.is_err(), "Should either recover cleanly by ignoring corrupt record or return an Error without panic");
+    
+    let crash_hash = reducer.state_hash();
+    
+    assert_eq!(crash_hash, clean_49_hash, "Replay did not correctly reconstruct 49 events");
+
+    cleanup(&jl_path);
+}

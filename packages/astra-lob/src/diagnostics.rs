@@ -52,6 +52,9 @@ impl ReplayDiagnostics {
                     self.total_cancels += 1;
                 }
                 OrderEvent::Modified { .. } => {}
+                OrderEvent::DestinationUnavailable { .. } => {
+                    self.total_rejections += 1;
+                }
             }
         }
     }

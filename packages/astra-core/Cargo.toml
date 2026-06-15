@@ -13,6 +13,8 @@ serde = { version = "1.0", features = ["derive"] }
 bincode = { version = "2.0.0-rc.3", features = ["serde"] }
 blake3 = "1.5"
 hex = "0.4"
+astra-risk = { path = "../astra-risk" }
+astra-portfolio = { path = "../astra-portfolio" }
 
 [dev-dependencies]
 proptest = "1.11.0"

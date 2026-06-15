@@ -3,13 +3,13 @@ use astra_core::exchange::ExchangeRuntime;
 use astra_core::journal::EventJournal;
 use astra_core::kernel::AstraKernel;
 use astra_core::replay::ReplayEngine;
-use astra_core::risk::RiskLimits;
+use astra_core::risk::create_default_risk_engine;
 use astra_core::runtime::StrategyRuntime;
 use astra_core::types::{Money, Quantity};
 
 #[test]
 fn test_deterministic_replay_after_forced_crash() {
-    let limits = RiskLimits::new(Money::new(100_000_000), Quantity::new(1_000));
+    let limits = create_default_risk_engine(Money::new(100_000_000), Quantity::new(1_000));
 
     let mut kernel = AstraKernel::new(StrategyRuntime::new(ExchangeRuntime::new(limits)));
     let temp_dir = std::env::temp_dir().join("astra_crash_test");

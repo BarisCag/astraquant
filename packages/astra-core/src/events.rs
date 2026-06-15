@@ -44,6 +44,27 @@ pub enum EventType {
     StateSnapshot = 12,
     OrderSubmitted = 13,
     OrderFilled = 14,
+    VenueStatusChanged = 15,
+    MarketStressInjected = 16,
+    MarginCallIssued = 17,
+    LiquidationExecuted = 18,
+    SettlementFailed = 19,
+    FundingAdjusted = 20,
+    PolicyAction = 21,
+    RegulatoryIntervention = 22,
+    LiquidityFacilityActivated = 23,
+    CircuitBreakerTriggered = 24,
+    SettlementHolidayActivated = 25,
+    AuditCheckpoint = 26,
+    InvariantViolationDetected = 27,
+    ReplayVerificationCompleted = 28,
+    AgentIntent = 29,
+    BehaviorTransition = 30,
+    SystemicCascadeTriggered = 31,
+    AgentLiquidityWithdrawal = 32,
+    AgentMarginDefense = 33,
+    BehavioralSeed = 34,
+    AgentAction = 35,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
@@ -112,6 +133,27 @@ impl SnapshotMetadata {
             snapshot_id,
             state_hash,
             last_sequence_id,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct BehavioralSeed {
+    pub herding_factor: f64,
+    pub loss_aversion: f64,
+    pub anchoring_bias: f64,
+    pub attention_salience: f64,
+    pub seed_id: u64,
+}
+
+impl BehavioralSeed {
+    pub fn new(herding: f64, loss_aversion: f64, anchoring: f64, salience: f64, seed_id: u64) -> Self {
+        Self {
+            herding_factor: herding,
+            loss_aversion,
+            anchoring_bias: anchoring,
+            attention_salience: salience,
+            seed_id,
         }
     }
 }

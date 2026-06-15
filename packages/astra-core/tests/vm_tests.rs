@@ -6,7 +6,7 @@ use astra_core::kernel::AstraKernel;
 use astra_core::orchestrator::VmOrchestrator;
 use astra_core::package::StrategyPackage;
 use astra_core::replay::{EventReducer, ReplayEngine};
-use astra_core::risk::RiskLimits;
+use astra_core::risk::create_default_risk_engine;
 use astra_core::runtime::StrategyRuntime;
 use astra_core::types::{Money, Quantity};
 use astra_core::vm::DeterministicVm;
@@ -28,7 +28,8 @@ fn test_vm_recovery_deterministic() {
     let jl_path = temp_path("ph9_vm.astra_jl");
     cleanup(&jl_path);
 
-    let limits = RiskLimits::new(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
+    let limits =
+        create_default_risk_engine(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
 
     let runtime = StrategyRuntime::new(ExchangeRuntime::new(limits.clone()));
     let kernel = AstraKernel::new(runtime);

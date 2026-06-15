@@ -19,4 +19,8 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo test --workspace --verbose
+      - name: Determinism Parity Check
+        run: cargo test test_three_run_parity --workspace -- --nocapture
+      - name: Golden Hash Regression
+        run: cargo test test_golden_hash_regression --workspace -- --nocapture
       - run: cargo build --workspace --release

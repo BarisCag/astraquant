@@ -24,6 +24,7 @@ pub struct Order {
     pub remaining_quantity: Quantity,
     pub timestamp_ns: u64,
     pub trader_id: u64,
+    pub queue_position: crate::queue::QueuePosition,
 }
 
 #[derive(Clone, Copy, Debug, Serialize, Deserialize, PartialEq, Eq)]
@@ -41,6 +42,8 @@ pub struct TradeExecution {
     pub matched_quantity: Quantity,
     pub liquidity_side: LiquiditySide,
     pub timestamp_ns: u64,
+    pub trader_id: u64,
+    pub queue_position: crate::queue::QueuePosition,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
@@ -60,5 +63,10 @@ pub enum OrderEvent {
         order_id: u64,
         symbol: String,
         new_quantity: Quantity,
+    },
+    DestinationUnavailable {
+        order_id: u64,
+        venue_id: u8,
+        reason: String,
     },
 }

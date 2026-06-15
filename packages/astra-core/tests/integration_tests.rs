@@ -204,3 +204,43 @@ fn test_verify_hash_equality_utility() {
     assert!(verify_hash_equality(&hash_a, &hash_a));
     assert!(!verify_hash_equality(&hash_a, &hash_b));
 }
+
+#[test]
+fn test_three_run_parity() {
+    use astra_core::exchange::ExchangeRuntime;
+    use astra_core::kernel::AstraKernel;
+    use astra_core::replay::EventReducer;
+    use astra_core::risk::create_default_risk_engine;
+    use astra_core::runtime::StrategyRuntime;
+    use astra_core::types::{Money, Quantity};
+
+    let limits = create_default_risk_engine(Money::new(10_000_000), Quantity::new(1_000));
+    
+    let mut kernel1 = AstraKernel::new(StrategyRuntime::new(ExchangeRuntime::new(limits.clone())));
+    let mut kernel2 = AstraKernel::new(StrategyRuntime::new(ExchangeRuntime::new(limits.clone())));
+    let mut kernel3 = AstraKernel::new(StrategyRuntime::new(ExchangeRuntime::new(limits)));
+
+    let events: Vec<AstraEvent> = (1..=10)
+        .map(|i| {
+            AstraEvent::new_raw(
+                1000000000 + i * 1000000,
+                i,
+                EventType::MarketTick,
+                vec![i as u8],
+            )
+        })
+        .collect();
+
+    for event in &events {
+        kernel1.apply(event).unwrap();
+        kernel2.apply(event).unwrap();
+        kernel3.apply(event).unwrap();
+    }
+
+    let hash1 = kernel1.state_hash();
+    let hash2 = kernel2.state_hash();
+    let hash3 = kernel3.state_hash();
+
+    assert_eq!(hash1, hash2, "Kernel 1 and 2 hashes diverge!");
+    assert_eq!(hash2, hash3, "Kernel 2 and 3 hashes diverge!");
+}

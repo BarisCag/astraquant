@@ -4,7 +4,7 @@ use astra_core::hashing::DeterministicState;
 use astra_core::journal::EventJournal;
 use astra_core::marketdata::MarketTick;
 use astra_core::replay::{EventReducer, ReplayEngine};
-use astra_core::risk::RiskLimits;
+use astra_core::risk::create_default_risk_engine;
 use astra_core::runtime::{AnyStrategy, StrategyRuntime};
 use astra_core::strategies::mean_reversion::MeanReversionStrategy;
 use astra_core::types::{Money, Price, Quantity};
@@ -26,7 +26,8 @@ fn test_strategy_runtime_state_mutates_and_replays() {
     let jl_path = temp_path("runtime.astra_jl");
     cleanup(&jl_path);
 
-    let limits = RiskLimits::new(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
+    let limits =
+        create_default_risk_engine(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
 
     let mut runtime = StrategyRuntime::new(ExchangeRuntime::new(limits.clone()));
     runtime.add_strategy(AnyStrategy::MeanReversion(MeanReversionStrategy::new(

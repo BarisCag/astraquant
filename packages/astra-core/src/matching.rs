@@ -42,6 +42,8 @@ impl MatchingEngine {
                         matches.push(LimitOrderMatchedPayload {
                             maker_order_id: node.order_id,
                             taker_order_id: payload.order_id,
+                            maker_trader_id: node.trader_id,
+                            taker_trader_id: payload.trader_id,
                             match_price: ask_price,
                             matched_quantity: Quantity::new(match_qty),
                         });
@@ -74,6 +76,7 @@ impl MatchingEngine {
                 if remaining_qty.0 > 0 {
                     let node = OrderNode {
                         order_id: payload.order_id,
+                        trader_id: payload.trader_id,
                         quantity: remaining_qty,
                     };
                     self.book.bids.entry(payload.price).or_default().push(node);
@@ -100,6 +103,8 @@ impl MatchingEngine {
                         matches.push(LimitOrderMatchedPayload {
                             maker_order_id: node.order_id,
                             taker_order_id: payload.order_id,
+                            maker_trader_id: node.trader_id,
+                            taker_trader_id: payload.trader_id,
                             match_price: bid_price,
                             matched_quantity: Quantity::new(match_qty),
                         });
@@ -132,6 +137,7 @@ impl MatchingEngine {
                 if remaining_qty.0 > 0 {
                     let node = OrderNode {
                         order_id: payload.order_id,
+                        trader_id: payload.trader_id,
                         quantity: remaining_qty,
                     };
                     self.book.asks.entry(payload.price).or_default().push(node);

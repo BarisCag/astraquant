@@ -1,0 +1,68 @@
+[
+  {
+    "sequence_id": 100,
+    "state_hash": "ec77d2ad42751e2ddfeee33aa58158f762cc749a20626c931a8f1504a8e50aae",
+    "price_raw": 11434650,
+    "volume_raw": 1950
+  },
+  {
+    "sequence_id": 200,
+    "state_hash": "91b879bd0fe9168e97225f7b547b2b050abc314ad4a826a0a012c87f2a136076",
+    "price_raw": 11419650,
+    "volume_raw": 1950
+  },
+  {
+    "sequence_id": 300,
+    "state_hash": "ca67a7b1a6e67ea89aeb52626ea452989d0fa5952ebeb44f2849955613d6a2f9",
+    "price_raw": 11335350,
+    "volume_raw": 1950
+  },
+  {
+    "sequence_id": 400,
+    "state_hash": "38a71ac167c06052a83a74553b420ac037ef48daa9a5e6c553b1b6b9f27e50bb",
+    "price_raw": 11250350,
+    "volume_raw": 1950
+  },
+  {
+    "sequence_id": 500,
+    "state_hash": "78dde3b3733cd5ea517db687c498d65d200da4cbae284dc50dce2916aa074209",
+    "price_raw": 10903450,
+    "volume_raw": 14900
+  },
+  {
+    "sequence_id": 600,
+    "state_hash": "80bf20f860d71c2962a9e6b740b8a504b0739cd17f69d1f00a7820feef595648",
+    "price_raw": 10558450,
+    "volume_raw": 24900
+  },
+  {
+    "sequence_id": 700,
+    "state_hash": "776f9c98e4b1bccedda3e9b71e400bb31f394efd8805d497f4cba7b16fabf2a7",
+    "price_raw": 10925800,
+    "volume_raw": 8000
+  },
+  {
+    "sequence_id": 800,
+    "state_hash": "945b688214fd0143b3288e1eab79a4cb28a514c180dea53711f0f6c9781c3cab",
+    "price_raw": 11295800,
+    "volume_raw": 1950
+  },
+  {
+    "sequence_id": 900,
+    "state_hash": "cbdfefe67f18c9188ca142ada823dff831fbc1ecd9de55e05deb8074bc0b8cec",
+    "price_raw": 11299500,
+    "volume_raw": 1950
+  },
+  {
+    "sequence_id": 1000,
+    "state_hash": "4472dfe501f55e4056efdff027ad50014076eeb6404787f444fef71e80aa98da",
+    "price_raw": 11299500,
+    "volume_raw": 1950
+  },
+  {
+    "sequence_id": 1000,
+    "state_hash": "4472dfe501f55e4056efdff027ad50014076eeb6404787f444fef71e80aa98da",
+    "price_raw": 11299500,
+    "volume_raw": 1950
+  }
+]

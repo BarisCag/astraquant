@@ -12,3 +12,5 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo test -p astra-core test_event_serialization_fuzz --release
+      - run: cargo test -p astra-core test_symbolic_divergence_detection --release
+

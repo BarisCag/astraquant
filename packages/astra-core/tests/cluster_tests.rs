@@ -2,14 +2,15 @@ use astra_core::cluster::ClusterNode;
 use astra_core::events::{AstraEvent, EventType, PayloadEncoding, PayloadMetadata};
 use astra_core::exchange::ExchangeRuntime;
 use astra_core::kernel::AstraKernel;
-use astra_core::risk::RiskLimits;
+use astra_core::risk::create_default_risk_engine;
 use astra_core::runtime::StrategyRuntime;
 use astra_core::transport::TransportPacket;
 use astra_core::types::{Money, Quantity};
 use astra_core::verification::verify_cluster_hashes;
 
 fn create_kernel() -> AstraKernel {
-    let limits = RiskLimits::new(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
+    let limits =
+        create_default_risk_engine(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
     AstraKernel::new(StrategyRuntime::new(ExchangeRuntime::new(limits)))
 }
 

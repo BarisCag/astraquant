@@ -7,7 +7,7 @@ use astra_core::journal::EventJournal;
 use astra_core::kernel::AstraKernel;
 use astra_core::marketdata::MarketTick;
 use astra_core::replay::ReplayEngine;
-use astra_core::risk::RiskLimits;
+use astra_core::risk::create_default_risk_engine;
 use astra_core::runtime::StrategyRuntime;
 use astra_core::simulation::SimulationRuntime;
 use astra_core::types::{Money, Price, Quantity};
@@ -54,7 +54,8 @@ fn test_simulation_deterministic_replay_equivalence() {
     let feed = HistoricalFeed::new(Dataset::load(dataset_path.to_str().unwrap()).unwrap());
     let clock = VirtualClock::new(1_700_000_000_000_000_000);
 
-    let limits = RiskLimits::new(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
+    let limits =
+        create_default_risk_engine(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
 
     let kernel = AstraKernel::new(StrategyRuntime::new(ExchangeRuntime::new(limits.clone())));
     let journal = EventJournal::create(&jl_path, 1_700_000_000_000_000_000).unwrap();

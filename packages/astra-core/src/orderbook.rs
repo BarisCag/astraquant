@@ -16,6 +16,7 @@ pub enum OrderSide {
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct LimitOrderPlacedPayload {
     pub order_id: u64,
+    pub trader_id: u64,
     pub symbol: String,
     pub side: OrderSide,
     pub price: Price,
@@ -32,6 +33,8 @@ pub struct LimitOrderCancelledPayload {
 pub struct LimitOrderMatchedPayload {
     pub maker_order_id: u64,
     pub taker_order_id: u64,
+    pub maker_trader_id: u64,
+    pub taker_trader_id: u64,
     pub match_price: Price,
     pub matched_quantity: Quantity,
 }
@@ -39,6 +42,7 @@ pub struct LimitOrderMatchedPayload {
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct OrderNode {
     pub order_id: u64,
+    pub trader_id: u64,
     pub quantity: Quantity,
 }
 
@@ -94,6 +98,7 @@ impl OrderBook {
 
         let node = OrderNode {
             order_id: payload.order_id,
+            trader_id: payload.trader_id,
             quantity: payload.quantity,
         };
 

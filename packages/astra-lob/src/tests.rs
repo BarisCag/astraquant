@@ -26,6 +26,7 @@ mod tests {
             remaining_quantity: Quantity(quantity),
             timestamp_ns: 1000,
             trader_id: 1,
+            queue_position: Default::default(),
         }
     }
 

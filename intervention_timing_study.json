@@ -1,0 +1,26 @@
+{
+  "study": "Optimal Policy Intervention Timing",
+  "crisis_studies": [
+    {
+      "crisis": "flash_crash_2010",
+      "optimal_intervention_sequence": 300,
+      "cascade_prevented_pct": 19.9,
+      "recovery_speed_delta": 0.0,
+      "best_action": "SHORT_BAN"
+    },
+    {
+      "crisis": "lehman_2008",
+      "optimal_intervention_sequence": 400,
+      "cascade_prevented_pct": 5.0,
+      "recovery_speed_delta": 0.0,
+      "best_action": "CIRCUIT_BREAKER"
+    },
+    {
+      "crisis": "covid_2020",
+      "optimal_intervention_sequence": 400,
+      "cascade_prevented_pct": 7.5,
+      "recovery_speed_delta": 0.0,
+      "best_action": "CIRCUIT_BREAKER"
+    }
+  ]
+}

@@ -13,6 +13,8 @@ pub struct Trade {
     pub taker_side: crate::orderbook::OrderSide,
     pub maker_order_id: u64,
     pub taker_order_id: u64,
+    pub maker_trader_id: u64,
+    pub taker_trader_id: u64,
     pub price: Price,
     pub quantity: Quantity,
     pub timestamp_ns: u64,

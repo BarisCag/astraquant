@@ -7,12 +7,14 @@ use std::collections::{BTreeMap, BTreeSet, VecDeque};
 #[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq, Eq)]
 pub struct PriceLevel {
     pub orders: VecDeque<Order>,
+    pub queue_state: crate::queue::QueueState,
 }
 
 impl PriceLevel {
     pub fn new() -> Self {
         Self {
             orders: VecDeque::new(),
+            queue_state: crate::queue::QueueState::new(),
         }
     }
 }
@@ -36,6 +38,15 @@ impl LimitOrderBook {
             bids: BTreeMap::new(),
             orders: BTreeMap::new(),
         }
+    }
+
+    pub fn get_order(&self, order_id: u64) -> Option<&Order> {
+        self.orders.get(&order_id).and_then(|(side, price)| {
+            match side {
+                OrderSide::Bid => self.bids.get(price),
+                OrderSide::Ask => self.asks.get(price),
+            }.and_then(|level| level.orders.iter().find(|o| o.order_id == order_id))
+        })
     }
 
     pub fn validate_invariants(&self) -> InvariantReport {
@@ -234,6 +245,8 @@ impl LimitOrderBook {
                             matched_quantity: Quantity(match_qty),
                             liquidity_side: LiquiditySide::Maker,
                             timestamp_ns: incoming.timestamp_ns,
+                            trader_id: resting.trader_id,
+                            queue_position: resting.queue_position.clone(),
                         }));
                         events.push(OrderEvent::TradeExecuted(TradeExecution {
                             resting_order_id: resting.order_id,
@@ -243,7 +256,11 @@ impl LimitOrderBook {
                             matched_quantity: Quantity(match_qty),
                             liquidity_side: LiquiditySide::Taker,
                             timestamp_ns: incoming.timestamp_ns,
+                            trader_id: incoming.trader_id,
+                            queue_position: resting.queue_position.clone(),
                         }));
+
+                        level.queue_state.record_depletion(match_qty);
 
                         if resting.remaining_quantity.0 > 0 {
                             level.orders.push_front(resting);
@@ -292,6 +309,8 @@ impl LimitOrderBook {
                             matched_quantity: Quantity(match_qty),
                             liquidity_side: LiquiditySide::Maker,
                             timestamp_ns: incoming.timestamp_ns,
+                            trader_id: resting.trader_id,
+                            queue_position: resting.queue_position.clone(),
                         }));
                         events.push(OrderEvent::TradeExecuted(TradeExecution {
                             resting_order_id: resting.order_id,
@@ -301,7 +320,11 @@ impl LimitOrderBook {
                             matched_quantity: Quantity(match_qty),
                             liquidity_side: LiquiditySide::Taker,
                             timestamp_ns: incoming.timestamp_ns,
+                            trader_id: incoming.trader_id,
+                            queue_position: resting.queue_position.clone(),
                         }));
+
+                        level.queue_state.record_depletion(match_qty);
 
                         if resting.remaining_quantity.0 > 0 {
                             level.orders.push_front(resting);
@@ -327,10 +350,12 @@ impl LimitOrderBook {
                 match incoming.side {
                     OrderSide::Bid => {
                         let level = self.bids.entry(incoming.price).or_default();
+                        incoming.queue_position = level.queue_state.push_back(incoming.remaining_quantity.0);
                         level.orders.push_back(incoming.clone());
                     }
                     OrderSide::Ask => {
                         let level = self.asks.entry(incoming.price).or_default();
+                        incoming.queue_position = level.queue_state.push_back(incoming.remaining_quantity.0);
                         level.orders.push_back(incoming.clone());
                     }
                 }
@@ -368,7 +393,18 @@ impl LimitOrderBook {
 
         if let Some(level) = level_opt {
             let initial_len = level.orders.len();
-            level.orders.retain(|o| o.order_id != order_id);
+            let mut cancelled_qty = 0;
+            level.orders.retain(|o| {
+                if o.order_id == order_id {
+                    cancelled_qty += o.remaining_quantity.0;
+                    false
+                } else {
+                    true
+                }
+            });
+            if cancelled_qty > 0 {
+                level.queue_state.record_depletion(cancelled_qty);
+            }
             if level.orders.len() < initial_len {
                 events.push(OrderEvent::Cancelled {
                     order_id,
@@ -417,6 +453,10 @@ impl LimitOrderBook {
                     // Equivalent to cancel
                     return self.cancel(order_id);
                 } else {
+                    let diff = order.remaining_quantity.0 - new_quantity.0;
+                    if diff > 0 {
+                        level.queue_state.record_depletion(diff);
+                    }
                     order.remaining_quantity = new_quantity;
                     events.push(OrderEvent::Modified {
                         order_id,

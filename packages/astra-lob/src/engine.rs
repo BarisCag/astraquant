@@ -87,7 +87,10 @@ impl EventReducer for MatchingEngine {
                 let order: Order = deserialize_canonical(&event.payload)
                     .map_err(|e| EngineError::DeserializationFailed(e.to_string()))?;
                 let symbol = order.symbol.clone();
-                let book = self.books.entry(symbol.clone()).or_insert_with(|| LimitOrderBook::new(symbol));
+                let book = self
+                    .books
+                    .entry(symbol.clone())
+                    .or_insert_with(|| LimitOrderBook::new(symbol));
                 let events = book.submit(order);
                 self.diagnostics.ingest_events(&events);
                 self.diagnostics.update_depth_metrics(book);

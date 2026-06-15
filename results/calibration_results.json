@@ -1,0 +1,23 @@
+[
+  {
+    "crisis": "flash_crash_2010",
+    "best_herding_factor": 0.1,
+    "best_loss_aversion": 1.5,
+    "fit_score": 161.0,
+    "cascade_depth_error_pct": 0.0014061749421372112
+  },
+  {
+    "crisis": "lehman_2008",
+    "best_herding_factor": 0.1,
+    "best_loss_aversion": 1.5,
+    "fit_score": 327.0,
+    "cascade_depth_error_pct": 0.0026164186269803168
+  },
+  {
+    "crisis": "covid_2020",
+    "best_herding_factor": 0.1,
+    "best_loss_aversion": 1.5,
+    "fit_score": 1179.0,
+    "cascade_depth_error_pct": 0.004288052373158756
+  }
+]

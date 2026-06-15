@@ -1,4 +1,9 @@
 //! Exchange runtime: matching engine, portfolio, ledger, and risk limits.
+//!
+//! # Legacy Warning
+//! This module represents the minimal legacy deterministic runtime.
+//! The current authoritative orchestration layer is `astra-exchange::ExchangeRuntime`,
+//! which integrates `astra-lob` and `astra-portfolio` advanced infrastructure.
 
 use crate::events::{AstraEvent, EventType};
 use crate::hashing::{hash_bytes, DeterministicState};
@@ -7,29 +12,29 @@ use crate::matching::MatchingEngine;
 use crate::orderbook::{
     LimitOrderCancelledPayload, LimitOrderMatchedPayload, LimitOrderPlacedPayload, OrderSide,
 };
-use crate::portfolio::Portfolio;
 use crate::replay::EventReducer;
-use crate::risk::RiskLimits;
 use crate::serialization::deserialize_canonical;
 use crate::trades::{Trade, TradeId};
+use astra_portfolio::engine::PositionEngine;
+use astra_risk::engine::RiskEngine;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ExchangeRuntime {
-    pub risk_limits: RiskLimits,
+    pub risk_engine: RiskEngine,
     pub markets: BTreeMap<String, MatchingEngine>,
-    pub portfolio: Portfolio,
+    pub position_engine: PositionEngine,
     pub ledger: TradeLedger,
     pub last_applied_sequence_id: Option<u64>,
 }
 
 impl ExchangeRuntime {
-    pub fn new(risk_limits: RiskLimits) -> Self {
+    pub fn new(risk_engine: RiskEngine) -> Self {
         Self {
-            risk_limits,
+            risk_engine,
             markets: BTreeMap::new(),
-            portfolio: Portfolio::new(),
+            position_engine: PositionEngine::new(),
             ledger: TradeLedger::new(),
             last_applied_sequence_id: None,
         }
@@ -61,16 +66,33 @@ impl ExchangeRuntime {
             taker_side,
             maker_order_id: match_payload.maker_order_id,
             taker_order_id: match_payload.taker_order_id,
+            maker_trader_id: match_payload.maker_trader_id,
+            taker_trader_id: match_payload.taker_trader_id,
             price: match_payload.match_price,
             quantity: match_payload.matched_quantity,
             timestamp_ns,
         };
-        self.portfolio.apply_trade_settled(
+        let is_taker_buy = trade.taker_side == OrderSide::Bid;
+        // Update taker
+        self.position_engine.apply_fill(
+            trade.taker_trader_id,
             &trade.symbol,
-            trade.taker_side,
-            trade.price,
-            trade.quantity,
+            is_taker_buy,
+            trade.quantity.0,
+            trade.price.0,
         );
+        // Update maker
+        self.position_engine.apply_fill(
+            trade.maker_trader_id,
+            &trade.symbol,
+            !is_taker_buy,
+            trade.quantity.0,
+            trade.price.0,
+        );
+
+        self.position_engine
+            .update_mark_price(&trade.symbol, trade.price.0);
+
         self.ledger.trades.insert(trade.trade_id.0, trade);
     }
 
@@ -79,12 +101,14 @@ impl ExchangeRuntime {
         event: &AstraEvent,
         payload: &LimitOrderPlacedPayload,
     ) -> Result<(), String> {
-        self.risk_limits.validate_order(
-            &self.portfolio,
-            &payload.symbol,
-            payload.quantity,
-            payload.price,
-        )?;
+        self.risk_engine.increment_sequence();
+        let notional = payload.price.0.saturating_mul(payload.quantity.0 as i64);
+        if let Err(e) =
+            self.risk_engine
+                .validate_order(payload.trader_id, payload.quantity.0, notional)
+        {
+            return Err(format!("Risk Violation: {:?}", e));
+        }
 
         if !self.markets.contains_key(&payload.symbol) {
             self.add_market(payload.symbol.clone());
@@ -154,17 +178,29 @@ impl EventReducer for ExchangeRuntime {
             }
             EventType::TradeSettled => {
                 if let Ok(trade) = deserialize_canonical::<Trade>(&event.payload) {
-                    self.portfolio.apply_trade_settled(
+                    let is_taker_buy = trade.taker_side == OrderSide::Bid;
+                    self.position_engine.apply_fill(
+                        trade.taker_trader_id,
                         &trade.symbol,
-                        trade.taker_side,
-                        trade.price,
-                        trade.quantity,
+                        is_taker_buy,
+                        trade.quantity.0,
+                        trade.price.0,
                     );
+                    self.position_engine.apply_fill(
+                        trade.maker_trader_id,
+                        &trade.symbol,
+                        !is_taker_buy,
+                        trade.quantity.0,
+                        trade.price.0,
+                    );
+                    self.position_engine
+                        .update_mark_price(&trade.symbol, trade.price.0);
+
                     self.ledger.trades.insert(trade.trade_id.0, trade);
                 }
             }
             EventType::RiskLimitBreached => {
-                self.risk_limits.apply(event)?;
+                // If we want to record an external breach to increment risk, we can.
             }
             _ => {}
         }
@@ -181,11 +217,11 @@ impl EventReducer for ExchangeRuntime {
 impl DeterministicState for ExchangeRuntime {
     fn state_hash(&self) -> [u8; 32] {
         let mut bytes = Vec::new();
-        bytes.extend_from_slice(&self.risk_limits.state_hash());
+        bytes.extend_from_slice(&self.risk_engine.state_hash());
         for (_, market) in self.markets.iter() {
             bytes.extend_from_slice(&market.book.state_hash());
         }
-        bytes.extend_from_slice(&self.portfolio.state_hash());
+        bytes.extend_from_slice(&self.position_engine.state_hash());
         bytes.extend_from_slice(&self.ledger.state_hash());
         if let Some(seq) = self.last_applied_sequence_id {
             bytes.extend_from_slice(&seq.to_le_bytes());

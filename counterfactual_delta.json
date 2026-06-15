@@ -1,0 +1,10 @@
+{
+  "intervention_point": 400,
+  "baseline_hash": "4472dfe501f55e4056efdff027ad50014076eeb6404787f444fef71e80aa98da",
+  "intervention_hash": "4733bb254571cba0286575505b1ced5a5997f7fe0a39cbe76fc29735b8013548",
+  "baseline_price_nadir_raw": 10558450,
+  "intervention_price_nadir_raw": 10558450,
+  "price_delta_raw": 0,
+  "cascade_events_prevented": 60,
+  "hashes_diverged": true
+}

@@ -168,9 +168,17 @@ impl EventJournal {
         for event_result in (JournalIterator {
             reader: BufReader::new(file),
         }) {
-            let event = event_result?;
-            last_seq = event.sequence_id;
-            count += 1;
+            match event_result {
+                Ok(event) => {
+                    last_seq = event.sequence_id;
+                    count += 1;
+                }
+                Err(e) if e.kind() == io::ErrorKind::UnexpectedEof => {
+                    // Truncated trailing record
+                    break;
+                }
+                Err(e) => return Err(e),
+            }
         }
         Ok((count, last_seq))
     }

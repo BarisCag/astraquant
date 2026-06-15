@@ -2,6 +2,16 @@
 
 AstraQuant OS is a deterministic quantitative systems research platform. The architecture is explicitly split between a non-deterministic, wall-clock aware "Quarantine Layer" (`astra-ops`) and a purely deterministic state machine (`astra-core`).
 
+## Component Stack
+- **`astra-exchange` (Current)**: The authoritative full-system orchestration layer linking all advanced deterministic subsystems.
+- **`astra-core`**: Core types, deterministic hashing primitives, journal definitions, and the *legacy* minimal runtime (`exchange.rs`).
+- **`astra-stream`**: Journal IO, event decoding, and timestamp-based chunking.
+- **`astra-lob`**: The advanced, replay-safe Limit Order Book and matching engine subsystem.
+- **`astra-risk`**: Isolated multi-tenant risk validation engine evaluating sequences and inventory without circular dependencies.
+- **`astra-portfolio`**: Deterministic portfolio accounting, managing complex inventory flips and average cost basis.
+- **`astra-inspect`**: The deterministic analytics and research visualization layer.
+- **`astra-ops`**: Auxiliary deployment utilities.
+
 ## Core Architecture Principles
 
 1. **Absolute Determinism**: The core state machine (`AstraKernel`) executes transactions without any awareness of wall-clock time, networking, or threads.
@@ -40,6 +50,11 @@ flowchart TD
     end
   end
 
+  subgraph astra-inspect [astra-inspect (Observability)]
+    Inspector[ReplayInspector]
+    Timeline[ReplayTimeline]
+  end
+
   StreamJournal -->|Replays| Journal
   Network -->|Untrusted Bytes| Daemon
   Daemon -->|Sanitized Commands| Gateway
@@ -49,6 +64,10 @@ flowchart TD
   SR --> ER
   ER --> ME
   ER --> Portfolio
+  
+  Journal -.->|Offline Replay| Inspector
+  Inspector -.->|Examines State| ER
+  Inspector --> Timeline
 ```
 
 ### `astra-stream` (Ingestion Quarantine)
@@ -59,6 +78,9 @@ The boundary layer. It interfaces with non-deterministic elements (OS threads, f
 
 ### `astra-core` (Deterministic Sandbox)
 A pure, math-driven execution environment. It contains no async primitives, no networking, and no I/O. It simply processes `AstraEvent` objects and mutates state synchronously.
+
+### `astra-inspect` (Research Tooling)
+An offline visualization and analytics crate that hooks into the deterministic journal to construct execution timelines, evaluate rejections, and produce perfectly reproducible benchmark reports without mutating core state.
 
 ---
 

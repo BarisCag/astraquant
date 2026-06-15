@@ -5,7 +5,7 @@ use astra_core::journal::EventJournal;
 use astra_core::kernel::AstraKernel;
 use astra_core::orderbook::{LimitOrderPlacedPayload, OrderSide};
 use astra_core::replay::{EventReducer, ReplayEngine};
-use astra_core::risk::RiskLimits;
+use astra_core::risk::create_default_risk_engine;
 use astra_core::runtime::StrategyRuntime;
 use astra_core::serialization::serialize_canonical;
 use astra_core::types::{Money, Price, Quantity};
@@ -27,7 +27,8 @@ fn test_exchange_limit_order_and_replay_equivalence() {
     let jl_path = temp_path("exchange_wiring.astra_jl");
     cleanup(&jl_path);
 
-    let limits = RiskLimits::new(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
+    let limits =
+        create_default_risk_engine(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
 
     let mut runtime = ExchangeRuntime::new(limits.clone());
     runtime.add_market("BTC/USD".to_string());
@@ -36,6 +37,7 @@ fn test_exchange_limit_order_and_replay_equivalence() {
 
     let ask = LimitOrderPlacedPayload {
         order_id: 1,
+        trader_id: 1,
         symbol: "BTC/USD".to_string(),
         side: OrderSide::Ask,
         price: Price::new(500_000_000),
@@ -53,6 +55,7 @@ fn test_exchange_limit_order_and_replay_equivalence() {
 
     let bid = LimitOrderPlacedPayload {
         order_id: 2,
+        trader_id: 1,
         symbol: "BTC/USD".to_string(),
         side: OrderSide::Bid,
         price: Price::new(500_000_000),
@@ -88,12 +91,13 @@ fn test_exchange_limit_order_and_replay_equivalence() {
 
 #[test]
 fn test_exchange_risk_rejects_oversized_order() {
-    let limits = RiskLimits::new(Money::new(1_000), Quantity::new(10));
+    let limits = create_default_risk_engine(Money::new(1_000), Quantity::new(10));
     let mut runtime = ExchangeRuntime::new(limits);
     runtime.add_market("BTC/USD".to_string());
 
     let payload = LimitOrderPlacedPayload {
         order_id: 99,
+        trader_id: 1,
         symbol: "BTC/USD".to_string(),
         side: OrderSide::Bid,
         price: Price::new(100),
@@ -117,7 +121,8 @@ fn test_kernel_chain_matching_portfolio_ledger_replay() {
     let jl_path = temp_path("kernel_chain.astra_jl");
     cleanup(&jl_path);
 
-    let limits = RiskLimits::new(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
+    let limits =
+        create_default_risk_engine(Money::new(10_000_000_000_000), Quantity::new(1_000_000_000));
 
     let mut exchange = ExchangeRuntime::new(limits.clone());
     exchange.add_market("ETH/USD".to_string());
@@ -127,6 +132,7 @@ fn test_kernel_chain_matching_portfolio_ledger_replay() {
 
     let sell = LimitOrderPlacedPayload {
         order_id: 10,
+        trader_id: 1,
         symbol: "ETH/USD".to_string(),
         side: OrderSide::Ask,
         price: Price::new(30_000_000),
@@ -147,6 +153,7 @@ fn test_kernel_chain_matching_portfolio_ledger_replay() {
 
     let buy = LimitOrderPlacedPayload {
         order_id: 11,
+        trader_id: 1,
         symbol: "ETH/USD".to_string(),
         side: OrderSide::Bid,
         price: Price::new(30_000_000),

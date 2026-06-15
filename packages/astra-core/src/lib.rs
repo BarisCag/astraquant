@@ -24,7 +24,6 @@ pub mod metrics;
 pub mod orchestrator;
 pub mod orderbook;
 pub mod package;
-pub mod portfolio;
 pub mod proof;
 pub mod replay;
 pub mod replication;

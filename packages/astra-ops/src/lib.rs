@@ -1,6 +1,4 @@
-//! Non-deterministic boundary: telemetry, metrics export, and journal audit helpers.
-
 pub mod audit;
-pub mod binance_live;
-pub mod metrics_exporter;
+pub mod control;
+pub mod recovery;
 pub mod telemetry;

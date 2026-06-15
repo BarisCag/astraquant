@@ -21,3 +21,7 @@ pub mod metrics;
 pub mod normalized;
 pub mod replay;
 pub mod rotation;
+pub mod reconstruction;
+pub mod fidelity;
+pub mod normalization;
+pub mod certification;
