@@ -12,9 +12,8 @@ fn test_deterministic_replay_after_forced_crash() {
     let limits = create_default_risk_engine(Money::new(100_000_000), Quantity::new(1_000));
 
     let mut kernel = AstraKernel::new(StrategyRuntime::new(ExchangeRuntime::new(limits)));
-    let temp_dir = std::env::temp_dir().join("astra_crash_test");
-    std::fs::create_dir_all(&temp_dir).unwrap();
-    let journal_path = temp_dir.join("test.astra_jl");
+    let temp_dir = tempfile::tempdir().unwrap();
+    let journal_path = temp_dir.path().join("test.astra_jl");
 
     // Simulate initial run
     {
@@ -44,6 +43,4 @@ fn test_deterministic_replay_after_forced_crash() {
     assert_eq!(result.events_applied, 2);
     assert_eq!(result.final_sequence_id, 2);
     assert_ne!(result.final_state_hash, [0; 32]); // Ensure hash mutated
-
-    std::fs::remove_dir_all(temp_dir).unwrap();
 }

@@ -7,7 +7,6 @@ use crate::regulation::{
     CircuitBreakerRule, CollateralEscalationRule, SettlementFreezePolicy, ShortSaleRestriction,
     VenueParticipationRule, VolatilityInterruption,
 };
-use astra_core::events::AstraEvent;
 
 #[derive(Clone, Debug, Default)]
 pub struct InterventionStateMachine {
@@ -41,12 +40,11 @@ impl PolicyEngine {
 
     pub fn evaluate_sequence(
         &mut self,
-        current_sequence: u64,
+        _current_sequence: u64,
         _metrics: &crate::systemic::SystemicPropagationMetrics,
     ) -> Vec<PolicyAction> {
         // Here we would evaluate endogenous thresholds based on metrics.
         // For now we just return an empty set.
-        let actions = Vec::new();
-        actions
+        Vec::new()
     }
 }

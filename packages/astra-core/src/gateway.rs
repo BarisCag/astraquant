@@ -78,8 +78,9 @@ mod tests {
     /// journal events with strictly increasing timestamp_ns values.
     #[test]
     fn test_consecutive_events_have_increasing_timestamps() {
-        let dir = std::env::temp_dir().join("astra_gw_ts_test");
-        std::fs::create_dir_all(&dir).unwrap();
+        let _tempdir = tempfile::tempdir().unwrap();
+        let dir = _tempdir.path().to_path_buf();
+
         let path = dir.join("ts_test.astra_jl");
         let _ = std::fs::remove_file(&path);
 
@@ -101,7 +102,5 @@ mod tests {
             events[1].timestamp_ns
         );
         assert_ne!(events[0].timestamp_ns, 0, "timestamp must not be zero");
-
-        let _ = std::fs::remove_dir_all(&dir);
     }
 }

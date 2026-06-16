@@ -1,4 +1,4 @@
-use crate::policy::{PolicyAction, PolicyExecutionWindow};
+use crate::policy::PolicyExecutionWindow;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq, Hash)]

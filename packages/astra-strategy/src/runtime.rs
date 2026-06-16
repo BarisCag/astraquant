@@ -8,6 +8,12 @@ pub struct StrategyRuntime {
     pub contexts: BTreeMap<u64, AgentContext>,
 }
 
+impl Default for StrategyRuntime {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl StrategyRuntime {
     pub fn new() -> Self {
         Self {

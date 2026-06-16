@@ -52,6 +52,12 @@ pub struct InvariantRegistry {
     pub invariants: Vec<InvariantDefinition>,
 }
 
+impl Default for InvariantRegistry {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl InvariantRegistry {
     pub fn new() -> Self {
         Self {

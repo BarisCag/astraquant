@@ -11,7 +11,6 @@ use astra_core::serialization::deserialize_canonical;
 use astra_core::serialization::serialize_canonical;
 use astra_lob::book::LimitOrderBook;
 use astra_lob::types::OrderEvent;
-use astra_ops::control::{OperationalAction, OperationalCommand};
 use astra_portfolio::engine::PositionEngine;
 use astra_risk::engine::RiskEngine;
 use astra_router::router::SmartOrderRouter;
@@ -19,7 +18,6 @@ use astra_router::venue::{VenueFeeModel, VenueId, VenueLatencyProfile, VenueStat
 use astra_strategy::runtime::StrategyRuntime;
 use astra_strategy::types::{MarketEvent, StrategyAction};
 use bincode::Options;
-use std::collections::BTreeMap;
 
 pub struct ExchangeRuntime {
     pub risk_engine: RiskEngine,
@@ -425,7 +423,7 @@ impl ExchangeRuntime {
             let mut utilized_margin = 0;
             if let Some(positions) = self.position_engine.positions.get(&bucket.trader_id) {
                 for pos in positions.values() {
-                    utilized_margin += (pos.net_quantity.abs() as u64) * pos.last_mark_price as u64;
+                    utilized_margin += pos.net_quantity.unsigned_abs() * pos.last_mark_price as u64;
                 }
             }
             self.margin_engine
@@ -546,17 +544,17 @@ impl ExchangeRuntime {
 
         let diagnostics_hash = self.diagnostics.state_hash();
 
-        let mut settlement_bytes = bincode::options()
+        let settlement_bytes = bincode::options()
             .with_little_endian()
             .with_fixint_encoding()
             .serialize(&self.settlement_engine)
             .unwrap();
-        let mut margin_bytes = bincode::options()
+        let margin_bytes = bincode::options()
             .with_little_endian()
             .with_fixint_encoding()
             .serialize(&self.margin_engine)
             .unwrap();
-        let mut funding_bytes = bincode::options()
+        let funding_bytes = bincode::options()
             .with_little_endian()
             .with_fixint_encoding()
             .serialize(&self.funding_ledger)

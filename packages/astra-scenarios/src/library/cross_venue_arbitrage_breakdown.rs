@@ -32,7 +32,7 @@ impl ScenarioDefinition for CrossVenueArbitrageBreakdownScenario {
         _lcg: &mut DeterministicLcg,
     ) -> Vec<AstraEvent> {
         let mut events = Vec::new();
-        for (start, end) in &self.activation_windows {
+        for (start, _end) in &self.activation_windows {
             if current_sequence == *start {
                 events.push(AstraEvent {
                     timestamp_ns: 0,

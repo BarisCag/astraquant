@@ -11,7 +11,7 @@
 //! The footer is computed over raw BODY bytes only (not the header),
 //! allowing streaming verification of body integrity independently.
 
-use astra_core::events::{AstraEvent, EventType, PayloadEncoding, PayloadMetadata};
+use astra_core::events::AstraEvent;
 use astra_core::hashing::hash_bytes;
 use astra_core::serialization::{deserialize_canonical, serialize_canonical};
 use serde::{Deserialize, Serialize};

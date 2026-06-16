@@ -128,6 +128,7 @@ dependencies = [
  "hex",
  "proptest",
  "serde",
+ "tempfile",
 ]
 
 [[package]]
@@ -162,6 +163,7 @@ dependencies = [
  "blake3",
  "clap",
  "serde",
+ "tempfile",
 ]
 
 [[package]]
@@ -208,6 +210,7 @@ dependencies = [
  "clap",
  "serde",
  "serde_json",
+ "tempfile",
 ]
 
 [[package]]

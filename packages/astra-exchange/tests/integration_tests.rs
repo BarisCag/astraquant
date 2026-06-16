@@ -74,10 +74,8 @@ fn synthesize_journal(dir: PathBuf, seed: u64, num_events: usize) -> PathBuf {
 
 #[test]
 fn test_deterministic_replay_identity() {
-    let dir = std::env::temp_dir().join("astra_exchange_test_deterministic_replay_identity");
-    if dir.exists() {
-        fs::remove_dir_all(&dir).unwrap();
-    }
+    let _tempdir = tempfile::tempdir().unwrap();
+    let dir = _tempdir.path().to_path_buf();
     synthesize_journal(dir.clone(), 42, 1000);
 
     let mut risk_engine = RiskEngine::new();
@@ -118,10 +116,8 @@ fn test_deterministic_replay_identity() {
 
 #[test]
 fn test_rejected_order_isolation() {
-    let dir = std::env::temp_dir().join("astra_exchange_test_rejected_order_isolation");
-    if dir.exists() {
-        fs::remove_dir_all(&dir).unwrap();
-    }
+    let _tempdir = tempfile::tempdir().unwrap();
+    let dir = _tempdir.path().to_path_buf();
     // We create a journal with a massive order that should be rejected
     fs::create_dir_all(&dir).unwrap();
     let file_path = dir.join("astra_19700101_00.astra_jl");
@@ -189,10 +185,8 @@ fn test_rejected_order_isolation() {
 
 #[test]
 fn test_offline_arrival_rejection() {
-    let dir = std::env::temp_dir().join("astra_exchange_test_offline_arrival");
-    if dir.exists() {
-        fs::remove_dir_all(&dir).unwrap();
-    }
+    let _tempdir = tempfile::tempdir().unwrap();
+    let dir = _tempdir.path().to_path_buf();
     fs::create_dir_all(&dir).unwrap();
     let file_path = dir.join("astra_19700101_00.astra_jl");
     let mut journal = EventJournal::create(&file_path, 0).unwrap();

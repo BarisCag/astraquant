@@ -43,7 +43,7 @@ impl ExecutionQualityMetrics {
             // Realized spread = 2 * (Trade Price - Post Trade Midpoint) for Buy ...
             // We just use absolute for simplicity in deterministic simulation
             let realized = (2 * match_price - post_trade_scaled_midpoint).abs();
-            self.total_realized_spread_x2 += realized as i64;
+            self.total_realized_spread_x2 += realized;
 
             self.spread_samples += 1;
         }

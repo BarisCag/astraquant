@@ -38,11 +38,11 @@ pub fn build_lehman_collapse_events() -> Vec<AstraEvent> {
 
             let event_type = classify_event(i, seq_start, seq_end);
 
-            let half_spread = if i >= 600 && i < 900 { 10_000 } else { 2_000 };
+            let half_spread = if (600..900).contains(&i) { 10_000 } else { 2_000 };
             let bid = Price::new(price_raw - half_spread);
             let ask = Price::new(price_raw + half_spread);
 
-            let volume_raw: u64 = if i >= 600 && i < 900 {
+            let volume_raw: u64 = if (600..900).contains(&i) {
                 2_000 // Liquidity dried up
             } else if i >= 900 {
                 10_000 // Fed injection
@@ -80,7 +80,7 @@ fn classify_event(i: u64, phase_start: u64, _phase_end: u64) -> EventType {
     match phase_start {
         0 => EventType::MarketTick,
         300 => {
-            if pos % 50 == 0 {
+            if pos.is_multiple_of(50) {
                 EventType::InvariantViolationDetected
             }
             // Re-using as Contagion
@@ -89,9 +89,9 @@ fn classify_event(i: u64, phase_start: u64, _phase_end: u64) -> EventType {
             }
         }
         600 => {
-            if pos % 40 == 0 {
+            if pos.is_multiple_of(40) {
                 EventType::LiquidationExecuted
-            } else if pos % 20 == 0 {
+            } else if pos.is_multiple_of(20) {
                 EventType::SettlementFailed
             } else {
                 EventType::MarketTick
@@ -100,7 +100,7 @@ fn classify_event(i: u64, phase_start: u64, _phase_end: u64) -> EventType {
         900 => {
             if pos == 0 {
                 EventType::LiquidityFacilityActivated
-            } else if pos % 50 == 0 {
+            } else if pos.is_multiple_of(50) {
                 EventType::PolicyAction
             } else {
                 EventType::MarketTick

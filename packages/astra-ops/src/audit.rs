@@ -7,6 +7,12 @@ pub struct AuditTrail {
     pub interventions: BTreeMap<u64, OperationalAction>,
 }
 
+impl Default for AuditTrail {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AuditTrail {
     pub fn new() -> Self {
         Self {
@@ -29,6 +35,12 @@ pub struct ReplayAuditReport {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct CheckpointLineage {
     pub checkpoints: Vec<([u8; 32], u64)>, // Hash and sequence
+}
+
+impl Default for CheckpointLineage {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl CheckpointLineage {

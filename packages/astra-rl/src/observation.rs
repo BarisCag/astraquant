@@ -25,6 +25,12 @@ pub struct ReplayObservationDataset {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct CanonicalFeatureExtractor {}
 
+impl Default for CanonicalFeatureExtractor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CanonicalFeatureExtractor {
     pub fn new() -> Self {
         Self {}

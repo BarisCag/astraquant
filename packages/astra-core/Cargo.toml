@@ -18,6 +18,7 @@ astra-portfolio = { path = "../astra-portfolio" }
 
 [dev-dependencies]
 proptest = "1.11.0"
+tempfile = "3"
 
 [lints.rust]
 unsafe_code = "forbid"

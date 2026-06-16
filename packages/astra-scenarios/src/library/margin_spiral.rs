@@ -30,17 +30,15 @@ impl ScenarioDefinition for MarginSpiralScenario {
     ) -> Vec<AstraEvent> {
         let mut events = Vec::new();
         for (start, end) in &self.activation_windows {
-            if current_sequence >= *start && current_sequence <= *end {
-                if lcg.next_bool_ppm(50_000) {
-                    events.push(AstraEvent {
-                        timestamp_ns: 0,
-                        sequence_id: 0,
-                        event_type: EventType::MarginCallIssued,
-                        payload: serialize_canonical(&self.severity.margin_requirement_multiplier)
-                            .unwrap(),
-                        payload_metadata: PayloadMetadata::new(PayloadEncoding::Bincode, 1),
-                    });
-                }
+            if current_sequence >= *start && current_sequence <= *end && lcg.next_bool_ppm(50_000) {
+                events.push(AstraEvent {
+                    timestamp_ns: 0,
+                    sequence_id: 0,
+                    event_type: EventType::MarginCallIssued,
+                    payload: serialize_canonical(&self.severity.margin_requirement_multiplier)
+                        .unwrap(),
+                    payload_metadata: PayloadMetadata::new(PayloadEncoding::Bincode, 1),
+                });
             }
         }
         events

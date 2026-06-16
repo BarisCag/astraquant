@@ -30,16 +30,14 @@ impl ScenarioDefinition for FundingFreezeScenario {
     ) -> Vec<AstraEvent> {
         let mut events = Vec::new();
         for (start, end) in &self.activation_windows {
-            if current_sequence >= *start && current_sequence <= *end {
-                if lcg.next_bool_ppm(10_000) {
-                    events.push(AstraEvent {
-                        timestamp_ns: 0,
-                        sequence_id: 0,
-                        event_type: EventType::SettlementFailed,
-                        payload: serialize_canonical(&100_000u64).unwrap(),
-                        payload_metadata: PayloadMetadata::new(PayloadEncoding::Bincode, 1),
-                    });
-                }
+            if current_sequence >= *start && current_sequence <= *end && lcg.next_bool_ppm(10_000) {
+                events.push(AstraEvent {
+                    timestamp_ns: 0,
+                    sequence_id: 0,
+                    event_type: EventType::SettlementFailed,
+                    payload: serialize_canonical(&100_000u64).unwrap(),
+                    payload_metadata: PayloadMetadata::new(PayloadEncoding::Bincode, 1),
+                });
             }
         }
         events

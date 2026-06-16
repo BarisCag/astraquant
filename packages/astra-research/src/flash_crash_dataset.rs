@@ -48,14 +48,14 @@ pub fn build_flash_crash_events() -> Vec<AstraEvent> {
             let event_type = classify_event(i, seq_start, seq_end);
 
             // Bid/ask spread widens during cascade
-            let half_spread = if i >= 400 && i < 600 { 5_000 } else { 500 };
+            let half_spread = if (400..600).contains(&i) { 5_000 } else { 500 };
             let bid = Price::new(price_raw - half_spread);
             let ask = Price::new(price_raw + half_spread);
 
             // Volume spikes during cascade and recovery
-            let volume_raw: u64 = if i >= 400 && i < 600 {
+            let volume_raw: u64 = if (400..600).contains(&i) {
                 5_000 + (i - 400) * 100 // rising cascade volume
-            } else if i >= 600 && i < 700 {
+            } else if (600..700).contains(&i) {
                 8_000 // peak recovery volume
             } else {
                 1_000 + (i % 20) * 50 // normal variance
@@ -86,14 +86,14 @@ pub fn build_flash_crash_events() -> Vec<AstraEvent> {
 }
 
 fn classify_event(i: u64, phase_start: u64, phase_end: u64) -> EventType {
-    let phase_len = phase_end - phase_start;
+    let _phase_len = phase_end - phase_start;
     let pos = i - phase_start;
 
     match phase_start {
         0 => EventType::MarketTick, // Normal: all market ticks
         200 => {
             // Withdrawal: mostly ticks, but inject limit order cancellations every 20
-            if pos % 20 == 0 {
+            if pos.is_multiple_of(20) {
                 EventType::LimitOrderCancelled
             } else {
                 EventType::MarketTick
@@ -101,9 +101,9 @@ fn classify_event(i: u64, phase_start: u64, phase_end: u64) -> EventType {
         }
         400 => {
             // Cascade: margin calls and risk triggers mixed with ticks
-            if pos % 30 == 0 {
+            if pos.is_multiple_of(30) {
                 EventType::RiskThresholdTriggered
-            } else if pos % 15 == 0 {
+            } else if pos.is_multiple_of(15) {
                 EventType::MarginCallIssued
             } else {
                 EventType::MarketTick
@@ -113,7 +113,7 @@ fn classify_event(i: u64, phase_start: u64, phase_end: u64) -> EventType {
             // Recovery: circuit breaker at position 0, then stabilising ticks
             if pos == 0 {
                 EventType::CircuitBreakerTriggered
-            } else if pos % 50 == 0 {
+            } else if pos.is_multiple_of(50) {
                 EventType::RegulatoryIntervention
             } else {
                 EventType::MarketTick

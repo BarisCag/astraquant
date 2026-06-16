@@ -49,13 +49,13 @@ pub fn build_covid_crash_events() -> Vec<AstraEvent> {
 
             let event_type = classify_event(i, seq_start, seq_end);
 
-            let half_spread = if i >= 200 && i < 400 { 50_000 } else { 5_000 };
+            let half_spread = if (200..400).contains(&i) { 50_000 } else { 5_000 };
             let bid = Price::new(price_raw - half_spread);
             let ask = Price::new(price_raw + half_spread);
 
-            let volume_raw: u64 = if i >= 200 && i < 400 {
+            let volume_raw: u64 = if (200..400).contains(&i) {
                 0 // Halted
-            } else if i >= 400 && i < 600 {
+            } else if (400..600).contains(&i) {
                 15_000 // Flood of orders on resume
             } else {
                 3_000

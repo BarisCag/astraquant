@@ -11,7 +11,7 @@ use astra_core::events::BehavioralSeed;
 use astra_core::marketdata::MarketTick;
 use astra_core::serialization::deserialize_canonical;
 use serde::Serialize;
-use std::fs;
+
 
 #[derive(Debug, Serialize, Clone)]
 pub struct CalibrationResult {
@@ -111,6 +111,6 @@ impl CalibrationEngine {
                 return tick.bid_price.0;
             }
         }
-        10000_0000
+        100_000_000
     }
 }

@@ -14,9 +14,9 @@ use astra_core::runtime::StrategyRuntime;
 use astra_core::serialization::deserialize_canonical;
 use astra_core::types::{Money, Quantity};
 use serde::{Deserialize, Serialize};
-use std::path::Path;
 
-use crate::dataset_format::{CrisisDataset, DatasetReader};
+
+use crate::dataset_format::CrisisDataset;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HashTraceEntry {
@@ -30,6 +30,12 @@ use astra_core::merkle::MerkleTree;
 
 pub struct PhantomRunner {
     pub kernel: AstraKernel,
+}
+
+impl Default for PhantomRunner {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl PhantomRunner {
@@ -56,7 +62,7 @@ impl PhantomRunner {
             events_processed += 1;
             current_hashes.push(self.kernel.state_hash());
 
-            if events_processed % checkpoint_interval == 0 {
+            if events_processed.is_multiple_of(checkpoint_interval) {
                 let tree = MerkleTree::build(&current_hashes);
                 if let Some(root) = tree.root_hash() {
                     merkle_roots.push(hash_to_hex(&root));

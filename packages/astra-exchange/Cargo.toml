@@ -19,3 +19,6 @@ astra-clearing = { version = "0.1.0", path = "../astra-clearing" }
 astra-ops = { path = "../astra-ops" }
 astra-policy = { path = "../astra-policy" }
 astra-agents = { version = "0.1.0", path = "../astra-agents" }
+
+[dev-dependencies]
+tempfile = "3"

@@ -1,0 +1,20 @@
+# Normalize all text files to LF on checkout (Linux CI compatible)
+* text=auto eol=lf
+
+# Explicitly declare Rust source files as LF
+*.rs text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.sh text eol=lf
+
+# Binary files - never CRLF
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.exe binary
+*.zip binary

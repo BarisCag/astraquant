@@ -1,4 +1,4 @@
-use astra_core::events::{AstraEvent, EventType, PayloadEncoding, PayloadMetadata};
+use astra_core::events::{EventType, PayloadEncoding, PayloadMetadata};
 use astra_core::journal::EventJournal;
 use astra_core::orderbook::{LimitOrderPlacedPayload, OrderSide};
 use astra_core::serialization::serialize_canonical;
@@ -90,8 +90,8 @@ fn setup_inspector() -> ReplayInspector {
 
 #[test]
 fn test_low_activity_fixture() {
-    let dir = std::env::temp_dir().join("astra_bench_low");
-    let _ = fs::remove_dir_all(&dir);
+    let _tempdir = tempfile::tempdir().unwrap();
+    let dir = _tempdir.path().to_path_buf();
     synthesize_journal(dir.clone(), 42, 1000, false);
 
     let mut inspector = setup_inspector();
@@ -111,8 +111,8 @@ fn test_low_activity_fixture() {
 
 #[test]
 fn test_high_activity_fixture() {
-    let dir = std::env::temp_dir().join("astra_bench_high");
-    let _ = fs::remove_dir_all(&dir);
+    let _tempdir = tempfile::tempdir().unwrap();
+    let dir = _tempdir.path().to_path_buf();
     synthesize_journal(dir.clone(), 43, 10000, false);
 
     let mut inspector = setup_inspector();
@@ -125,8 +125,8 @@ fn test_high_activity_fixture() {
 
 #[test]
 fn test_rejection_heavy_fixture() {
-    let dir = std::env::temp_dir().join("astra_bench_reject");
-    let _ = fs::remove_dir_all(&dir);
+    let _tempdir = tempfile::tempdir().unwrap();
+    let dir = _tempdir.path().to_path_buf();
     synthesize_journal(dir.clone(), 44, 5000, true);
 
     let mut inspector = setup_inspector();
@@ -138,10 +138,10 @@ fn test_rejection_heavy_fixture() {
 
 #[test]
 fn test_deterministic_exports() {
-    let dir1 = std::env::temp_dir().join("astra_bench_export_1");
-    let dir2 = std::env::temp_dir().join("astra_bench_export_2");
-    let _ = fs::remove_dir_all(&dir1);
-    let _ = fs::remove_dir_all(&dir2);
+    let _tempdir1 = tempfile::tempdir().unwrap();
+    let _tempdir2 = tempfile::tempdir().unwrap();
+    let dir1 = _tempdir1.path().to_path_buf();
+    let dir2 = _tempdir2.path().to_path_buf();
 
     synthesize_journal(dir1.clone(), 123, 500, false);
     synthesize_journal(dir2.clone(), 123, 500, false);
@@ -176,8 +176,8 @@ fn test_deterministic_exports() {
 
 #[test]
 fn test_execution_quality_metrics() {
-    let dir = std::env::temp_dir().join("astra_bench_eq");
-    let _ = fs::remove_dir_all(&dir);
+    let _tempdir = tempfile::tempdir().unwrap();
+    let dir = _tempdir.path().to_path_buf();
     synthesize_journal(dir.clone(), 999, 2000, false);
 
     let mut inspector = setup_inspector();

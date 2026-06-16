@@ -18,3 +18,6 @@ astra-risk = { path = "../astra-risk" }
 astra-portfolio = { path = "../astra-portfolio" }
 astra-strategy = { path = "../astra-strategy" }
 astra-router = { path = "../astra-router" }
+
+[dev-dependencies]
+tempfile = "3"

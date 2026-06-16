@@ -32,7 +32,7 @@ impl ScenarioDefinition for MarketMakerWithdrawalScenario {
         _lcg: &mut DeterministicLcg,
     ) -> Vec<AstraEvent> {
         let mut events = Vec::new();
-        for (start, end) in &self.activation_windows {
+        for (start, _end) in &self.activation_windows {
             if current_sequence == *start {
                 // Phase 14A: We inject an initial systemic trigger, but the cascade emerges through agent topology
                 events.push(AstraEvent {

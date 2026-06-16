@@ -30,16 +30,14 @@ impl ScenarioDefinition for FragmentedLiquidityFailureScenario {
     ) -> Vec<AstraEvent> {
         let mut events = Vec::new();
         for (start, end) in &self.activation_windows {
-            if current_sequence >= *start && current_sequence <= *end {
-                if lcg.next_bool_ppm(10_000) {
-                    events.push(AstraEvent {
-                        timestamp_ns: 0,
-                        sequence_id: 0,
-                        event_type: EventType::VenueStatusChanged,
-                        payload: serialize_canonical(&1u8).unwrap(), // VenueId 1 fails
-                        payload_metadata: PayloadMetadata::new(PayloadEncoding::Bincode, 1),
-                    });
-                }
+            if current_sequence >= *start && current_sequence <= *end && lcg.next_bool_ppm(10_000) {
+                events.push(AstraEvent {
+                    timestamp_ns: 0,
+                    sequence_id: 0,
+                    event_type: EventType::VenueStatusChanged,
+                    payload: serialize_canonical(&1u8).unwrap(), // VenueId 1 fails
+                    payload_metadata: PayloadMetadata::new(PayloadEncoding::Bincode, 1),
+                });
             }
         }
         events

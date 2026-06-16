@@ -220,10 +220,10 @@ impl BehavioralCounterfactualEngine {
             if let Ok(tick) = deserialize_canonical::<MarketTick>(&first.payload) {
                 tick.bid_price.0
             } else {
-                10000_0000
+                100_000_000
             }
         } else {
-            10000_0000
+            100_000_000
         };
 
         let mut env = BehavioralAgentEnvironment::new(seed, initial_price);

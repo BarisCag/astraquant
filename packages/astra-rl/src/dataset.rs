@@ -31,6 +31,12 @@ pub struct ReplayTrainingCorpus {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ReplayDatasetBuilder {}
 
+impl Default for ReplayDatasetBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ReplayDatasetBuilder {
     pub fn new() -> Self {
         Self {}

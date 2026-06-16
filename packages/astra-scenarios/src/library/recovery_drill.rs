@@ -1,4 +1,4 @@
-use crate::scenario::{ScenarioDefinition, ScenarioRuntime};
+use crate::scenario::ScenarioDefinition;
 use astra_core::events::{AstraEvent, EventType, PayloadEncoding, PayloadMetadata};
 use astra_core::serialization::serialize_canonical;
 use astra_ops::control::{OperationalAction, OperationalCommand};

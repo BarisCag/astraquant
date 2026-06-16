@@ -1,4 +1,3 @@
-use astra_core::events::AstraEvent;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 

@@ -16,6 +16,12 @@ pub struct StrategyAnalyticsCollector {
     pub metrics_by_trader: BTreeMap<u64, StrategyAnalytics>,
 }
 
+impl Default for StrategyAnalyticsCollector {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl StrategyAnalyticsCollector {
     pub fn new() -> Self {
         Self {

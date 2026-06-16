@@ -77,7 +77,7 @@ pub trait RLPolicyDrivenBehavior {
     /// without invoking nondeterministic ML inference.
     fn evaluate_with_policy(
         &self,
-        state: &AgentState,
+        _state: &AgentState,
         observation_hash: &[u8; 32],
         policy_table: &astra_rl::action::CanonicalPolicyTable,
     ) -> Option<astra_rl::action::DiscreteAction> {

@@ -1,6 +1,5 @@
 use crate::state_space::StateVector;
 use astra_core::events::AstraEvent;
-use astra_core::kernel::AstraKernel;
 
 pub struct RLSandbox {
     pub is_active: bool,

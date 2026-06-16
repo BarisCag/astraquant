@@ -29,6 +29,12 @@ pub struct PolicyEvaluationRun {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct OfflineReplayEvaluator {}
 
+impl Default for OfflineReplayEvaluator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl OfflineReplayEvaluator {
     pub fn new() -> Self {
         Self {}
