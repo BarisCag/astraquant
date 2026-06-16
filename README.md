@@ -142,6 +142,3 @@ Rust · Axum · WASM · Blake3 · Prometheus · Grafana · Docker
 MIT
 
 ---
-*Built as independent research alongside Economics (BSc), 
-Çukurova University. Author pursuing MMF, Goethe University 
-Frankfurt.*
