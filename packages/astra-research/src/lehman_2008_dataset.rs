@@ -84,7 +84,7 @@ fn classify_event(i: u64, phase_start: u64, _phase_end: u64) -> EventType {
     match phase_start {
         0 => EventType::MarketTick,
         300 => {
-            if pos.is_multiple_of(50) {
+            if pos % 50 == 0 {
                 EventType::InvariantViolationDetected
             }
             // Re-using as Contagion
@@ -93,9 +93,9 @@ fn classify_event(i: u64, phase_start: u64, _phase_end: u64) -> EventType {
             }
         }
         600 => {
-            if pos.is_multiple_of(40) {
+            if pos % 40 == 0 {
                 EventType::LiquidationExecuted
-            } else if pos.is_multiple_of(20) {
+            } else if pos % 20 == 0 {
                 EventType::SettlementFailed
             } else {
                 EventType::MarketTick
@@ -104,7 +104,7 @@ fn classify_event(i: u64, phase_start: u64, _phase_end: u64) -> EventType {
         900 => {
             if pos == 0 {
                 EventType::LiquidityFacilityActivated
-            } else if pos.is_multiple_of(50) {
+            } else if pos % 50 == 0 {
                 EventType::PolicyAction
             } else {
                 EventType::MarketTick

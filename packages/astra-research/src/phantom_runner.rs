@@ -61,7 +61,7 @@ impl PhantomRunner {
             events_processed += 1;
             current_hashes.push(self.kernel.state_hash());
 
-            if events_processed.is_multiple_of(checkpoint_interval) {
+            if events_processed % checkpoint_interval == 0 {
                 let tree = MerkleTree::build(&current_hashes);
                 if let Some(root) = tree.root_hash() {
                     merkle_roots.push(hash_to_hex(&root));

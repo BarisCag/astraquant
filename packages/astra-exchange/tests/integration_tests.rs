@@ -38,7 +38,7 @@ fn synthesize_journal(dir: PathBuf, seed: u64, num_events: usize) -> PathBuf {
     let mut lcg = Lcg::new(seed);
 
     for sequence_id in 1..=num_events as u64 {
-        let is_buy = lcg.next().is_multiple_of(2);
+        let is_buy = lcg.next() % 2 == 0;
         let side = if is_buy {
             OrderSide::Bid
         } else {
