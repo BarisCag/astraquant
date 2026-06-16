@@ -35,9 +35,8 @@ fn synthesize_journal(dir: PathBuf, seed: u64, num_events: usize, reject_heavy: 
 
     let mut lcg = Lcg::new(seed);
 
-    let mut sequence_id = 1;
-    for _ in 0..num_events {
-        let is_bid = (lcg.next() >> 16) % 2 == 0;
+    for sequence_id in 1..=num_events as u64 {
+        let is_bid = (lcg.next() >> 16).is_multiple_of(2);
         let side = if is_bid {
             OrderSide::Bid
         } else {
@@ -45,7 +44,7 @@ fn synthesize_journal(dir: PathBuf, seed: u64, num_events: usize, reject_heavy: 
         };
 
         let price = lcg.next_range(49000, 51000);
-        let quantity = if reject_heavy && lcg.next() % 5 == 0 {
+        let quantity = if reject_heavy && lcg.next().is_multiple_of(5) {
             lcg.next_range(1_000_000, 2_000_000) // Huge order to trigger risk rejection
         } else {
             lcg.next_range(1, 100)
@@ -69,7 +68,7 @@ fn synthesize_journal(dir: PathBuf, seed: u64, num_events: usize, reject_heavy: 
                 PayloadMetadata::new(PayloadEncoding::Bincode, 1),
             )
             .unwrap();
-        sequence_id += 1;
+        
     }
     dir
 }

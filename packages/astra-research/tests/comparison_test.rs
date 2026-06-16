@@ -1,4 +1,4 @@
-use astra_research::comparison::{ExperimentComparison, ReplayDiff};
+use astra_research::comparison::ExperimentComparison;
 use astra_research::experiment::{ExperimentRun, SystemicMetrics};
 use astra_scenarios::scenario::ExperimentParameterSet;
 

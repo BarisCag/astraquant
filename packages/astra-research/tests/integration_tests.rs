@@ -1,5 +1,5 @@
 use astra_core::hashing::hash_to_hex;
-use astra_research::dataset_format::DatasetReader;
+
 use astra_research::phantom_runner::PhantomRunner;
 use std::collections::BTreeMap;
 use std::fs;
@@ -37,7 +37,7 @@ fn test_golden_hash_regression() {
     for (id, events) in datasets {
         let expected_hash = golden_hashes
             .get(id)
-            .expect(&format!("Missing hash for {}", id));
+            .unwrap_or_else(|| panic!("Missing hash for {}", id));
 
         let dataset = astra_research::dataset_format::CrisisDataset {
             header: astra_research::dataset_format::DatasetHeader {

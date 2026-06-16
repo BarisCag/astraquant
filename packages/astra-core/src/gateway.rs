@@ -61,15 +61,15 @@ impl ExecutionGateway {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::exchange::ExchangeRuntime;
+    
     use crate::journal::EventJournal;
-    use crate::kernel::AstraKernel;
+    
     use crate::risk::create_default_risk_engine;
-    use crate::runtime::StrategyRuntime;
+    
     use crate::types::{Money, Quantity};
 
     fn make_gateway(path: &std::path::Path) -> ExecutionGateway {
-        let limits = create_default_risk_engine(Money::new(1_000_000), Quantity::new(1_000));
+        let _limits = create_default_risk_engine(Money::new(1_000_000), Quantity::new(1_000));
         let journal = EventJournal::create(path, 1_700_000_000_000_000_000).unwrap();
         ExecutionGateway::new(journal)
     }

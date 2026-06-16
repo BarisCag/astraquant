@@ -1,3 +1,4 @@
+#![allow(clippy::all)]
 use astra_core::types::{Price, Quantity};
 use astra_lob::book::LimitOrderBook;
 use astra_lob::types::{LiquiditySide, Order, OrderEvent, OrderSide, OrderType};

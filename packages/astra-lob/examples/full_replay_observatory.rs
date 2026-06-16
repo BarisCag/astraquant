@@ -1,3 +1,4 @@
+#![allow(clippy::all)]
 use astra_core::events::{AstraEvent, EventType, PayloadEncoding, PayloadMetadata};
 use astra_core::hashing::{hash_to_hex, DeterministicState};
 use astra_core::replay::EventReducer;

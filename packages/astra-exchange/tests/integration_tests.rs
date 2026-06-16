@@ -1,11 +1,11 @@
-use astra_core::events::{AstraEvent, EventType, PayloadEncoding, PayloadMetadata};
+use astra_core::events::{EventType, PayloadEncoding, PayloadMetadata};
 use astra_core::journal::EventJournal;
 use astra_core::orderbook::{LimitOrderPlacedPayload, OrderSide};
 use astra_core::serialization::serialize_canonical;
 use astra_core::types::{Price, Quantity};
 use astra_exchange::replay::FullReplayEngine;
 use astra_exchange::runtime::ExchangeRuntime;
-use astra_exchange::state::ExchangeStateHash;
+
 use astra_risk::engine::RiskEngine;
 use astra_risk::types::TraderRiskProfile;
 use std::fs;
@@ -37,10 +37,8 @@ fn synthesize_journal(dir: PathBuf, seed: u64, num_events: usize) -> PathBuf {
 
     let mut lcg = Lcg::new(seed);
 
-    let mut sequence_id = 1;
-
-    for _ in 0..num_events {
-        let is_buy = lcg.next() % 2 == 0;
+    for sequence_id in 1..=num_events as u64 {
+        let is_buy = lcg.next().is_multiple_of(2);
         let side = if is_buy {
             OrderSide::Bid
         } else {
@@ -67,7 +65,7 @@ fn synthesize_journal(dir: PathBuf, seed: u64, num_events: usize) -> PathBuf {
                 PayloadMetadata::new(PayloadEncoding::Bincode, 1),
             )
             .unwrap();
-        sequence_id += 1;
+        
     }
     dir
 }

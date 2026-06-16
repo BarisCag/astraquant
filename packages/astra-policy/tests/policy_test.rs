@@ -1,6 +1,6 @@
 use astra_policy::engine::PolicyEngine;
 use astra_policy::intervention::LiquidityInjectionFacility;
-use astra_policy::policy::{PolicyAction, PolicyExecutionWindow};
+use astra_policy::policy::PolicyExecutionWindow;
 use astra_policy::systemic::SystemicPropagationMetrics;
 
 #[test]
@@ -19,7 +19,7 @@ fn test_liquidity_facility_activation() {
 
     engine.interventions.liquidity_facilities.push(facility);
 
-    let metrics = SystemicPropagationMetrics::new();
+    let _metrics = SystemicPropagationMetrics::new();
 
     // Evaluate sequence 99 (Before window)
     assert!(!engine.interventions.liquidity_facilities[0].is_active(99));

@@ -3,7 +3,7 @@ use astra_exchange::runtime::ExchangeRuntime;
 use astra_risk::engine::RiskEngine;
 use astra_scenarios::library::flash_crash::FlashCrashScenario;
 use astra_scenarios::orchestrator::ScenarioOrchestrator;
-use astra_scenarios::scenario::{ScenarioDefinition, ScenarioSeverity};
+use astra_scenarios::scenario::ScenarioSeverity;
 
 #[test]
 fn test_scenario_replay_identity() {

@@ -70,13 +70,13 @@ fn main() {
         }
 
         println!("Processing Dataset: {name}");
-        DatasetWriter::write(Path::new(&ds_path), name, date, &events).unwrap();
+        DatasetWriter::write(Path::new(&ds_path), name, date, events).unwrap();
 
         let dataset = DatasetReader::read(Path::new(&ds_path)).unwrap();
 
         // Determinism Check
         let mut r1 = PhantomRunner::new();
-        let (trace1, merkle) = r1.run(&dataset, CHECKPOINT_INTERVAL);
+        let (_trace1, merkle) = r1.run(&dataset, CHECKPOINT_INTERVAL);
         let mut r2 = PhantomRunner::new();
         let _ = r2.run(&dataset, CHECKPOINT_INTERVAL);
         let mut r3 = PhantomRunner::new();

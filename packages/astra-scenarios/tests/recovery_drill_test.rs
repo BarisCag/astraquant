@@ -3,7 +3,7 @@ use astra_exchange::runtime::ExchangeRuntime;
 use astra_risk::engine::RiskEngine;
 use astra_scenarios::library::recovery_drill::RecoveryDrillScenario;
 use astra_scenarios::orchestrator::ScenarioOrchestrator;
-use astra_scenarios::scenario::ScenarioDefinition;
+
 
 #[test]
 fn test_recovery_drill_execution() {
