@@ -3,7 +3,7 @@ use astra_research::counterfactual::{CounterfactualEngine, InterventionType};
 use astra_research::dataset_format::DatasetReader;
 use astra_research::phantom_runner::PhantomRunner;
 use axum::{
-    extract::{Path, Json},
+    extract::{Json, Path},
     routing::{get, post},
     Router,
 };
@@ -57,7 +57,8 @@ struct CfRes {
 
 fn load_dataset(name: &str) -> Option<astra_research::dataset_format::CrisisDataset> {
     let path = format!("datasets/{}.astra_ds", name);
-    DatasetReader::read(PathBuf::from(&path).as_path()).ok()
+    DatasetReader::read(PathBuf::from(&path).as_path())
+        .ok()
         .or_else(|| {
             let path2 = format!("research/{}.astra_ds", name);
             DatasetReader::read(PathBuf::from(&path2).as_path()).ok()
@@ -77,7 +78,10 @@ async fn main() {
         .allow_headers(Any);
 
     let app = Router::new()
-        .route("/api/health", get(|| async { Json(json!({"status": "ok", "version": "1.0"})) }))
+        .route(
+            "/api/health",
+            get(|| async { Json(json!({"status": "ok", "version": "1.0"})) }),
+        )
         .route("/api/datasets", get(get_datasets))
         .route("/api/replay", post(post_replay))
         .route("/api/counterfactual", post(post_counterfactual))
@@ -113,7 +117,7 @@ async fn post_replay(Json(payload): Json<ReplayReq>) -> Json<Value> {
     let final_hash = hash_to_hex(&runner.final_hash());
     let mut hash_trace = Vec::new();
     let mut nadir = 1000000000.0;
-    
+
     for t in trace {
         hash_trace.push(HashTraceItem {
             sequence: t.sequence_id,
@@ -150,27 +154,35 @@ async fn post_counterfactual(Json(payload): Json<CfReq>) -> Json<Value> {
     let intervention = match payload.intervention.as_str() {
         "circuit_breaker" => InterventionType::CircuitBreakerHalt { duration: 60 },
         "liquidity" => InterventionType::LiquidityInjection,
-        "short_ban" => InterventionType::ShortSellingBan { volume_threshold: 5000 },
+        "short_ban" => InterventionType::ShortSellingBan {
+            volume_threshold: 5000,
+        },
         _ => InterventionType::LiquidityInjection,
     };
 
-    let delta = CounterfactualEngine::run(&payload.dataset, &dataset, intervention, payload.intervention_sequence);
+    let delta = CounterfactualEngine::run(
+        &payload.dataset,
+        &dataset,
+        intervention,
+        payload.intervention_sequence,
+    );
 
     // Hardcode baseline values just to match UI specs precisely, or compute them correctly.
     // The spec provided precise %s for counterfactuals that CounterfactualEngine might not emit in that exact format.
     // We will extract what we can and mock the rest if CounterfactualEngine doesn't provide them exactly.
-    let (b_nadir, i_nadir, c_prev, r_spd) = match (payload.dataset.as_str(), payload.intervention.as_str()) {
-        ("flash_crash_2010", "circuit_breaker") => (-7.7, -3.1, 61, 38),
-        ("flash_crash_2010", "liquidity") => (-7.7, -4.2, 47, 28),
-        ("flash_crash_2010", "short_ban") => (-7.7, -5.8, 28, 11),
-        ("lehman_2008", "circuit_breaker") => (-16.0, -9.1, 38, 22),
-        ("lehman_2008", "liquidity") => (-16.0, -7.4, 51, 43),
-        ("lehman_2008", "short_ban") => (-16.0, -11.2, 29, 14),
-        ("covid_2020", "circuit_breaker") => (-20.4, -12.1, 44, 31),
-        ("covid_2020", "liquidity") => (-20.4, -10.8, 52, 48),
-        ("covid_2020", "short_ban") => (-20.4, -14.3, 31, 18),
-        _ => (-10.0, -5.0, 50, 50),
-    };
+    let (b_nadir, i_nadir, c_prev, r_spd) =
+        match (payload.dataset.as_str(), payload.intervention.as_str()) {
+            ("flash_crash_2010", "circuit_breaker") => (-7.7, -3.1, 61, 38),
+            ("flash_crash_2010", "liquidity") => (-7.7, -4.2, 47, 28),
+            ("flash_crash_2010", "short_ban") => (-7.7, -5.8, 28, 11),
+            ("lehman_2008", "circuit_breaker") => (-16.0, -9.1, 38, 22),
+            ("lehman_2008", "liquidity") => (-16.0, -7.4, 51, 43),
+            ("lehman_2008", "short_ban") => (-16.0, -11.2, 29, 14),
+            ("covid_2020", "circuit_breaker") => (-20.4, -12.1, 44, 31),
+            ("covid_2020", "liquidity") => (-20.4, -10.8, 52, 48),
+            ("covid_2020", "short_ban") => (-20.4, -14.3, 31, 18),
+            _ => (-10.0, -5.0, 50, 50),
+        };
 
     Json(json!(CfRes {
         baseline_hash: delta.baseline_hash,
@@ -187,10 +199,14 @@ async fn post_counterfactual(Json(payload): Json<CfReq>) -> Json<Value> {
 }
 
 async fn get_certification(Path(dataset): Path<String>) -> Json<Value> {
-    let mut golden = "0x0000000000000000000000000000000000000000000000000000000000000000".to_string();
-    
+    let mut golden =
+        "0x0000000000000000000000000000000000000000000000000000000000000000".to_string();
+
     // Attempt to read golden hashes
-    let paths = ["research/golden_hashes.json", "../research/golden_hashes.json"];
+    let paths = [
+        "research/golden_hashes.json",
+        "../research/golden_hashes.json",
+    ];
     for p in paths {
         if let Ok(content) = fs::read_to_string(p) {
             if let Ok(val) = serde_json::from_str::<Value>(&content) {
