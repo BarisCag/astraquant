@@ -244,6 +244,20 @@
         .bar-bg { flex-grow: 1; margin: 0 24px; background-color: var(--border); height: 8px; border-radius: 4px; overflow: hidden; max-width: 300px; }
         .bar-fg { height: 100%; background-color: var(--accent-cyan); transition: width 0.5s ease-out; }
 
+        .hash-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+
+        .cf-results-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            overflow: hidden;
+        }
+
         /* Agents */
         .agents-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
         .a-card { text-align: center; }
@@ -479,17 +493,17 @@
         </div>
 
         <div class="exp-res">
-            <div class="res-grid">
+            <div class="res-grid cf-results-panel">
                 <div class="r-col">
                     <h4>BASELINE REPLAY</h4>
-                    <div class="r-row"><span class="r-lbl">Hash:</span> <span class="r-val" id="base-hash">0x2e9f4a1b</span></div>
+                    <div class="r-row"><span class="r-lbl">Hash:</span> <span class="r-val hash-value" id="base-hash">0x2e9f4a1b</span></div>
                     <div class="r-row"><span class="r-lbl">Nadir:</span> <span class="r-val" id="base-nadir">-7.7%</span></div>
                     <div class="r-row"><span class="r-lbl">Cascade:</span> <span class="r-val" id="base-casc">847 events</span></div>
                     <div class="r-row"><span class="r-lbl">Recovery:</span> <span class="r-val" id="base-rec">18 min</span></div>
                 </div>
                 <div class="r-col">
                     <h4>WITH INTERVENTION</h4>
-                    <div class="r-row"><span class="r-lbl">Hash:</span> <span class="r-val r-hi" id="cf-hash">0x7c3a8f2d</span></div>
+                    <div class="r-row"><span class="r-lbl">Hash:</span> <span class="r-val r-hi hash-value" id="cf-hash">0x7c3a8f2d</span></div>
                     <div class="r-row"><span class="r-lbl">Nadir:</span> <span class="r-val r-hi" id="cf-nadir">-3.1%</span></div>
                     <div class="r-row"><span class="r-lbl">Cascade:</span> <span class="r-val r-hi" id="cf-casc">331 events</span></div>
                     <div class="r-row"><span class="r-lbl">Recovery:</span> <span class="r-val r-hi" id="cf-rec">11 min</span></div>
@@ -868,6 +882,40 @@
 
             // Initialize CF
             updateCF();
+
+            const termBody = document.getElementById('term-body');
+            let isReplaying = false;
+
+            const defaultTermLines = [
+                '<span class="cmd">$ astra-research --dataset flash_crash_2010</span>',
+                '<span class="t-muted">[LOADING] Ingesting 1,024 market events...</span>',
+                '<span class="t-cyan">[STREAM]  Seq 0001 hash: 3f7a9e2d...</span>',
+                '<span class="t-cyan">[STREAM]  Seq 0100 hash: 8b2c4f1a...</span>',
+                '<span class="t-warn">[CRISIS]  Seq 0400 &rarr; CASCADE DETECTED ⚠</span>',
+                '<span class="t-warn">[CRISIS]  Price nadir: 105,600 (-7.7%)</span>',
+                '<span class="t-cyan">[STREAM]  Seq 1024 hash: 2e9f4a1b...</span><br>',
+                '<span class="t-succ">[VERIFY]  Run 1: 0x2e9f4a1b ✓</span>',
+                '<span class="t-succ">[VERIFY]  Run 2: 0x2e9f4a1b ✓</span>',
+                '<span class="t-succ">[VERIFY]  Run 3: 0x2e9f4a1b ✓</span><br>',
+                '<span class="t-succ" style="font-weight:bold;">[RESULT]  DETERMINISTIC: TRUE ✓</span>'
+            ];
+
+            async function runTerminalLoop() {
+                if (isReplaying) return;
+                if (!termBody) return;
+                termBody.innerHTML = '';
+                for (let line of defaultTermLines) {
+                    if (isReplaying) return;
+                    const el = document.createElement('div');
+                    el.className = 'term-line';
+                    el.innerHTML = line;
+                    termBody.appendChild(el);
+                    el.style.display = 'block';
+                    await new Promise(r => setTimeout(r, Math.random() * 300 + 200));
+                }
+                if (!isReplaying) setTimeout(runTerminalLoop, 8000);
+            }
+            setTimeout(runTerminalLoop, 500);
 
             // Live Replay Function
             const btnLive = document.getElementById('btn-live-replay');
