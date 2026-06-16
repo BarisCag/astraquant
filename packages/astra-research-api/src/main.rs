@@ -14,6 +14,7 @@ use std::net::SocketAddr;
 use std::path::PathBuf;
 use tower_http::cors::{Any, CorsLayer};
 
+#[allow(dead_code)]
 #[derive(Deserialize)]
 struct ReplayReq {
     dataset: String,
