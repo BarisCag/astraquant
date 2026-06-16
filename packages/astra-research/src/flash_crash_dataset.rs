@@ -17,6 +17,7 @@ use astra_core::serialization::serialize_canonical;
 use astra_core::types::{Price, Quantity};
 
 // PRICE_SCALE = 10_000.  price_pts(1145.00) = 1145 * 10_000 = 11_450_000
+#[allow(dead_code)]
 const fn price_pts(dollars_x100: i64) -> i64 {
     dollars_x100 * 100 // dollars_x100 is price * 100, so * 100 gives * 10_000
 }
