@@ -1,4 +1,2 @@
 #[test]
-fn test_federation_consensus() {
-    
-}
+fn test_federation_consensus() {}

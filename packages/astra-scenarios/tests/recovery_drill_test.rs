@@ -4,7 +4,6 @@ use astra_risk::engine::RiskEngine;
 use astra_scenarios::library::recovery_drill::RecoveryDrillScenario;
 use astra_scenarios::orchestrator::ScenarioOrchestrator;
 
-
 #[test]
 fn test_recovery_drill_execution() {
     let scenario = RecoveryDrillScenario {

@@ -1,4 +1,2 @@
 #[test]
-fn test_federation_topology() {
-    
-}
+fn test_federation_topology() {}

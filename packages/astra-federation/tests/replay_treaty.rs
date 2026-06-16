@@ -1,4 +1,2 @@
 #[test]
-fn test_replay_treaty() {
-    
-}
+fn test_replay_treaty() {}

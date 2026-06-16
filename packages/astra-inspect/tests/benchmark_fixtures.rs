@@ -68,7 +68,6 @@ fn synthesize_journal(dir: PathBuf, seed: u64, num_events: usize, reject_heavy: 
                 PayloadMetadata::new(PayloadEncoding::Bincode, 1),
             )
             .unwrap();
-        
     }
     dir
 }

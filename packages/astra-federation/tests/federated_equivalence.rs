@@ -1,4 +1,2 @@
 #[test]
-fn test_federated_equivalence() {
-    
-}
+fn test_federated_equivalence() {}

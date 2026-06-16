@@ -1,4 +1,2 @@
 #[test]
-fn test_sovereign_partition() {
-    
-}
+fn test_sovereign_partition() {}

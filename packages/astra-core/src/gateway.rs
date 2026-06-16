@@ -61,11 +61,11 @@ impl ExecutionGateway {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     use crate::journal::EventJournal;
-    
+
     use crate::risk::create_default_risk_engine;
-    
+
     use crate::types::{Money, Quantity};
 
     fn make_gateway(path: &std::path::Path) -> ExecutionGateway {

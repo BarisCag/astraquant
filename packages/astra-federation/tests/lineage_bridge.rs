@@ -1,4 +1,2 @@
 #[test]
-fn test_lineage_bridge() {
-    
-}
+fn test_lineage_bridge() {}

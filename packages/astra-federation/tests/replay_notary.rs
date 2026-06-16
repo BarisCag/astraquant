@@ -1,4 +1,2 @@
 #[test]
-fn test_replay_notary() {
-    
-}
+fn test_replay_notary() {}

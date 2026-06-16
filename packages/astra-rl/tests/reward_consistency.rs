@@ -1,4 +1,2 @@
 #[test]
-fn test_dummy() {
-    
-}
+fn test_dummy() {}
