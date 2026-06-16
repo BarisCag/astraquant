@@ -843,92 +843,66 @@
             });
         }
 
-        document.querySelectorAll('#crisis-btns .tgl-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('#crisis-btns .tgl-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                curCrisis = e.target.getAttribute('data-val');
-                updateCF();
-            });
-        });
-
-        document.querySelectorAll('#interv-btns .tgl-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('#interv-btns .tgl-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                curInterv = e.target.getAttribute('data-val');
-                updateCF();
-            });
-        });
-
-        // Initialize CF
-        updateCF();
-
-        const termBody = document.getElementById('term-body');
-
-        // Normal Typewriter loop
-        let isReplaying = false;
-        const defaultTermLines = [
-            '<span class="cmd">$ astra-research --dataset flash_crash_2010</span>',
-            '<span class="t-muted">[LOADING] Ingesting 1,024 market events...</span>',
-            '<span class="t-cyan">[STREAM]  Seq 0001 hash: 3f7a9e2d...</span>',
-            '<span class="t-cyan">[STREAM]  Seq 0100 hash: 8b2c4f1a...</span>',
-            '<span class="t-warn">[CRISIS]  Seq 0400 &rarr; CASCADE DETECTED ⚠</span>',
-            '<span class="t-warn">[CRISIS]  Price nadir: 105,600 (-7.7%)</span>',
-            '<span class="t-cyan">[STREAM]  Seq 1024 hash: 2e9f4a1b...</span><br>',
-            '<span class="t-succ">[VERIFY]  Run 1: 0x2e9f4a1b ✓</span>',
-            '<span class="t-succ">[VERIFY]  Run 2: 0x2e9f4a1b ✓</span>',
-            '<span class="t-succ">[VERIFY]  Run 3: 0x2e9f4a1b ✓</span><br>',
-            '<span class="t-succ">[RESULT]  DETERMINISTIC: TRUE ✓</span>'
-        ];
-
-        async function runTerminalLoop() {
-            if (isReplaying) return;
-            termBody.innerHTML = '';
-            for (let line of defaultTermLines) {
-                if (isReplaying) return;
-                const el = document.createElement('div');
-                el.className = 'term-line';
-                el.innerHTML = line;
-                termBody.appendChild(el);
-                el.style.display = 'block';
-                await new Promise(r => setTimeout(r, Math.random() * 300 + 200));
-            }
-            if (!isReplaying) setTimeout(runTerminalLoop, 8000);
-        }
-        setTimeout(runTerminalLoop, 500);
-
-        // Live Replay Function
-        const btnLive = document.getElementById('btn-live-replay');
-        if (btnLive) {
-            btnLive.addEventListener('click', async () => {
-            if (isReplaying) return;
-            isReplaying = true;
-            termBody.innerHTML = '<span class="cmd">$ astra-research-api --replay flash_crash_2010</span><br><span class="t-muted">Connecting to Live AstraQuant Kernel...</span><br>';
-            
-            try {
-                const response = await fetch(`${API_BASE}/api/replay`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ dataset: "flash_crash_2010" })
+        document.addEventListener('DOMContentLoaded', function() {
+            const crisisBtns = document.querySelectorAll('#crisis-btns .tgl-btn');
+            console.log('Found crisis buttons:', crisisBtns.length);
+            crisisBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('#crisis-btns .tgl-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    curCrisis = e.target.getAttribute('data-val');
+                    updateCF();
                 });
-                const data = await response.json();
-                
-                termBody.innerHTML += `<span class="t-muted">[LOADING] Ingesting ${data.events_processed} market events...</span><br>`;
-                
-                for (let trace of data.hash_trace) {
-                    termBody.innerHTML += `<span class="t-cyan">[STREAM]  Seq ${String(trace.sequence).padStart(4, '0')} hash: ${trace.hash.substring(0,8)}...</span><br>`;
-                    await new Promise(r => setTimeout(r, 150)); // Animate
-                }
+            });
 
-                termBody.innerHTML += `<span class="t-warn">[CRISIS]  Price nadir: ${data.price_nadir}%</span><br>`;
-                termBody.innerHTML += `<br><span class="t-succ" style="font-size:1.1em">[RESULT]  FINAL HASH: ${data.final_hash} <span style="color:#fff;background:var(--success);padding:2px 6px;border-radius:4px;font-size:0.7em;margin-left:8px;">● LIVE DATA</span></span>`;
-            } catch (err) {
-                termBody.innerHTML += `<span class="t-warn">[ERROR] API unavailable. Falling back to cached replay loop in 5s...</span><br>`;
-                setTimeout(() => { isReplaying = false; runTerminalLoop(); }, 5000);
+            const intervBtns = document.querySelectorAll('#interv-btns .tgl-btn');
+            console.log('Found intervention buttons:', intervBtns.length);
+            intervBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('#interv-btns .tgl-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    curInterv = e.target.getAttribute('data-val');
+                    updateCF();
+                });
+            });
+
+            // Initialize CF
+            updateCF();
+
+            // Live Replay Function
+            const btnLive = document.getElementById('btn-live-replay');
+            console.log('Found btn-live-replay:', !!btnLive);
+            if (btnLive) {
+                btnLive.addEventListener('click', async () => {
+                    alert('Live replay triggered!');
+                    if (isReplaying) return;
+                    isReplaying = true;
+                    termBody.innerHTML = '<span class="cmd">$ astra-research-api --replay flash_crash_2010</span><br><span class="t-muted">Connecting to Live AstraQuant Kernel...</span><br>';
+                    
+                    try {
+                        const response = await fetch(`${API_BASE}/api/replay`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ dataset: "flash_crash_2010" })
+                        });
+                        const data = await response.json();
+                        
+                        termBody.innerHTML += `<span class="t-muted">[LOADING] Ingesting ${data.events_processed} market events...</span><br>`;
+                        
+                        for (let trace of data.hash_trace) {
+                            termBody.innerHTML += `<span class="t-cyan">[STREAM]  Seq ${String(trace.sequence).padStart(4, '0')} hash: ${trace.hash.substring(0,8)}...</span><br>`;
+                            await new Promise(r => setTimeout(r, 150)); // Animate
+                        }
+
+                        termBody.innerHTML += `<span class="t-warn">[CRISIS]  Price nadir: ${data.price_nadir}%</span><br>`;
+                        termBody.innerHTML += `<br><span class="t-succ" style="font-size:1.1em">[RESULT]  FINAL HASH: ${data.final_hash} <span style="color:#fff;background:var(--success);padding:2px 6px;border-radius:4px;font-size:0.7em;margin-left:8px;">● LIVE DATA</span></span>`;
+                    } catch (err) {
+                        termBody.innerHTML += `<span class="t-warn">[ERROR] API unavailable. Falling back to cached replay loop in 5s...</span><br>`;
+                        setTimeout(() => { isReplaying = false; runTerminalLoop(); }, 5000);
+                    }
+                });
             }
         });
-        }
     </script>
 </body>
 </html>
