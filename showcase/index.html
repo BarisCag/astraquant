@@ -731,8 +731,11 @@
 
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-        // Counterfactual Data
-        const cfData = {
+        // API CONFIG
+        const API_BASE = 'http://localhost:8090'; // Use local for now, can be changed to railway later or let CORS handle it
+        const USE_REAL_API = true;
+
+        const HARDCODED_DATA = {
             'flash_crash': {
                 base: { hash: '0x2e9f4a1b', nadir: '-7.7%', casc: '847 events', rec: '18 min' },
                 'circuit_breaker': { hash: '0x7c3a8f2d', nadir: '-3.1%', casc: '331 events', rec: '11 min', prev: 61, spd: 38 },
@@ -753,20 +756,71 @@
             }
         };
 
+        const DATASET_MAP = {
+            'flash_crash': 'flash_crash_2010',
+            'lehman': 'lehman_2008',
+            'covid': 'covid_2020'
+        };
+
         let curCrisis = 'flash_crash';
         let curInterv = 'circuit_breaker';
 
-        function updateCF() {
-            const data = cfData[curCrisis];
-            const base = data.base;
-            const res = data[curInterv];
+        async function fetchCounterfactual(dataset_id, intervention) {
+            if (!USE_REAL_API) {
+                return HARDCODED_DATA[curCrisis][intervention];
+            }
+            
+            try {
+                document.getElementById('cf-loading').style.display = 'inline';
+                const response = await fetch(`${API_BASE}/api/counterfactual`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        dataset: dataset_id,
+                        intervention: intervention,
+                        intervention_sequence: 400
+                    })
+                });
+                const data = await response.json();
+                document.getElementById('cf-loading').style.display = 'none';
+                
+                if(data.error) throw new Error(data.error);
+
+                return {
+                    is_live: true,
+                    hash: data.intervention_hash,
+                    nadir: data.price_nadir_intervention + '%',
+                    casc: data.cascade_intervention + ' events',
+                    rec: data.recovery_intervention_min + ' min',
+                    prev: data.cascade_prevented_pct,
+                    spd: data.recovery_speed_pct,
+                    base: {
+                        hash: data.baseline_hash,
+                        nadir: data.price_nadir_baseline + '%',
+                        casc: data.cascade_baseline + ' events',
+                        rec: data.recovery_baseline_min + ' min'
+                    }
+                };
+            } catch (err) {
+                console.error('API unavailable, using cached data', err);
+                document.getElementById('cf-loading').style.display = 'none';
+                return HARDCODED_DATA[curCrisis][intervention];
+            }
+        }
+
+        async function updateCF() {
+            const baseHardcoded = HARDCODED_DATA[curCrisis].base;
+            const res = await fetchCounterfactual(DATASET_MAP[curCrisis], curInterv);
+
+            // If API returned a custom base, use it, else fallback
+            const base = res.base || baseHardcoded;
 
             document.getElementById('base-hash').innerText = base.hash;
             document.getElementById('base-nadir').innerText = base.nadir;
             document.getElementById('base-casc').innerText = base.casc;
             document.getElementById('base-rec').innerText = base.rec;
 
-            document.getElementById('cf-hash').innerText = res.hash;
+            document.getElementById('cf-hash').innerHTML = res.hash + (res.is_live ? ' <span style="color:var(--success);font-size:0.7em;">● LIVE</span>' : '');
             document.getElementById('cf-nadir').innerText = res.nadir;
             document.getElementById('cf-casc').innerText = res.casc;
             document.getElementById('cf-rec').innerText = res.rec;
@@ -777,7 +831,6 @@
             document.getElementById('bar-spd').style.width = res.spd + '%';
             document.getElementById('txt-spd').innerText = '+' + res.spd + '%';
             
-            // Re-trigger animation
             const vals = document.querySelectorAll('.r-hi');
             vals.forEach(v => {
                 v.style.opacity = '0.5';
@@ -803,8 +856,14 @@
             });
         });
 
-        // Terminal Typewriter
-        const termLines = [
+        // Initialize CF
+        updateCF();
+
+        const termBody = document.getElementById('term-body');
+
+        // Normal Typewriter loop
+        let isReplaying = false;
+        const defaultTermLines = [
             '<span class="cmd">$ astra-research --dataset flash_crash_2010</span>',
             '<span class="t-muted">[LOADING] Ingesting 1,024 market events...</span>',
             '<span class="t-cyan">[STREAM]  Seq 0001 hash: 3f7a9e2d...</span>',
@@ -818,30 +877,50 @@
             '<span class="t-succ">[RESULT]  DETERMINISTIC: TRUE ✓</span>'
         ];
 
-        const termBody = document.getElementById('term-body');
-
-        async function runTerminal() {
+        async function runTerminalLoop() {
+            if (isReplaying) return;
             termBody.innerHTML = '';
-            for (let line of termLines) {
+            for (let line of defaultTermLines) {
+                if (isReplaying) return;
                 const el = document.createElement('div');
                 el.className = 'term-line';
                 el.innerHTML = line;
                 termBody.appendChild(el);
-                
-                // Show line
                 el.style.display = 'block';
-                
-                // Random typing delay
                 await new Promise(r => setTimeout(r, Math.random() * 300 + 200));
             }
-            
-            // Wait 8 seconds then loop
-            setTimeout(runTerminal, 8000);
+            if (!isReplaying) setTimeout(runTerminalLoop, 8000);
         }
+        setTimeout(runTerminalLoop, 500);
 
-        // Start animation after a slight delay
-        setTimeout(runTerminal, 500);
+        // Live Replay Function
+        document.getElementById('btn-live-replay').addEventListener('click', async () => {
+            if (isReplaying) return;
+            isReplaying = true;
+            termBody.innerHTML = '<span class="cmd">$ astra-research-api --replay flash_crash_2010</span><br><span class="t-muted">Connecting to Live AstraQuant Kernel...</span><br>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/replay`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dataset: "flash_crash_2010" })
+                });
+                const data = await response.json();
+                
+                termBody.innerHTML += `<span class="t-muted">[LOADING] Ingesting ${data.events_processed} market events...</span><br>`;
+                
+                for (let trace of data.hash_trace) {
+                    termBody.innerHTML += `<span class="t-cyan">[STREAM]  Seq ${String(trace.sequence).padStart(4, '0')} hash: ${trace.hash.substring(0,8)}...</span><br>`;
+                    await new Promise(r => setTimeout(r, 150)); // Animate
+                }
 
+                termBody.innerHTML += `<span class="t-warn">[CRISIS]  Price nadir: ${data.price_nadir}%</span><br>`;
+                termBody.innerHTML += `<br><span class="t-succ" style="font-size:1.1em">[RESULT]  FINAL HASH: ${data.final_hash} <span style="color:#fff;background:var(--success);padding:2px 6px;border-radius:4px;font-size:0.7em;margin-left:8px;">● LIVE DATA</span></span>`;
+            } catch (err) {
+                termBody.innerHTML += `<span class="t-warn">[ERROR] API unavailable. Falling back to cached replay loop in 5s...</span><br>`;
+                setTimeout(() => { isReplaying = false; runTerminalLoop(); }, 5000);
+            }
+        });
     </script>
 </body>
 </html>

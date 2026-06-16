@@ -1,0 +1,8 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile.api"
+
+[deploy]
+startCommand = "./astra-research-api"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 30
