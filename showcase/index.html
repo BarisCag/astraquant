@@ -766,12 +766,17 @@
         let curInterv = 'circuit_breaker';
 
         async function fetchCounterfactual(dataset_id, intervention) {
+            console.log('API_BASE is:', API_BASE);
+            console.log('USE_REAL_API is:', USE_REAL_API);
+            console.log('fetchCounterfactual called with:', dataset_id, intervention);
+
             if (!USE_REAL_API) {
                 return HARDCODED_DATA[curCrisis][intervention];
             }
             
+            const loader = document.getElementById('cf-loading');
             try {
-                document.getElementById('cf-loading').style.display = 'inline';
+                if(loader) loader.style.display = 'inline';
                 const response = await fetch(`${API_BASE}/api/counterfactual`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -782,7 +787,7 @@
                     })
                 });
                 const data = await response.json();
-                document.getElementById('cf-loading').style.display = 'none';
+                if(loader) loader.style.display = 'none';
                 
                 if(data.error) throw new Error(data.error);
 
@@ -803,7 +808,7 @@
                 };
             } catch (err) {
                 console.error('API unavailable, using cached data', err);
-                document.getElementById('cf-loading').style.display = 'none';
+                if(loader) loader.style.display = 'none';
                 return HARDCODED_DATA[curCrisis][intervention];
             }
         }
@@ -894,7 +899,9 @@
         setTimeout(runTerminalLoop, 500);
 
         // Live Replay Function
-        document.getElementById('btn-live-replay').addEventListener('click', async () => {
+        const btnLive = document.getElementById('btn-live-replay');
+        if (btnLive) {
+            btnLive.addEventListener('click', async () => {
             if (isReplaying) return;
             isReplaying = true;
             termBody.innerHTML = '<span class="cmd">$ astra-research-api --replay flash_crash_2010</span><br><span class="t-muted">Connecting to Live AstraQuant Kernel...</span><br>';
@@ -921,6 +928,7 @@
                 setTimeout(() => { isReplaying = false; runTerminalLoop(); }, 5000);
             }
         });
+        }
     </script>
 </body>
 </html>
