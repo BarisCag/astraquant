@@ -15,7 +15,6 @@ use astra_core::serialization::deserialize_canonical;
 use astra_core::types::{Money, Quantity};
 use serde::{Deserialize, Serialize};
 
-
 use crate::dataset_format::CrisisDataset;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

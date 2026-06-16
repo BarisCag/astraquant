@@ -38,7 +38,11 @@ pub fn build_lehman_collapse_events() -> Vec<AstraEvent> {
 
             let event_type = classify_event(i, seq_start, seq_end);
 
-            let half_spread = if (600..900).contains(&i) { 10_000 } else { 2_000 };
+            let half_spread = if (600..900).contains(&i) {
+                10_000
+            } else {
+                2_000
+            };
             let bid = Price::new(price_raw - half_spread);
             let ask = Price::new(price_raw + half_spread);
 

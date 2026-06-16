@@ -49,7 +49,11 @@ pub fn build_covid_crash_events() -> Vec<AstraEvent> {
 
             let event_type = classify_event(i, seq_start, seq_end);
 
-            let half_spread = if (200..400).contains(&i) { 50_000 } else { 5_000 };
+            let half_spread = if (200..400).contains(&i) {
+                50_000
+            } else {
+                5_000
+            };
             let bid = Price::new(price_raw - half_spread);
             let ask = Price::new(price_raw + half_spread);
 

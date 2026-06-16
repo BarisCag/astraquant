@@ -12,7 +12,6 @@ use astra_core::marketdata::MarketTick;
 use astra_core::serialization::deserialize_canonical;
 use serde::Serialize;
 
-
 #[derive(Debug, Serialize, Clone)]
 pub struct CalibrationResult {
     pub crisis: String,
