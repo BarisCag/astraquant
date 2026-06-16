@@ -6,9 +6,12 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY . .
-RUN ls -la && cat Cargo.toml | head -5
+COPY Cargo.toml Cargo.lock ./
+COPY packages/ ./packages/
 RUN mkdir -p /app/datasets /app/research
+COPY research/ ./research/
+COPY datasets/ ./datasets/
+
 RUN cargo build --release -p astra-research-api
 
 FROM debian:bookworm-slim
