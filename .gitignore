@@ -1,11 +1,11 @@
-﻿/target/
+/target/
 **/*.rs.bk
 *.pdb
 
 # Journal and snapshot artifacts
 *.astra_jl
 *.astra_ss
-*.astra_ds
+# *.astra_ds
 /test_artifacts/
 /data/
 
