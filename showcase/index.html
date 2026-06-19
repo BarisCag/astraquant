@@ -353,7 +353,7 @@
                 <h1 class="hero-h1">Financial Crises<br>Aren't Random.</h1>
                 <h2 class="hero-h2">They're Deterministic Systems.</h2>
                 <p class="hero-body">
-                    AstraQuant OS replays the 2010 Flash Crash, 2008 Lehman Collapse, and 2020 COVID Crash with cryptographic precision &mdash; and tests what would have stopped them.
+                    AstraQuant OS replays financial crises with cryptographic precision &mdash; and runs a full institutional trading and treasury stack on the same deterministic core.
                 </p>
                 <div class="hero-cta">
                     <a href="#research" class="btn btn-primary">▶ Explore the Research</a>
@@ -362,7 +362,7 @@
                 <div class="stats-pills">
                     <div class="pill">187 Tests Passing</div>
                     <div class="pill">3 Crisis Studies</div>
-                    <div class="pill">9 Counterfactuals</div>
+                    <div class="pill">6 Trade Modules</div>
                 </div>
             </div>
             
@@ -380,6 +380,14 @@
         </div>
     </section>
 
+    <div class="container fade-in" style="margin-top: 40px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: center; margin: 0 auto; width: fit-content; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; font-family: 'JetBrains Mono', monospace;">
+            <button id="btn-research" class="tgl-btn active" style="border: none; border-radius: 0; padding: 16px 32px; font-size: 1rem; border-right: 1px solid var(--border);" onclick="switchPlatform('research')">AstraQuant Research</button>
+            <button id="btn-trade" class="tgl-btn" style="border: none; border-radius: 0; padding: 16px 32px; font-size: 1rem;" onclick="switchPlatform('trade')">AstraQuant Trade</button>
+        </div>
+    </div>
+
+    <div id="section-research">
     <section class="container fade-in">
         <h2 class="sec-title">Why Determinism Changes Everything</h2>
         <div class="grid-3">
@@ -710,7 +718,199 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section>    <div id="section-trade" style="display: none;">
+        <section class="container fade-in">
+            <h2 class="sec-title">Institutional Trading OS</h2>
+            <p class="sec-sub">Six modules. One deterministic core.</p>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="c-icon i-cyan">📡</div>
+                    <h3 class="c-title">Live Market Feed</h3>
+                    <div class="s-meta" style="margin-bottom: 16px;">Phase 1 &middot; astra-venue</div>
+                    <p class="c-body">Binance WebSocket ingested through ExecutionGateway. Every tick assigned a Sequence ID before touching the kernel.</p>
+                </div>
+                <div class="card">
+                    <div class="c-icon i-cyan">📋</div>
+                    <h3 class="c-title">Paper Trading Engine</h3>
+                    <div class="s-meta" style="margin-bottom: 16px;">Phase 2 &middot; astra-trade</div>
+                    <p class="c-body">Full order lifecycle &mdash; limit, market, cancel. Position tracking, realized P&L, risk gates. No real capital. Full institutional mechanics.</p>
+                </div>
+                <div class="card">
+                    <div class="c-icon i-cyan">🏦</div>
+                    <h3 class="c-title">Treasury Operations</h3>
+                    <div class="s-meta" style="margin-bottom: 16px;">Phase 3 &middot; astra-treasury</div>
+                    <p class="c-body">Multi-currency cash positions (USD, EUR, GBP, JPY, CHF). 30-day cash flow forecasts. FX exposure by tenor. Liquidity buffers.</p>
+                </div>
+                <div class="card">
+                    <div class="c-icon i-cyan">📊</div>
+                    <h3 class="c-title">Risk Dashboard</h3>
+                    <div class="s-meta" style="margin-bottom: 16px;">Phase 4 &middot; astra-risk</div>
+                    <p class="c-body">VaR at 95%/99%. Expected Shortfall at 97.5% (FRTB compliant). Black-Scholes Greeks. Deterministic Monte Carlo (10,000 paths).</p>
+                </div>
+                <div class="card">
+                    <div class="c-icon i-cyan">⚖️</div>
+                    <h3 class="c-title">ALM Module</h3>
+                    <div class="s-meta" style="margin-bottom: 16px;">Phase 5 &middot; astra-alm</div>
+                    <p class="c-body">Asset-liability matching across 9 tenors. CVaR-minimizing hedge optimization. Duration immunization with rebalancing alerts.</p>
+                </div>
+                <div class="card">
+                    <div class="c-icon i-cyan">🔐</div>
+                    <h3 class="c-title">Institutional API</h3>
+                    <div class="s-meta" style="margin-bottom: 16px;">Phase 6 &middot; astra-api</div>
+                    <p class="c-body">REST + WebSocket. 5-role RBAC. JWT auth. Blake3-chained audit trail. Demo mode. ISAE 3402 / SOC 2 data structures.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="container fade-in">
+            <h2 class="sec-title">Live API</h2>
+            <p class="sec-sub">Running locally on port 8080.</p>
+            <div class="grid-3">
+                <div class="term" style="box-shadow: none;">
+                    <div class="term-header" style="justify-content: space-between;">
+                        <div><span style="background:var(--accent-cyan); color:#000; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:0.75rem; margin-right:8px;">GET</span> /health</div>
+                        <span style="font-size:0.7rem; color:var(--text-muted); border: 1px solid var(--border); padding: 2px 6px; border-radius: 12px;">Public</span>
+                    </div>
+                    <div class="term-body" style="min-height: auto; padding: 16px; color: var(--text-primary);">
+<pre style="margin:0;">{
+  <span style="color:var(--accent-purple);">"status"</span>: <span style="color:var(--accent-cyan);">"ok"</span>,
+  <span style="color:var(--accent-purple);">"mode"</span>: <span style="color:var(--accent-cyan);">"live"</span>,
+  <span style="color:var(--accent-purple);">"version"</span>: <span style="color:var(--accent-cyan);">"1.0"</span>
+}</pre>
+                    </div>
+                </div>
+                <div class="term" style="box-shadow: none;">
+                    <div class="term-header" style="justify-content: space-between;">
+                        <div><span style="background:var(--accent-cyan); color:#000; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:0.75rem; margin-right:8px;">GET</span> /risk/var</div>
+                        <span style="font-size:0.7rem; color:var(--text-muted); border: 1px solid var(--border); padding: 2px 6px; border-radius: 12px;">Trader</span>
+                    </div>
+                    <div class="term-body" style="min-height: auto; padding: 16px; color: var(--text-primary);">
+<pre style="margin:0;">{
+  <span style="color:var(--accent-purple);">"var_99"</span>: <span style="color:var(--success);">2847.50</span>,
+  <span style="color:var(--accent-purple);">"var_95"</span>: <span style="color:var(--success);">1923.20</span>,
+  <span style="color:var(--accent-purple);">"method"</span>: <span style="color:var(--accent-cyan);">"parametric"</span>
+}</pre>
+                    </div>
+                </div>
+                <div class="term" style="box-shadow: none;">
+                    <div class="term-header" style="justify-content: space-between;">
+                        <div><span style="background:var(--accent-cyan); color:#000; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:0.75rem; margin-right:8px;">GET</span> /alm/mismatch</div>
+                        <span style="font-size:0.7rem; color:var(--text-muted); border: 1px solid var(--border); padding: 2px 6px; border-radius: 12px;">Risk</span>
+                    </div>
+                    <div class="term-body" style="min-height: auto; padding: 16px; color: var(--text-primary);">
+<pre style="margin:0;">{
+  <span style="color:var(--accent-purple);">"reports"</span>: [
+    {
+      <span style="color:var(--accent-purple);">"tenor"</span>: <span style="color:var(--accent-cyan);">"FiveYear"</span>,
+      <span style="color:var(--accent-purple);">"currency"</span>: <span style="color:var(--accent-cyan);">"USD"</span>,
+      <span style="color:var(--accent-purple);">"duration_gap"</span>: <span style="color:var(--warning);">-4.0</span>,
+      <span style="color:var(--accent-purple);">"status"</span>: <span style="color:var(--accent-cyan);">"REBALANCING_RECOMMENDED"</span>
+    }
+  ]
+}</pre>
+                    </div>
+                </div>
+                <div class="term" style="box-shadow: none;">
+                    <div class="term-header" style="justify-content: space-between;">
+                        <div><span style="background:var(--warning); color:#000; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:0.75rem; margin-right:8px;">POST</span> /alm/hedge/approve</div>
+                        <span style="font-size:0.7rem; color:var(--text-muted); border: 1px solid var(--border); padding: 2px 6px; border-radius: 12px;">Treasurer</span>
+                    </div>
+                    <div class="term-body" style="min-height: auto; padding: 16px; color: var(--text-primary);">
+<pre style="margin:0;">{
+  <span style="color:var(--accent-purple);">"approved"</span>: <span style="color:var(--success);">true</span>,
+  <span style="color:var(--accent-purple);">"timestamp_ns"</span>: <span style="color:var(--success);">1718123456789000000</span>
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container fade-in">
+            <h2 class="sec-title">Five Roles. Zero Ambiguity.</h2>
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; text-align: center;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted);">
+                            <th style="padding: 20px; text-align: left;">Endpoint Group</th>
+                            <th style="padding: 20px;">Trader</th>
+                            <th style="padding: 20px;">Risk</th>
+                            <th style="padding: 20px;">Treasury</th>
+                            <th style="padding: 20px;">Auditor</th>
+                            <th style="padding: 20px;">Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody style="color: var(--text-primary);">
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 20px; text-align: left;">Market / Portfolio / Risk</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 20px; text-align: left;">Treasury / ALM Read</td>
+                            <td style="padding: 20px; color: var(--text-muted);">✗</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 20px; text-align: left;">POST /alm/hedge/approve</td>
+                            <td style="padding: 20px; color: var(--text-muted);">✗</td>
+                            <td style="padding: 20px; color: var(--text-muted);">✗</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                            <td style="padding: 20px; color: var(--text-muted);">✗</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 20px; text-align: left;">POST /admin/killswitch</td>
+                            <td style="padding: 20px; color: var(--text-muted);">✗</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                            <td style="padding: 20px; color: var(--text-muted);">✗</td>
+                            <td style="padding: 20px; color: var(--text-muted);">✗</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 20px; text-align: left;">Audit Trail Read</td>
+                            <td style="padding: 20px; color: var(--text-muted);">✗</td>
+                            <td style="padding: 20px; color: var(--text-muted);">✗</td>
+                            <td style="padding: 20px; color: var(--text-muted);">✗</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                            <td style="padding: 20px; color: var(--success);">✓</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="container fade-in" style="margin-bottom: 60px;">
+            <h2 class="sec-title">Every API Call. Cryptographically Logged.</h2>
+            <div class="term" style="max-width: 800px; margin: 0 auto;">
+                <div class="term-header">
+                    <div class="term-dots">
+                        <div class="dot d-r"></div><div class="dot d-y"></div><div class="dot d-g"></div>
+                    </div>
+                    <div class="term-title">Audit Trail Stream</div>
+                </div>
+                <div class="term-body" id="audit-anim" style="min-height: 200px;">
+<pre style="margin:0; color:var(--text-primary);"><span style="color:var(--text-muted);">{</span>
+  <span style="color:var(--accent-purple);">"timestamp_ns"</span>: <span style="color:var(--success);">1718123456789000000</span>,
+  <span style="color:var(--accent-purple);">"endpoint"</span>: <span style="color:var(--accent-cyan);">"/alm/hedge/approve"</span>,
+  <span style="color:var(--accent-purple);">"method"</span>: <span style="color:var(--accent-cyan);">"POST"</span>,
+  <span style="color:var(--accent-purple);">"role"</span>: <span style="color:var(--accent-cyan);">"Treasurer"</span>,
+  <span style="color:var(--accent-purple);">"response_status"</span>: <span style="color:var(--success);">200</span>,
+  <span style="color:var(--accent-purple);">"processing_time_ms"</span>: <span style="color:var(--success);">3</span>,
+  <span style="color:var(--accent-purple);">"chain_hash"</span>: <span style="color:var(--warning);">"0x4a7f..."</span> <span style="color:var(--text-muted);">// blake3(prev || entry)</span>
+<span style="color:var(--text-muted);">}</span></pre>
+                </div>
+            </div>
+            <p style="text-align: center; color: var(--text-muted); margin-top: 24px; font-size: 1.1rem;">
+                Tamper-evident. Append-only.<br>If any entry is modified, the hash chain breaks.
+            </p>
+        </section>
+    </div>
 
     <footer>
         <div class="container f-cont">
@@ -718,7 +918,11 @@
                 <strong>AstraQuant OS</strong><br>
                 MIT Licensed &middot; Open Source Research Platform
             </div>
-            <div class="f-center">
+            <div class="f-center" style="display: flex; gap: 24px; font-size: 0.85rem;">
+                <div><strong style="color:var(--text-primary);">2 Platforms</strong> &rarr; Research + Trade</div>
+                <div><strong style="color:var(--text-primary);">21 Phases</strong> Complete</div>
+                <div><strong style="color:var(--text-primary);">187+ Tests</strong> Passing</div>
+                <div style="color:var(--success); font-weight:600;">Blake3 Verified ✓</div>
             </div>
             <div class="f-right">
                 Built by Barış Çağ<br>
@@ -976,6 +1180,20 @@
                 });
             }
         });
+    <script>
+        function switchPlatform(platform) {
+            if (platform === 'research') {
+                document.getElementById('btn-research').classList.add('active');
+                document.getElementById('btn-trade').classList.remove('active');
+                document.getElementById('section-research').style.display = 'block';
+                document.getElementById('section-trade').style.display = 'none';
+            } else {
+                document.getElementById('btn-trade').classList.add('active');
+                document.getElementById('btn-research').classList.remove('active');
+                document.getElementById('section-trade').style.display = 'block';
+                document.getElementById('section-research').style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
