@@ -142,3 +142,68 @@ Rust · Axum · WASM · Blake3 · Prometheus · Grafana · Docker
 MIT
 
 ---
+
+## AstraQuant Trade
+
+A live institutional trading and treasury OS 
+built on top of AstraQuant's deterministic core.
+
+### Modules
+
+| Module | Phase | Description |
+|--------|-------|-------------|
+| astra-venue | 1 | Live Binance WebSocket feed |
+| astra-trade | 2 | Paper trading engine |
+| astra-treasury | 3 | Multi-currency treasury operations |
+| astra-risk | 4 | VaR, Expected Shortfall, Greeks |
+| astra-alm | 5 | Asset-Liability Management, CVaR optimization |
+| astra-api | 6 | Institutional REST + WebSocket API |
+
+### Quick Start
+
+```bash
+# Start the institutional API (live mode)
+cargo run -p astra-api
+
+# Start in demo mode (sanitized data)
+DEMO_MODE=true cargo run -p astra-api
+
+# Health check
+curl http://localhost:8080/health
+
+# Run live Binance feed
+cargo run -p astra-trade
+```
+
+### API Endpoints
+GET  /health                  → System status + mode
+
+GET  /market/snapshot         → Live market data
+
+GET  /portfolio               → Current positions + P&L
+
+GET  /treasury/cashflow       → 30-day cash flow forecast
+
+GET  /treasury/exposure       → FX exposure by tenor
+
+GET  /risk/var                → VaR at 95% and 99%
+
+GET  /risk/es                 → Expected Shortfall 97.5%
+
+GET  /risk/greeks             → Delta, Gamma, Vega, Theta, Rho
+
+GET  /alm/mismatch            → Duration gap by tenor/currency
+
+POST /alm/hedge/approve       → Approve hedge recommendation
+
+POST /admin/killswitch        → Emergency halt
+
+WS   /ws/stream               → Real-time event stream
+
+### Security
+
+- JWT authentication (24h expiry)
+- 5-role RBAC (Trader, RiskManager, Treasurer, Auditor, Admin)
+- Blake3-chained audit trail (tamper-evident)
+- Rate limiting: 100 req/min, burst 20
+- Demo mode: sanitized data for showcase
