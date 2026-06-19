@@ -7,3 +7,5 @@ edition = "2021"
 tokio = { version = "1.0", features = ["full"] }
 astra-venue = { path = "../astra-venue" }
 astra-core = { path = "../astra-core" }
+astra-paper = { path = "../astra-paper" }
+clap = { version = "4.3", features = ["derive"] }

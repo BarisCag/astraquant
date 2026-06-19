@@ -28,16 +28,18 @@ impl LiveFeedManager {
         }
     }
 
-    pub async fn run(&mut self, symbol: &str) -> Result<(), Box<dyn std::error::Error>> {
+    pub async fn run<F>(&mut self, symbol: &str, mut interceptor: Option<F>) -> Result<(), Box<dyn std::error::Error>> 
+    where
+        F: FnMut(&astra_core::events::AstraEvent) -> Vec<astra_core::events::AstraEvent>
+    {
         let feed = BinanceFeed::new(symbol);
         let mut stream = feed.connect().await?;
 
         while let Some(raw_trade) = stream.next_trade().await {
-            let event = TradeNormalizer::normalize(&raw_trade, self.sequence_counter);
+            let mut event = TradeNormalizer::normalize(&raw_trade, self.sequence_counter);
             
-            // Log to journal (ingest_raw_event assigns its own sequence based on journal, but here we do it to simulate gateway ingest)
+            // Log to journal
             self.gateway.journal.append(&event)?;
-            
             self.last_hash = event.state_hash();
             
             println!("[SEQ {:04}] {} {} | {} | hash: 0x{}...", 
@@ -49,6 +51,15 @@ impl LiveFeedManager {
             );
 
             self.sequence_counter += 1;
+
+            if let Some(ref mut intercept) = interceptor {
+                let paper_events = intercept(&event);
+                for mut paper_event in paper_events {
+                    paper_event.sequence_id = self.sequence_counter;
+                    self.gateway.journal.append(&paper_event)?;
+                    self.sequence_counter += 1;
+                }
+            }
         }
 
         Ok(())
