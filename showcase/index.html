@@ -387,8 +387,7 @@
         </div>
     </div>
 
-    <div id="section-research">
-    <section class="container fade-in">
+        <section class="research-section container fade-in">
         <h2 class="sec-title">Why Determinism Changes Everything</h2>
         <div class="grid-3">
             <div class="card">
@@ -409,7 +408,7 @@
         </div>
     </section>
 
-    <section id="research" class="container fade-in">
+    <section id="research" class="research-section container fade-in">
         <h2 class="sec-title">Three Crises. Nine Counterfactuals.</h2>
         <p class="sec-sub">One Deterministic Engine.</p>
         
@@ -483,7 +482,7 @@
         </div>
     </section>
 
-    <section class="container fade-in">
+    <section class="research-section container fade-in">
         <h2 class="sec-title">What If?</h2>
         <p class="sec-sub">Select a crisis and intervention to explore the counterfactual outcome.</p>
 
@@ -535,7 +534,7 @@
         </div>
     </section>
 
-    <section class="container fade-in">
+    <section class="research-section container fade-in">
         <h2 class="sec-title">Five Behavioral Models.</h2>
         <p class="sec-sub">Calibrated against historical cascade data.</p>
         
@@ -573,7 +572,7 @@
         </div>
     </section>
 
-    <section class="container fade-in">
+    <section class="research-section container fade-in">
         <h2 class="sec-title">Cryptographically Certifiable.</h2>
         <p class="sec-sub">Every result is mathematically verifiable by any independent researcher.</p>
 
@@ -617,7 +616,7 @@
         </div>
     </section>
 
-    <section class="container fade-in">
+    <section class="research-section container fade-in">
         <h2 class="sec-title">Built Like Institutional Infrastructure.</h2>
         
         <div class="arch-wrap">
@@ -674,7 +673,7 @@
         </div>
     </section>
 
-    <section class="container fade-in">
+    <section class="research-section container fade-in">
         <h2 class="sec-title">Open Research.</h2>
         
         <div class="r-stats">
@@ -718,8 +717,8 @@
                 </div>
             </div>
         </div>
-    </section>    <div id="section-trade" style="display: none;">
-        <section class="container fade-in">
+    </section>
+        <section class="trade-section container fade-in" style="display: none;">
             <h2 class="sec-title">Institutional Trading OS</h2>
             <p class="sec-sub">Six modules. One deterministic core.</p>
             <div class="grid-3">
@@ -762,7 +761,7 @@
             </div>
         </section>
 
-        <section class="container fade-in">
+        <section class="trade-section container fade-in" style="display: none;">
             <h2 class="sec-title">Live API</h2>
             <p class="sec-sub">Running locally on port 8080.</p>
             <div class="grid-3">
@@ -825,7 +824,7 @@
             </div>
         </section>
 
-        <section class="container fade-in">
+        <section class="trade-section container fade-in" style="display: none;">
             <h2 class="sec-title">Five Roles. Zero Ambiguity.</h2>
             <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; text-align: center;">
@@ -885,7 +884,7 @@
             </div>
         </section>
 
-        <section class="container fade-in" style="margin-bottom: 60px;">
+        <section class="trade-section container fade-in" style="display: none; margin-bottom: 60px;">
             <h2 class="sec-title">Every API Call. Cryptographically Logged.</h2>
             <div class="term" style="max-width: 800px; margin: 0 auto;">
                 <div class="term-header">
@@ -910,8 +909,6 @@
                 Tamper-evident. Append-only.<br>If any entry is modified, the hash chain breaks.
             </p>
         </section>
-    </div>
-
     <footer>
         <div class="container f-cont">
             <div>
@@ -1186,13 +1183,13 @@
             if (platform === 'research') {
                 document.getElementById('btn-research').classList.add('active');
                 document.getElementById('btn-trade').classList.remove('active');
-                document.getElementById('section-research').style.display = 'block';
-                document.getElementById('section-trade').style.display = 'none';
+                document.querySelectorAll('.research-section').forEach(el => el.style.display = 'block');
+                document.querySelectorAll('.trade-section').forEach(el => el.style.display = 'none');
             } else {
                 document.getElementById('btn-trade').classList.add('active');
                 document.getElementById('btn-research').classList.remove('active');
-                document.getElementById('section-trade').style.display = 'block';
-                document.getElementById('section-research').style.display = 'none';
+                document.querySelectorAll('.research-section').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.trade-section').forEach(el => el.style.display = 'block');
             }
         }
     </script>
