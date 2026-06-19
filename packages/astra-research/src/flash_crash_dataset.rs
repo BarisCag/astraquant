@@ -94,7 +94,7 @@ fn classify_event(i: u64, phase_start: u64, phase_end: u64) -> EventType {
         0 => EventType::MarketTick, // Normal: all market ticks
         200 => {
             // Withdrawal: mostly ticks, but inject limit order cancellations every 20
-            if pos % 20 == 0 {
+            if pos.is_multiple_of(20) {
                 EventType::LimitOrderCancelled
             } else {
                 EventType::MarketTick
@@ -102,9 +102,9 @@ fn classify_event(i: u64, phase_start: u64, phase_end: u64) -> EventType {
         }
         400 => {
             // Cascade: margin calls and risk triggers mixed with ticks
-            if pos % 30 == 0 {
+            if pos.is_multiple_of(30) {
                 EventType::RiskThresholdTriggered
-            } else if pos % 15 == 0 {
+            } else if pos.is_multiple_of(15) {
                 EventType::MarginCallIssued
             } else {
                 EventType::MarketTick
@@ -114,7 +114,7 @@ fn classify_event(i: u64, phase_start: u64, phase_end: u64) -> EventType {
             // Recovery: circuit breaker at position 0, then stabilising ticks
             if pos == 0 {
                 EventType::CircuitBreakerTriggered
-            } else if pos % 50 == 0 {
+            } else if pos.is_multiple_of(50) {
                 EventType::RegulatoryIntervention
             } else {
                 EventType::MarketTick

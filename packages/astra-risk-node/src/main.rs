@@ -31,11 +31,9 @@ async fn main() {
         if std::path::Path::new(journal_path).exists() {
             if let Ok(journal) = EventJournal::open(journal_path) {
                 if let Ok(iter) = journal.iter_from(last_seq) {
-                    for event_res in iter {
-                        if let Ok(event) = event_res {
-                            analytics.process_event(&event);
-                            last_seq = event.sequence_id;
-                        }
+                    for event in iter.flatten() {
+                        analytics.process_event(&event);
+                        last_seq = event.sequence_id;
                     }
                 }
             }

@@ -1,9 +1,9 @@
 use astra_core::events::{AstraEvent, EventType};
 use astra_treasury::event::TreasuryEvent;
-use rust_decimal::prelude::ToPrimitive;
+
 use crate::exporter::MetricsExporter;
 use crate::var_calc::VarCalculator;
-use crate::greeks::{GreeksEngine, GreeksProfile};
+use crate::greeks::GreeksEngine;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

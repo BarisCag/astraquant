@@ -6,7 +6,7 @@ use crate::portfolio::PortfolioTracker;
 use crate::prng::DeterministicPrng;
 use crate::risk::RiskEngine;
 use crate::strategy::{Strategy, StrategyContext};
-use crate::types::{MarketSnapshot, OrderType, Side};
+use crate::types::{MarketSnapshot, Side};
 
 pub struct PaperEngine {
     pub portfolio: PortfolioTracker,
@@ -103,7 +103,7 @@ impl PaperEngine {
 
         // 3. Market Data
         if let Some(ref snap) = snapshot {
-            let orders = self.strategy.on_market_data(snap, &mut ctx);
+            let orders = self.strategy.on_market_data(snap, &ctx);
             if !orders.is_empty() {
                 out_events.push(self.wrap_event(
                     in_event.timestamp_ns,
@@ -189,7 +189,7 @@ impl PaperEngine {
         for (sym, pos) in &self.portfolio.positions {
             if pos.quantity == 0 { continue; }
             let side = if pos.quantity > 0 { Side::Sell } else { Side::Buy };
-            let qty = pos.quantity.abs() as u64;
+            let qty = pos.quantity.unsigned_abs();
 
             let current_price = *self.current_prices.get(sym).unwrap_or(&price);
 
@@ -218,7 +218,7 @@ impl PaperEngine {
         }
 
         // Disable strategy
-        let mut dummy_bytes = Vec::new(); // Ideally we tell the strategy to disable itself or set a flag here
+        let dummy_bytes = Vec::new(); // Ideally we tell the strategy to disable itself or set a flag here
         self.strategy.deserialize_state(&dummy_bytes);
     }
 

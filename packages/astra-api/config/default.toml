@@ -1,0 +1,27 @@
+[server]
+port = 8080
+host = "0.0.0.0"
+
+[auth]
+jwt_secret = "astraquant-dev-secret-change-in-prod"
+jwt_expiry_hours = 24
+
+[demo]
+enabled = false
+
+[rate_limit]
+requests_per_minute = 100
+burst = 20
+
+[api_keys]
+# format: blake3 hex = role
+# "trader_key" -> blake3("trader_key") = 9e909...
+9e909e755edeb13e0c03632cf42ce8afab0da6324d55b85a109a0a4c2f6027a4 = "Trader"
+# "risk_key" -> blake3("risk_key")
+cdba9d072a27b87515a452ef31be27d5da9680389366dfbf464972eaf7dc5947 = "RiskManager"
+# "treasurer_key"
+79de91dc7e4878a2e5870b22a6114eb3cd1109dcba8bd2b0c1b75240c5fce07a = "Treasurer"
+# "auditor_key"
+dc0cdbc941d7ce873db942f2a74c2eef08b98b0f925b42df5a3ffcd1a9fc5cf5 = "Auditor"
+# "admin_key"
+3a4ca1e7cd19f074d026388ed3a6e0df09b55581c81fb30e71ce9ee908dfdf79 = "Admin"

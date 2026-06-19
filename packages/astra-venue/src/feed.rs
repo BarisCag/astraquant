@@ -36,7 +36,7 @@ impl LiveFeedManager {
         let mut stream = feed.connect().await?;
 
         while let Some(raw_trade) = stream.next_trade().await {
-            let mut event = TradeNormalizer::normalize(&raw_trade, self.sequence_counter);
+            let event = TradeNormalizer::normalize(&raw_trade, self.sequence_counter);
             
             // Log to journal
             self.gateway.journal.append(&event)?;

@@ -1,0 +1,17 @@
+[server]
+port = 8080
+host = "0.0.0.0"
+
+[auth]
+jwt_secret = "astraquant-dev-secret-change-in-prod"
+jwt_expiry_hours = 24
+
+[demo]
+enabled = true
+
+[rate_limit]
+requests_per_minute = 20
+burst = 5
+
+[api_keys]
+3a4ca1e7cd19f074d026388ed3a6e0df09b55581c81fb30e71ce9ee908dfdf79 = "Admin"

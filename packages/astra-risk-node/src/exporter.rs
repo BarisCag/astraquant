@@ -11,6 +11,7 @@ pub struct MetricsExporter {
 }
 
 impl MetricsExporter {
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         let registry = Registry::new();
         
