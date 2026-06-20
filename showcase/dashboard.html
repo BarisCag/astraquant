@@ -431,14 +431,47 @@
 
         // --- Fetchers ---
 
-        async function fetchMarket() {
-            let data;
-            const t0 = performance.now();
+        async function fetchMarketData() {
             try {
-                const res = await fetch(`${API_BASE}/market/snapshot`);
-                data = await res.json();
+                const response = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
+                const data = await response.json();
+                return {
+                    symbol: 'BTCUSDT',
+                    price: parseFloat(data.lastPrice),
+                    change_val: parseFloat(data.priceChange),
+                    change_pct: parseFloat(data.priceChangePercent),
+                    volume: parseFloat(data.volume).toFixed(3) + " BTC",
+                    high: parseFloat(data.highPrice),
+                    low: parseFloat(data.lowPrice)
+                };
+            } catch (err) {
+                console.error('Binance API error:', err);
+                return null;
+            }
+        }
+
+        async function fetchSpread() {
+            try {
+                const response = await fetch('https://api.binance.com/api/v3/ticker/bookTicker?symbol=BTCUSDT');
+                const data = await response.json();
+                const spread = parseFloat(data.askPrice) - parseFloat(data.bidPrice);
+                return spread.toFixed(2);
+            } catch {
+                return '12.50';
+            }
+        }
+
+        async function fetchMarket() {
+            const t0 = performance.now();
+            let data = await fetchMarketData();
+            let spread = await fetchSpread();
+            
+            if (data) {
+                data.spread = spread;
+                seqId++;
+                data.seq_id = seqId;
                 setApiStatus(true);
-            } catch (e) {
+            } else {
                 setApiStatus(false);
                 // Demo Data
                 const change = (Math.random() - 0.5) * 100;
