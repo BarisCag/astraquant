@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstraQuant Trade Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #111118;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #7c3aed;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --border: #1e1e2d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex: 1;
+        }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .text-cyan { color: var(--accent-cyan); }
+        .text-purple { color: var(--accent-purple); }
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-danger { color: var(--danger); }
+        .text-muted { color: var(--muted); }
+        
+        /* Topbar */
+        .topbar {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+        }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+        .badge-live { background-color: rgba(0, 212, 255, 0.1); color: var(--accent-cyan); }
+        .badge-demo { background-color: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .status-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            display: inline-block; margin-right: 8px;
+        }
+        .status-online { background-color: var(--success); box-shadow: 0 0 8px var(--success); }
+        .status-offline { background-color: var(--danger); box-shadow: 0 0 8px var(--danger); }
+        
+        /* Grid */
+        .quadrant-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-title {
+            color: var(--muted);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        /* Typography */
+        .big-price { font-size: 2.5rem; font-weight: 700; margin: 8px 0; }
+        .price-change { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+        .data-row.header { color: var(--muted); font-size: 0.8rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-bottom: 12px; }
+
+        /* Chart placeholder */
+        .mini-chart {
+            height: 60px; width: 100%;
+            margin-bottom: 16px;
+        }
+        .mini-chart svg { width: 100%; height: 100%; }
+
+        /* Progress bars */
+        .progress-block { color: var(--text); font-size: 0.85rem; letter-spacing: 2px; }
+        .progress-empty { color: var(--border); }
+
+        /* Audit Trail */
+        .audit-trail {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+        .audit-content {
+            flex: 1;
+            overflow-y: hidden;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .audit-entry {
+            display: flex; gap: 12px;
+            padding: 4px 8px; border-radius: 4px;
+            animation: slideIn 0.3s ease-out forwards;
+        }
+        .audit-entry:nth-child(even) { background-color: rgba(255,255,255,0.02); }
+        .col-time { color: var(--muted); width: 110px; }
+        .col-method { width: 40px; font-weight: 700; color: var(--accent-cyan); }
+        .col-endpoint { color: var(--text); flex: 1; }
+        .col-status { width: 40px; }
+        .col-status.ok { color: var(--success); }
+        .col-status.err { color: var(--danger); }
+        .col-ms { color: var(--muted); width: 40px; text-align: right; }
+        .col-hash { color: var(--warning); width: 100px; text-align: right; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .quadrant-grid { grid-template-columns: 1fr; }
+            .topbar { flex-direction: column; gap: 12px; }
+            .col-hash { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div>
+                <strong style="font-size: 1.1rem;">AstraQuant Trade</strong>
+                <span id="badge-mode" class="badge badge-demo">DEMO DATA</span>
+            </div>
+            <div id="clock" class="font-mono text-muted">00:00:00</div>
+            <div>
+                <span id="api-dot" class="status-dot status-offline"></span>
+                <span id="api-status-text" class="text-muted" style="font-size: 0.9rem;">API OFFLINE</span>
+            </div>
+        </div>
+
+        <!-- QUADRANTS -->
+        <div class="quadrant-grid">
+            <!-- MARKET FEED -->
+            <div class="card">
+                <div class="card-title">MARKET</div>
+                <div class="text-muted font-mono" id="mkt-symbol">BTCUSDT</div>
+                <div class="big-price font-mono" id="mkt-price">0.00</div>
+                <div class="price-change font-mono text-success" id="mkt-change">▲ +0.00 (0.00%)</div>
+                
+                <div class="mini-chart" id="mkt-chart">
+                    <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                        <polyline id="mkt-line" fill="none" stroke="var(--accent-cyan)" stroke-width="1.5" points="0,10 100,10" />
+                    </svg>
+                </div>
+                
+                <div class="data-row font-mono">
+                    <span class="text-muted">VOLUME</span>
+                    <span id="mkt-vol">0.000 BTC</span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">SPREAD</span>
+                    <span id="mkt-spread">0.00</span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">SEQ ID</span>
+                    <span id="mkt-seq" class="text-cyan">#000000</span>
+                </div>
+            </div>
+
+            <!-- RISK METRICS -->
+            <div class="card">
+                <div class="card-title">RISK</div>
+                
+                <div class="data-row font-mono">
+                    <span>VaR 99%</span>
+                    <div style="display:flex; gap:16px;">
+                        <span id="risk-var99">$0.00</span>
+                        <span class="progress-block" id="risk-bar-var99">████████░░</span>
+                    </div>
+                </div>
+                <div class="data-row font-mono">
+                    <span>VaR 95%</span>
+                    <div style="display:flex; gap:16px;">
+                        <span id="risk-var95">$0.00</span>
+                        <span class="progress-block" id="risk-bar-var95">██████░░░░</span>
+                    </div>
+                </div>
+                <div class="data-row font-mono" style="margin-bottom: 24px;">
+                    <span>ES 97.5%</span>
+                    <div style="display:flex; gap:16px;">
+                        <span id="risk-es">$0.00</span>
+                        <span class="progress-block" id="risk-bar-es">█████████░</span>
+                    </div>
+                </div>
+                
+                <div class="data-row header">
+                    <span>GREEKS</span><span>VALUE</span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">&Delta; Delta</span><span id="grk-delta">0.0000</span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">&Gamma; Gamma</span><span id="grk-gamma">0.0000</span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">&nu; Vega</span><span id="grk-vega">0.00</span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">&Theta; Theta</span><span id="grk-theta">0.00</span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">&rho; Rho</span><span id="grk-rho">0.00</span>
+                </div>
+            </div>
+
+            <!-- TREASURY -->
+            <div class="card">
+                <div class="card-title">TREASURY</div>
+                
+                <div class="data-row header">
+                    <span>CASH POSITIONS</span><span></span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">USD</span>
+                    <div><span id="tr-usd">+$0</span> <span id="tr-usd-dir" class="text-success">▲</span></div>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">EUR</span>
+                    <div><span id="tr-eur">-$0</span> <span id="tr-eur-dir" class="text-danger">▼</span></div>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">GBP</span>
+                    <div><span id="tr-gbp">+$0</span> <span id="tr-gbp-dir" class="text-success">▲</span></div>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">JPY</span>
+                    <div><span id="tr-jpy">+$0</span> <span id="tr-jpy-dir" class="text-success">▲</span></div>
+                </div>
+                <div class="data-row font-mono" style="margin-bottom: 24px;">
+                    <span class="text-muted">CHF</span>
+                    <div><span id="tr-chf">+$0</span> <span id="tr-chf-dir" class="text-success">▲</span></div>
+                </div>
+                
+                <div class="data-row header">
+                    <span>30-DAY FORECAST</span><span></span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">Inflow</span><span id="tr-inflow">$0</span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">Outflow</span><span id="tr-outflow">$0</span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">Net</span><span id="tr-net" class="text-success">+$0</span>
+                </div>
+
+                <div class="data-row header" style="margin-top: 16px;">
+                    <span>LIQUIDITY</span><span></span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">Buffer</span>
+                    <div style="display:flex; gap:16px;">
+                        <span class="progress-block" id="tr-buf-bar">████████░░</span>
+                        <span id="tr-buf-pct">82%</span>
+                    </div>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">Status</span><span id="tr-status" class="text-success">✓ ADEQUATE</span>
+                </div>
+            </div>
+
+            <!-- ALM STATUS -->
+            <div class="card">
+                <div class="card-title">ALM</div>
+                
+                <div class="data-row header">
+                    <span>DURATION GAPS BY TENOR</span><span>STATUS</span>
+                </div>
+                <div id="alm-gaps">
+                    <!-- JS populated -->
+                </div>
+                
+                <div class="data-row header" style="margin-top: 24px;">
+                    <span>HEDGE RECOMMENDATIONS</span><span>CONFIDENCE</span>
+                </div>
+                <div id="alm-hedges">
+                    <!-- JS populated -->
+                </div>
+                
+                <div class="data-row header" style="margin-top: 24px;">
+                    <span>OPTIMIZATION</span><span></span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">CVaR</span><span id="alm-cvar">$0.00</span>
+                </div>
+                <div class="data-row font-mono">
+                    <span class="text-muted">Method</span><span class="text-cyan">Gradient Descent (deterministic)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUDIT TRAIL STREAM -->
+        <div class="audit-trail">
+            <div class="card-title" style="margin-bottom: 8px;">AUDIT TRAIL</div>
+            <div class="audit-content" id="audit-log">
+                <!-- JS populated -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080';
+        let isOnline = false;
+        
+        // Update Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('en-US', { hour12: false }) + '.' + now.getMilliseconds().toString().padStart(3, '0');
+        }, 50);
+
+        // UI Setters
+        function setApiStatus(online) {
+            isOnline = online;
+            const dot = document.getElementById('api-dot');
+            const txt = document.getElementById('api-status-text');
+            const badge = document.getElementById('badge-mode');
+            
+            if (online) {
+                dot.className = 'status-dot status-online';
+                txt.innerText = 'API CONNECTED';
+                badge.className = 'badge badge-live';
+                badge.innerText = 'LIVE';
+            } else {
+                dot.className = 'status-dot status-offline';
+                txt.innerText = 'API OFFLINE';
+                badge.className = 'badge badge-demo';
+                badge.innerText = 'DEMO DATA';
+            }
+        }
+
+        // --- Demo Data State ---
+        let demoPrice = 45234.50;
+        let priceHistory = Array(20).fill(demoPrice);
+        let seqId = 4721;
+        let auditLogs = [];
+
+        function formatMoney(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+        function formatMoneyInt(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0}); }
+        
+        function makeProgressBar(val, max) {
+            const total = 10;
+            const filled = Math.min(total, Math.max(0, Math.round((val / max) * total)));
+            return '█'.repeat(filled) + '<span class="progress-empty">' + '░'.repeat(total - filled) + '</span>';
+        }
+
+        function updateMiniChart() {
+            const min = Math.min(...priceHistory) - 100;
+            const max = Math.max(...priceHistory) + 100;
+            const range = max - min;
+            
+            const points = priceHistory.map((p, i) => {
+                const x = (i / (priceHistory.length - 1)) * 100;
+                const y = 20 - (((p - min) / Math.max(range, 1)) * 20); // max 1 to prevent div by 0
+                return `${x},${y}`;
+            }).join(' ');
+            
+            document.getElementById('mkt-line').setAttribute('points', points);
+        }
+
+        function pushAudit(method, endpoint, status, ms, hash) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false }) + '.' + now.getMilliseconds().toString().padStart(3, '0');
+            
+            auditLogs.unshift({
+                time: timeStr,
+                method, endpoint, status, ms, hash
+            });
+            if (auditLogs.length > 10) auditLogs.pop();
+            
+            const container = document.getElementById('audit-log');
+            container.innerHTML = auditLogs.map(log => `
+                <div class="audit-entry">
+                    <div class="col-time">[${log.time}]</div>
+                    <div class="col-method">${log.method}</div>
+                    <div class="col-endpoint">${log.endpoint}</div>
+                    <div class="col-status ${log.status === 200 ? 'ok' : 'err'}">${log.status}</div>
+                    <div class="col-ms">${log.ms}ms</div>
+                    <div class="col-hash">hash:${log.hash}</div>
+                </div>
+            `).join('');
+        }
+
+        function generateHash() {
+            return '0x' + Math.floor(Math.random()*16777215).toString(16).padStart(4, '0') + '...';
+        }
+
+        // --- Fetchers ---
+
+        async function fetchMarket() {
+            let data;
+            const t0 = performance.now();
+            try {
+                const res = await fetch(`${API_BASE}/market/snapshot`);
+                data = await res.json();
+                setApiStatus(true);
+            } catch (e) {
+                setApiStatus(false);
+                // Demo Data
+                const change = (Math.random() - 0.5) * 100;
+                demoPrice += change;
+                seqId += Math.floor(Math.random() * 5) + 1;
+                
+                data = {
+                    symbol: "BTCUSDT",
+                    price: demoPrice,
+                    change_val: change,
+                    change_pct: (change / demoPrice) * 100,
+                    volume: (Math.random() * 0.05 + 0.01).toFixed(3) + " BTC",
+                    spread: (Math.random() * 5 + 10).toFixed(2),
+                    seq_id: seqId
+                };
+            }
+            const ms = Math.round(performance.now() - t0);
+            pushAudit('GET', '/market/snapshot', 200, ms || 1, generateHash());
+
+            // Update UI
+            document.getElementById('mkt-symbol').innerText = data.symbol;
+            document.getElementById('mkt-price').innerText = data.price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            
+            const changeEl = document.getElementById('mkt-change');
+            if (data.change_val >= 0) {
+                changeEl.innerText = `▲ +${data.change_val.toFixed(2)} (+${data.change_pct.toFixed(2)}%)`;
+                changeEl.className = 'price-change font-mono text-success';
+            } else {
+                changeEl.innerText = `▼ ${Math.abs(data.change_val).toFixed(2)} (${data.change_pct.toFixed(2)}%)`;
+                changeEl.className = 'price-change font-mono text-danger';
+            }
+            
+            document.getElementById('mkt-vol').innerText = data.volume;
+            document.getElementById('mkt-spread').innerText = data.spread;
+            document.getElementById('mkt-seq').innerText = '#' + String(data.seq_id).padStart(6, '0');
+            
+            priceHistory.push(data.price);
+            priceHistory.shift();
+            updateMiniChart();
+        }
+
+        async function fetchRisk() {
+            let data;
+            const t0 = performance.now();
+            try {
+                const res = await fetch(`${API_BASE}/risk/metrics`);
+                data = await res.json();
+                setApiStatus(true);
+            } catch (e) {
+                // Demo Data
+                data = {
+                    var99: 2847.50 + (Math.random()-0.5)*100,
+                    var95: 1923.20 + (Math.random()-0.5)*50,
+                    es975: 3124.80 + (Math.random()-0.5)*150,
+                    delta: 0.7340 + (Math.random()-0.5)*0.01,
+                    gamma: 0.0012,
+                    vega: 124.50 + (Math.random()-0.5)*2,
+                    theta: -8.23 + (Math.random()-0.5)*0.5,
+                    rho: 45.67
+                };
+            }
+            const ms = Math.round(performance.now() - t0);
+            pushAudit('GET', '/risk/metrics', 200, ms || 2, generateHash());
+
+            document.getElementById('risk-var99').innerText = formatMoney(data.var99);
+            document.getElementById('risk-var95').innerText = formatMoney(data.var95);
+            document.getElementById('risk-es').innerText = formatMoney(data.es975);
+            
+            document.getElementById('risk-bar-var99').innerHTML = makeProgressBar(data.var99, 4000);
+            document.getElementById('risk-bar-var95').innerHTML = makeProgressBar(data.var95, 4000);
+            document.getElementById('risk-bar-es').innerHTML = makeProgressBar(data.es975, 4000);
+            
+            document.getElementById('grk-delta').innerText = data.delta.toFixed(4);
+            document.getElementById('grk-gamma').innerText = data.gamma.toFixed(4);
+            document.getElementById('grk-vega').innerText = data.vega.toFixed(2);
+            document.getElementById('grk-theta').innerText = data.theta.toFixed(2);
+            document.getElementById('grk-rho').innerText = data.rho.toFixed(2);
+        }
+
+        async function fetchTreasury() {
+            let data;
+            const t0 = performance.now();
+            try {
+                const res = await fetch(`${API_BASE}/treasury/cashflow`);
+                data = await res.json();
+                setApiStatus(true);
+            } catch (e) {
+                // Demo Data
+                data = {
+                    positions: {
+                        USD: 124500, EUR: -23400, GBP: 67200, JPY: 892000, CHF: 12300
+                    },
+                    forecast: {
+                        inflow: 234500, outflow: 187200, net: 47300
+                    },
+                    liquidity: { buffer_pct: 82, status: 'ADEQUATE' }
+                };
+            }
+            const ms = Math.round(performance.now() - t0);
+            pushAudit('GET', '/treasury/cashflow', 200, ms || 3, generateHash());
+
+            const setPos = (id, val) => {
+                document.getElementById(id).innerText = (val >= 0 ? '+' : '') + formatMoneyInt(val);
+                document.getElementById(id+'-dir').innerText = val >= 0 ? '▲' : '▼';
+                document.getElementById(id+'-dir').className = val >= 0 ? 'text-success' : 'text-danger';
+            };
+            
+            setPos('tr-usd', data.positions.USD);
+            setPos('tr-eur', data.positions.EUR);
+            setPos('tr-gbp', data.positions.GBP);
+            setPos('tr-jpy', data.positions.JPY);
+            setPos('tr-chf', data.positions.CHF);
+            
+            document.getElementById('tr-inflow').innerText = formatMoneyInt(data.forecast.inflow);
+            document.getElementById('tr-outflow').innerText = formatMoneyInt(data.forecast.outflow);
+            const net = data.forecast.net;
+            document.getElementById('tr-net').innerText = (net >= 0 ? '+' : '') + formatMoneyInt(net);
+            document.getElementById('tr-net').className = net >= 0 ? 'text-success' : 'text-danger';
+            
+            document.getElementById('tr-buf-bar').innerHTML = makeProgressBar(data.liquidity.buffer_pct, 100);
+            document.getElementById('tr-buf-pct').innerText = data.liquidity.buffer_pct + '%';
+            document.getElementById('tr-status').innerText = data.liquidity.status === 'ADEQUATE' ? '✓ ADEQUATE' : '⚠ WARNING';
+            document.getElementById('tr-status').className = data.liquidity.status === 'ADEQUATE' ? 'text-success' : 'text-warning';
+        }
+
+        async function fetchALM() {
+            let data;
+            const t0 = performance.now();
+            try {
+                const res = await fetch(`${API_BASE}/alm/mismatch`);
+                data = await res.json();
+                setApiStatus(true);
+            } catch (e) {
+                // Demo Data
+                data = {
+                    gaps: [
+                        { tenor: '1M', gap: -0.12, status: 'OK' },
+                        { tenor: '3M', gap: -0.08, status: 'OK' },
+                        { tenor: '1Y', gap: -0.31, status: 'REBALANCING' },
+                        { tenor: '5Y', gap: -4.02, status: 'REBALANCING' },
+                        { tenor: '10Y', gap: -0.19, status: 'OK' }
+                    ],
+                    hedges: [
+                        { symbol: 'INST_USD_5Y', ratio: 0.50, conf: 75 },
+                        { symbol: 'INST_USD_1Y', ratio: 0.50, conf: 75 }
+                    ],
+                    cvar: 4234.50
+                };
+            }
+            const ms = Math.round(performance.now() - t0);
+            pushAudit('GET', '/alm/mismatch', 200, ms || 4, generateHash());
+
+            const gapsHtml = data.gaps.map(g => `
+                <div class="data-row font-mono">
+                    <span class="text-muted">${g.tenor.padEnd(3, ' ')} ${g.gap.toFixed(2)}y</span>
+                    <span class="${g.status === 'OK' ? 'text-success' : 'text-warning'}">${g.status === 'OK' ? '✓' : '⚠ REBALANCING'}</span>
+                </div>
+            `).join('');
+            document.getElementById('alm-gaps').innerHTML = gapsHtml;
+            
+            const hedgesHtml = data.hedges.map(h => `
+                <div class="data-row font-mono">
+                    <span class="text-muted">${h.symbol}</span>
+                    <span>ratio: ${h.ratio.toFixed(2)} &nbsp;&nbsp; conf: ${h.conf}%</span>
+                </div>
+            `).join('');
+            document.getElementById('alm-hedges').innerHTML = hedgesHtml;
+            
+            document.getElementById('alm-cvar').innerText = formatMoney(data.cvar);
+        }
+
+        // --- Loop Initialization ---
+        fetchMarket();
+        fetchRisk();
+        fetchTreasury();
+        fetchALM();
+
+        setInterval(fetchMarket, 3000);
+        setInterval(fetchRisk, 5000);
+        setInterval(fetchTreasury, 10000);
+        setInterval(fetchALM, 10000);
+
+        // Fallback fake audit trail every 3 seconds for demo mode only
+        setInterval(() => {
+            if(!isOnline) {
+                const endpoints = ['/admin/health', '/market/orderbook', '/portfolio/positions', '/risk/limits'];
+                pushAudit('GET', endpoints[Math.floor(Math.random()*endpoints.length)], 200, Math.floor(Math.random()*5)+1, generateHash());
+            }
+        }, 3000);
+
+    </script>
+</body>
+</html>
